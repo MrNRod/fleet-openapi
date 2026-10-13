@@ -47,6 +47,19 @@ class GeneratorTests(unittest.TestCase):
         self.assertEqual(json.loads(item['http']['body']['data'])['name'], 'https://example.test/a//b')
         self.assertEqual(item['examples'][0]['response']['status'], 200)
 
+    def test_response_status_labels_are_stable(self):
+        # These phrases changed between Python 3.12 and 3.14. Exercise the
+        # complete parse/build/YAML path, including an unknown status code.
+        expected = {200: 'OK', 413: 'Content Too Large', 414: 'URI Too Long',
+                    416: 'Range Not Satisfiable', 422: 'Unprocessable Content', 599: ''}
+        for status, phrase in expected.items():
+            with self.subTest(status=status):
+                text = FIXTURE.replace('Status: 200', f'Status: {status}')
+                collection = yaml.safe_load(g.dump(g.build(text, 'test', 'test')))
+                response = collection['items'][0]['items'][0]['examples'][0]['response']
+                self.assertEqual(response['status'], status)
+                self.assertEqual(response['statusText'], phrase)
+
     def test_public_routes_do_not_inherit_auth(self):
         for route in ['/api/v1/fleet/login', '/api/v1/fleet/device/:token']:
             endpoint = g.parse_markdown('## Auth\n### Public\n`POST ' + route + '`\n')[0][0]
