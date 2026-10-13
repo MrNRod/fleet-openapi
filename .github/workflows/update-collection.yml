@@ -1,0 +1,98 @@
+name: Update Bruno collection
+
+on:
+  schedule:
+    - cron: '0 9 * * 1-5' # Weekdays at 09:00 UTC, like the reference project.
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Fleet release tag (e.g. fleet-v4.93.0); leave empty for latest'
+        required: false
+        type: string
+      force:
+        description: 'Regenerate even if the collection version already matches'
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: update-bruno-collection
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: python -m pip install -r requirements.txt
+
+      - name: Determine target Fleet release
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          INPUT_TAG: ${{ inputs.tag }}
+          FORCE: ${{ inputs.force }}
+        run: |
+          python - <<'PY'
+          import json, os, re, urllib.request, yaml
+          from pathlib import Path
+          tag = os.environ.get('INPUT_TAG', '').strip()
+          if not tag:
+              request = urllib.request.Request(
+                  'https://api.github.com/repos/fleetdm/fleet/releases/latest',
+                  headers={'Authorization': 'Bearer ' + os.environ['GH_TOKEN'],
+                           'User-Agent': 'fleet-bruno-updater'})
+              with urllib.request.urlopen(request, timeout=60) as response:
+                  tag = json.load(response)['tag_name']
+          if not re.fullmatch(r'fleet-v\d+\.\d+\.\d+(?:[-.][A-Za-z0-9.-]+)?', tag):
+              raise SystemExit('Invalid Fleet release tag')
+          version = tag.removeprefix('fleet-v')
+          current = yaml.safe_load(Path('fleet.bruno.yml').read_text())['info']['version']
+          update = version != current or os.environ.get('FORCE') == 'true'
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              for key, value in {'tag': tag, 'version': version, 'current': current,
+                                 'update': str(update).lower()}.items():
+                  output.write(f'{key}={value}\n')
+          print(f'Current: {current}; target: {version}; regenerate: {update}')
+          PY
+
+      - name: Test generator
+        if: steps.release.outputs.update == 'true'
+        run: python -m unittest discover -s scripts -v
+
+      - name: Generate native Bruno YAML
+        if: steps.release.outputs.update == 'true'
+        env:
+          FLEET_TAG: ${{ steps.release.outputs.tag }}
+        run: python scripts/generate.py --tag "$FLEET_TAG"
+
+      - name: Validate regenerated collection
+        if: steps.release.outputs.update == 'true'
+        run: |
+          python -m unittest discover -s scripts -v
+          python scripts/generate.py --check
+
+      - name: Open update pull request
+        if: steps.release.outputs.update == 'true'
+        uses: peter-evans/create-pull-request@v8
+        with:
+          branch: automation/update-fleet-bruno
+          delete-branch: true
+          commit-message: 'Update Bruno collection to Fleet v${{ steps.release.outputs.version }}'
+          title: 'Update Bruno collection to Fleet v${{ steps.release.outputs.version }}'
+          body: |
+            Generated directly from Fleet's REST API Markdown at `${{ steps.release.outputs.tag }}`.
+
+            Previous version: `${{ steps.release.outputs.current }}`.
+            Target version: `${{ steps.release.outputs.version }}`.
+
+            Review the YAML request changes and the embedded `extensions.fleet` metadata for counts, skipped sections, and parsing notes.
+            Import `fleet.bruno.yml` directly into Bruno. No live Fleet requests were executed.
+          add-paths: fleet.bruno.yml
