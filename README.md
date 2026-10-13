@@ -14,7 +14,7 @@ Fill in path parameters, enable the query parameters you need, and edit example 
 
 ## Generate
 
-Requires Python 3.10+:
+Python 3.12 is recommended and used by both GitHub workflows. Requires Python 3.10+:
 
 ```sh
 python3 -m venv .venv
