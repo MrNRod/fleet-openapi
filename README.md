@@ -14,10 +14,10 @@ Fill in path parameters, enable query parameters as needed, and edit sample bodi
 
 ## Generate
 
-Use Python 3.12:
+Use Python 3.14:
 
 ```sh
-python3.12 -m venv .venv
+python3.14 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 python scripts/generate.py --tag latest
