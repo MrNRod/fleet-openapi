@@ -18,8 +18,9 @@ jobs:
         with:
           python-version: '3.12'
           cache: pip
-      - run: python -m pip install -r requirements.txt
-      - name: Test parser and generated YAML
-        run: python -m unittest discover -s scripts -v
-      - name: Check reproducibility against the pinned Fleet release
+      - name: Install dependencies
+        run: python -m pip install --quiet --disable-pip-version-check -r requirements.txt
+      - name: Run tests
+        run: python -m unittest discover -s scripts -q
+      - name: Check collection
         run: python scripts/generate.py --check

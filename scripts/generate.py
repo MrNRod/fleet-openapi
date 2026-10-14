@@ -420,8 +420,9 @@ def main():
     collection = build(text, version, tag)
     write_collection(args.output, collection, args.check)
     report = collection['extensions']['fleet']
-    print(f'{report["operation_count"]} HTTP operations; {report["path_count"]} paths; source {tag}.')
-    print(f'{len(report["warnings"])} conversion notes embedded in {args.output}')
+    action = 'Verified' if args.check else 'Generated'
+    print(f'{action} {args.output.name}: Fleet {version}, '
+          f'{report["operation_count"]} requests, {len(report["warnings"])} parsing notes')
 
 
 if __name__ == '__main__':

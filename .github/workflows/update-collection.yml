@@ -31,9 +31,10 @@ jobs:
         with:
           python-version: '3.12'
           cache: pip
-      - run: python -m pip install -r requirements.txt
+      - name: Install dependencies
+        run: python -m pip install --quiet --disable-pip-version-check -r requirements.txt
 
-      - name: Determine target Fleet release
+      - name: Check Fleet release
         id: release
         env:
           GH_TOKEN: ${{ github.token }}
@@ -60,26 +61,31 @@ jobs:
               for key, value in {'tag': tag, 'version': version, 'current': current,
                                  'update': str(update).lower()}.items():
                   output.write(f'{key}={value}\n')
-          print(f'Current: {current}; target: {version}; regenerate: {update}')
+          if not update:
+              print(f'Already up to date: Fleet {current}')
+          elif version == current:
+              print(f'Regenerating Fleet {version}')
+          else:
+              print(f'Updating Fleet {current} → {version}')
           PY
 
-      - name: Test generator
+      - name: Run tests
         if: steps.release.outputs.update == 'true'
-        run: python -m unittest discover -s scripts -v
+        run: python -m unittest discover -s scripts -q
 
-      - name: Generate native Bruno YAML
+      - name: Generate collection
         if: steps.release.outputs.update == 'true'
         env:
           FLEET_TAG: ${{ steps.release.outputs.tag }}
         run: python scripts/generate.py --tag "$FLEET_TAG"
 
-      - name: Validate regenerated collection
+      - name: Validate collection
         if: steps.release.outputs.update == 'true'
         run: |
-          python -m unittest discover -s scripts -v
+          python -m unittest discover -s scripts -q
           python scripts/generate.py --check
 
-      - name: Open update pull request
+      - name: Open update PR
         if: steps.release.outputs.update == 'true'
         uses: peter-evans/create-pull-request@v8
         with:
