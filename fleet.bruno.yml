@@ -1,7 +1,7 @@
 opencollection: 1.0.0
 info:
   name: Fleet REST API
-  version: 4.93.0
+  version: 4.93.2
 request:
   auth:
     type: bearer
@@ -40549,12 +40549,12 @@ items:
         statusText: OK
 docs:
   type: text/markdown
-  content: Unofficial Fleet API collection generated directly from fleet-v4.93.0. HTTP only; excludes WebSocket/SockJS
+  content: Unofficial Fleet API collection generated directly from fleet-v4.93.2. HTTP only; excludes WebSocket/SockJS
     and historical routes mentioned only in deprecation notices.
 bundled: true
 extensions:
   fleet:
-    source_ref: fleet-v4.93.0
+    source_ref: fleet-v4.93.2
     source_sha256: 29625a7e7d21cae7e93af6b4f7b3d35fc060f01afe6a9639eebe4c80b96e685f
     operation_count: 271
     path_count: 203
