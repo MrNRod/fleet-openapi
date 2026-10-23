@@ -131,6 +131,9 @@ This also applies to `DELETE /api/v1/fleet/teams/:id/users`.
         self.assertTrue(collection['config']['environments'][0]['variables'][1]['secret'])
         self.assertEqual(collection['extensions']['fleet']['source_sha256'], g.sha(FIXTURE.encode()))
         self.assertEqual(collection['items'][0]['request']['auth'], 'inherit')
+        self.assertIn('https://creativecommons.org/licenses/by-sa/4.0/', collection['docs']['content'])
+        self.assertIn('Fleet Device Management Inc', collection['docs']['content'])
+        self.assertIn('Changes: converted Markdown', collection['docs']['content'])
 
     def test_write_and_check(self):
         collection = g.build(FIXTURE, 'test', 'test')

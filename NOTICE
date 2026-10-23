@@ -1,0 +1,22 @@
+The project's original code, workflows, and README are licensed under MIT
+(see LICENSE).
+
+The generated fleet.bruno.yml collection is an adaptation of Fleet's REST API
+documentation and is licensed under Creative Commons Attribution-ShareAlike
+4.0 International (CC BY-SA 4.0), not the project's MIT license.
+
+Source: Fleet REST API documentation, Fleet Device Management Inc
+https://github.com/fleetdm/fleet/blob/main/docs/REST%20API/rest-api.md
+The collection records its source release in extensions.fleet.source_ref.
+
+Upstream copyright notices:
+Copyright (c) 2020-present Fleet Device Management Inc
+Copyright (c) 2017 Kolide
+
+Upstream license notice: https://github.com/fleetdm/fleet/blob/main/LICENSE
+Collection license: https://creativecommons.org/licenses/by-sa/4.0/
+Legal terms: https://creativecommons.org/licenses/by-sa/4.0/legalcode
+
+Changes: converted Markdown documentation to Bruno YAML, organized requests
+into folders, and normalized parameters and examples. This project is
+unofficial and is not endorsed by Fleet. No warranties are given.
