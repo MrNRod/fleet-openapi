@@ -39,3 +39,7 @@ python scripts/generate.py --check
 GitHub Actions checks for new Fleet releases weekdays at **09:00 UTC** and opens an update PR. Validation runs on PRs and pushes to `main`. Both workflows can also be run manually.
 
 Enable **Allow GitHub Actions to create and approve pull requests** under **Settings → Actions → General**.
+
+## License
+
+Project code: [MIT](LICENSE). Generated collection: [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/), adapted from Fleet's documentation. See [NOTICE](NOTICE) for attribution.

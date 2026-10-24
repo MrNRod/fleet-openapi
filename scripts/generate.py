@@ -358,7 +358,13 @@ def build(text, version, source_ref):
         'items': list(groups.values()),
         'docs': {'type': 'text/markdown', 'content':
                  f'Unofficial Fleet API collection generated directly from {source_ref}. '
-                 'HTTP only; excludes WebSocket/SockJS and historical routes mentioned only in deprecation notices.'},
+                 'HTTP only; excludes WebSocket/SockJS and historical routes mentioned only in deprecation notices.\n\n'
+                 'Licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). '
+                 'Adapted from [Fleet REST API documentation]('
+                 f'https://github.com/fleetdm/fleet/blob/{urllib.parse.quote(source_ref, safe="")}/docs/REST%20API/rest-api.md).\n\n'
+                 'Copyright (c) 2020-present Fleet Device Management Inc. Copyright (c) 2017 Kolide.\n\n'
+                 'Changes: converted Markdown to Bruno YAML, organized requests into folders, '
+                 'and normalized parameters and examples. Not endorsed by Fleet. No warranties are given.'},
         'bundled': True,
         'extensions': {'fleet': {
             'source_ref': source_ref, 'source_sha256': sha(text.encode()),

@@ -40549,8 +40549,14 @@ items:
         statusText: OK
 docs:
   type: text/markdown
-  content: Unofficial Fleet API collection generated directly from fleet-v4.93.2. HTTP only; excludes WebSocket/SockJS
-    and historical routes mentioned only in deprecation notices.
+  content: |-
+    Unofficial Fleet API collection generated directly from fleet-v4.93.2. HTTP only; excludes WebSocket/SockJS and historical routes mentioned only in deprecation notices.
+
+    Licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). Adapted from [Fleet REST API documentation](https://github.com/fleetdm/fleet/blob/fleet-v4.93.2/docs/REST%20API/rest-api.md).
+
+    Copyright (c) 2020-present Fleet Device Management Inc. Copyright (c) 2017 Kolide.
+
+    Changes: converted Markdown to Bruno YAML, organized requests into folders, and normalized parameters and examples. Not endorsed by Fleet. No warranties are given.
 bundled: true
 extensions:
   fleet:
