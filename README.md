@@ -36,9 +36,11 @@ python scripts/generate.py --check
 
 ## Automatic updates
 
-GitHub Actions checks for new Fleet releases weekdays at **09:00 UTC** and opens an update PR. Validation runs on PRs and pushes to `main`. Both workflows can also be run manually.
+GitHub Actions checks for new Fleet releases weekdays at **09:00 UTC**, validates the collection, and opens an update PR with squash auto-merge enabled. GitHub merges it once required checks and reviews pass, preserving the PR history and one commit per update. Both workflows can also be run manually.
 
 Enable **Allow GitHub Actions to create and approve pull requests** under **Settings → Actions → General**.
+
+Under **Settings → General → Pull Requests**, enable **Allow squash merging**, **Allow auto-merge**, and **Automatically delete head branches**. Add a rule for `main` requiring the `validate` status check. Require one approving review if you want to approve each update before it merges. The workflow does not approve PRs or bypass branch rules. Without required checks or reviews, a validated update can merge immediately.
 
 ## License
 

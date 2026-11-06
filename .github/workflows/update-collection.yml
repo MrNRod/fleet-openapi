@@ -86,6 +86,7 @@ jobs:
           python scripts/generate.py --check
 
       - name: Open update PR
+        id: pr
         if: steps.release.outputs.update == 'true'
         uses: peter-evans/create-pull-request@v8
         with:
@@ -102,3 +103,14 @@ jobs:
             Review the YAML request changes and the embedded `extensions.fleet` metadata for counts, skipped sections, and parsing notes.
             Import `fleet.bruno.yml` directly into Bruno. No live Fleet requests were executed.
           add-paths: fleet.bruno.yml
+
+      - name: Enable auto-merge
+        if: success() && steps.pr.outputs.pull-request-number != '' && steps.pr.outputs.pull-request-operation != 'closed'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ steps.pr.outputs.pull-request-number }}
+          PR_HEAD_SHA: ${{ steps.pr.outputs.pull-request-head-sha }}
+        run: |
+          : "${PR_HEAD_SHA:?Missing PR head SHA}"
+          gh pr merge "$PR_NUMBER" --auto --squash --match-head-commit "$PR_HEAD_SHA"
