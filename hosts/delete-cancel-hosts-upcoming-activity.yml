@@ -1,0 +1,55 @@
+info:
+  name: Cancel host's upcoming activity
+  type: http
+  seq: 35
+http:
+  method: DELETE
+  url: '{{baseUrl}}/api/v1/fleet/hosts/:id/activities/upcoming/:activity_id'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required**. The host''s ID.'
+  - name: activity_id
+    value: ''
+    type: path
+    description: '**Required**. The ID of the host''s upcoming activity.'
+docs: |-
+  `DELETE /api/v1/fleet/hosts/:id/activities/upcoming/:activity_id`
+
+  #### Parameters
+
+  | Name | Type    | In   | Description                  |
+  | ---- | ------- | ---- | ---------------------------- |
+  | id   | integer | path | **Required**. The host's ID. |
+  | activity_id   | string | path | **Required**. The ID of the host's upcoming activity. |
+
+  For a pending script run (e.g. the scripts that back lock on Windows/Linux and wipe on Linux), `activity_id` is the script's execution ID. Get it from the `uuid` (or `details.script_execution_id`) field of a `"type": "ran_script"` entry returned by [Get host's upcoming activity](#get-hosts-upcoming-activity).
+
+  #### Example
+
+  `DELETE /api/v1/fleet/hosts/12/activities/upcoming/81e10a70-730b-4c45-9b40-b14373e04757`
+
+  ##### Default response
+
+  `Status: 204`
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#cancel-hosts-upcoming-activity
+examples:
+- name: 204 Default response
+  request:
+    method: DELETE
+    url: '{{baseUrl}}/api/v1/fleet/hosts/:id/activities/upcoming/:activity_id'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required**. The host''s ID.'
+    - name: activity_id
+      value: ''
+      type: path
+      description: '**Required**. The ID of the host''s upcoming activity.'
+  response:
+    status: 204
+    statusText: No Content

@@ -1,0 +1,94 @@
+info:
+  name: Get bootstrap package metadata
+  type: http
+  seq: 8
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/bootstrap/:fleet_id/metadata'
+  auth: inherit
+  params:
+  - name: fleet_id
+    value: ''
+    type: path
+    description: '**Required** The fleet ID for the package. Zero (0) can be specified to get information about
+      the bootstrap package for "Unassigned" hosts.'
+  - name: for_update
+    value: ''
+    type: query
+    disabled: true
+    description: If set to `true`, the authorization will be for a `write` action instead of a `read`. Useful for
+      the write-only `gitops` role when requesting the bootstrap metadata to check if the package needs to be replaced.
+docs: |-
+  _Available in Fleet Premium_
+
+  Get information about a bootstrap package that was uploaded to Fleet.
+
+  `GET /api/v1/fleet/bootstrap/:fleet_id/metadata`
+
+  #### Parameters
+
+  | Name       | Type    | In    | Description                                                                                                                                                                                                        |
+  | -------    | ------  | ---   | ---------------------------------------------------------------------------------------------------------------------------------------------------------                                                          |
+  | fleet_id    | string  | url   | **Required** The fleet ID for the package. Zero (0) can be specified to get information about the bootstrap package for "Unassigned" hosts.                                                          |
+  | for_update | boolean | query | If set to `true`, the authorization will be for a `write` action instead of a `read`. Useful for the write-only `gitops` role when requesting the bootstrap metadata to check if the package needs to be replaced. |
+
+  #### Example
+
+  `GET /api/v1/fleet/bootstrap/0/metadata`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "name": "bootstrap-package.pkg",
+    "team_id": 0,
+    "fleet_id": 0,
+    "sha256": "6bebb4433322fd52837de9e4787de534b4089ac645b0692dfb74d000438da4a3",
+    "token": "AA598E2A-7952-46E3-B89D-526D45F7E233",
+    "created_at": "2023-04-20T13:02:05Z"
+  }
+  ```
+
+  In the response above:
+
+  - `token` is the value you can use to [download a bootstrap package](#download-bootstrap-package)
+  - `sha256` is the SHA256 digest of the bytes of the bootstrap package file.
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#get-bootstrap-package-metadata
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/bootstrap/:fleet_id/metadata'
+    params:
+    - name: fleet_id
+      value: ''
+      type: path
+      description: '**Required** The fleet ID for the package. Zero (0) can be specified to get information about
+        the bootstrap package for "Unassigned" hosts.'
+    - name: for_update
+      value: ''
+      type: query
+      disabled: true
+      description: If set to `true`, the authorization will be for a `write` action instead of a `read`. Useful
+        for the write-only `gitops` role when requesting the bootstrap metadata to check if the package needs to
+        be replaced.
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "name": "bootstrap-package.pkg",
+          "team_id": 0,
+          "fleet_id": 0,
+          "sha256": "6bebb4433322fd52837de9e4787de534b4089ac645b0692dfb74d000438da4a3",
+          "token": "AA598E2A-7952-46E3-B89D-526D45F7E233",
+          "created_at": "2023-04-20T13:02:05Z"
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

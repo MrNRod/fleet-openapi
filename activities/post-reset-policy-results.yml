@@ -1,0 +1,66 @@
+info:
+  name: Reset policy results
+  type: http
+  seq: 3
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/policies/:policy_id/reset'
+  auth: inherit
+  params:
+  - name: policy_id
+    value: ''
+    type: path
+    description: '**Required.** The policy''s ID.'
+  - name: host_id
+    value: ''
+    type: query
+    disabled: true
+    description: When set, resets only this host's result for the policy instead of resetting all hosts.
+docs: |-
+  Clears a policy's pass/fail results. Fleet does this automatically when you edit the policy's query or swap in a different script, software package, or VPP app (see [Resetting a policy's automation status](https://fleetdm.com/guides/automations#policy-automations)); use this endpoint to do it in a custom automation. Immediately sets `passing_host_count` and `failing_host_count` to `0` and wipes membership records so the counts remain `0` until hosts re-report. Pass the `host_id` query parameter to instead reset only a single host's result for the policy.
+
+  `POST /api/v1/fleet/policies/:policy_id/reset`
+
+  #### Parameters
+
+  | Name      | Type    | In   | Description                                                                                   |
+  | --------- | ------- | ---- | --------------------------------------------------------------------------------------------- |
+  | policy_id | integer | path | **Required.** The policy's ID.                                                                |
+  | host_id   | integer | query | When set, resets only this host's result for the policy instead of resetting all hosts.      |
+
+  #### Example
+
+  `POST /api/v1/fleet/policies/123/reset?host_id=42`
+
+  ##### Default response
+
+  `Status: 200`
+
+  #### Errors
+
+  | Status | Description                                                            |
+  | ------ | ---------------------------------------------------------------------- |
+  | 403    | The authenticated user does not have write access to the policy.       |
+  | 404    | No policy with the given `policy_id` exists.                           |
+
+  ---
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#reset-policy-results
+examples:
+- name: 200 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/policies/:policy_id/reset'
+    params:
+    - name: policy_id
+      value: ''
+      type: path
+      description: '**Required.** The policy''s ID.'
+    - name: host_id
+      value: ''
+      type: query
+      disabled: true
+      description: When set, resets only this host's result for the policy instead of resetting all hosts.
+  response:
+    status: 200
+    statusText: OK

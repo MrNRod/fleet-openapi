@@ -1,0 +1,48 @@
+info:
+  name: Send APNs ping to host
+  type: http
+  seq: 32
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/hosts/:id/apns_ping'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required**. ID of the host to send the APNs ping to.'
+docs: |-
+  Sends an APNs push notification to the specified macOS, iOS, or iPadOS host. This prompts the device to check in with the Fleet server and pick up any pending MDM commands or configuration profiles.
+
+  The host must have MDM turned on and be enrolled via Apple MDM. If the host is offline, the push notification will be delivered when the device comes back online.
+
+  `POST /api/v1/fleet/hosts/:id/apns_ping`
+
+  #### Parameters {#parameters-apns-ping}
+  | Name         | Type       | In   | Description                                                                                          |
+  |--------------| ---------- | ---- |------------------------------------------------------------------------------------------------------|
+  | id           | integer    | path | **Required**. ID of the host to send the APNs ping to. |
+
+  #### Example
+  `POST /api/v1/fleet/hosts/123/apns_ping`
+
+  ##### Default response
+
+  `Status: 204`
+
+  > This endpoint sends a blank APNs push notification. It does not enqueue an MDM command. To verify the host checked in after receiving the ping, use the [Get host](#get-host) endpoint to check the host's `last_seen_at` timestamp.
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#send-apns-ping-to-host
+examples:
+- name: 204 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/hosts/:id/apns_ping'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required**. ID of the host to send the APNs ping to.'
+  response:
+    status: 204
+    statusText: No Content

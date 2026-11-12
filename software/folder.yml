@@ -1,0 +1,6 @@
+info:
+  name: Software
+  type: folder
+  seq: 19
+request:
+  auth: inherit

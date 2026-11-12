@@ -1,0 +1,6 @@
+info:
+  name: Self-service categories
+  type: folder
+  seq: 20
+request:
+  auth: inherit

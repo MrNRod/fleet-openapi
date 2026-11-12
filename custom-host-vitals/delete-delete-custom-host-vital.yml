@@ -1,0 +1,60 @@
+info:
+  name: Delete custom host vital
+  type: http
+  seq: 4
+http:
+  method: DELETE
+  url: '{{baseUrl}}/api/v1/fleet/custom_host_vitals/:id'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required.** The custom host vital''s ID.'
+docs: |-
+  Deletes a custom host vital, along with any per-host values set for it.
+
+  `DELETE /api/v1/fleet/custom_host_vitals/:id`
+
+  #### Parameters
+
+  | Name | Type    | In   | Description                            |
+  |:---- |:------- |:---- |:----------------------------------------|
+  | id   | integer | path | **Required.** The custom host vital's ID. |
+
+  Fails with a `409` if the vital is still referenced by a script, configuration profile, or Host vitals label. Remove the reference first.
+
+  #### Example
+
+  `DELETE /api/v1/fleet/custom_host_vitals/1`
+
+  ##### Default response
+
+  `Status: 200`
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#delete-custom-host-vital
+examples:
+- name: 409 Parameters
+  request:
+    method: DELETE
+    url: '{{baseUrl}}/api/v1/fleet/custom_host_vitals/:id'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required.** The custom host vital''s ID.'
+  response:
+    status: 409
+    statusText: Conflict
+- name: 200 Default response
+  request:
+    method: DELETE
+    url: '{{baseUrl}}/api/v1/fleet/custom_host_vitals/:id'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required.** The custom host vital''s ID.'
+  response:
+    status: 200
+    statusText: OK

@@ -1,0 +1,101 @@
+info:
+  name: Wipe host
+  type: http
+  seq: 31
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/hosts/:id/wipe'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required**. ID of the host to be wiped.'
+  body:
+    type: json
+    data: |-
+      {
+        "windows": {
+          "wipe_type": "doWipe"
+        }
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  Sends a command to wipe the specified macOS, iOS, iPadOS, Linux, Windows, or Android host. The host is wiped once it comes online.
+
+  Wiping a company-owned (fully managed) Android host is available in Fleet Free and Fleet Premium. (This feature was [previously "Unenroll"](https://github.com/fleetdm/fleet/issues/41683).)
+
+  Wiping a macOS, iOS, iPadOS, Linux, Windows, or personal (BYOD) Android host is available in Fleet Premium.
+
+  To wipe a macOS, iOS, iPadOS, or Windows host, the host must have MDM turned on. To wipe a Linux host, the host must have [scripts enabled](https://fleetdm.com/docs/using-fleet/scripts). To wipe an Android host, the host must be enrolled as a fully managed device.
+
+  `POST /api/v1/fleet/hosts/:id/wipe`
+
+  #### Parameters
+
+  | Name         | Type       | In   | Description                                                                                          |
+  |--------------| ---------- | ---- |------------------------------------------------------------------------------------------------------|
+  | id           | integer    | path | **Required**. ID of the host to be wiped. |
+  | windows      | object     | body | Optional metadata used when wiping Windows hosts. The object includes a `wipe_type` property that can be used for specifying what type of remote wipe to perform. Allowed values are `"doWipe"` and `"doWipeProtected"`. |
+
+  #### Example
+
+  `POST /api/v1/fleet/hosts/123/wipe`
+
+  ##### Optional request body
+
+  ```json
+  { "windows": { "wipe_type": "doWipe" } }
+  ```
+
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "device_status": "unlocked",
+    "pending_action": "wipe"
+  }
+  ```
+
+  > To verify the host was successfully wiped, you can use the [Get host](https://fleetdm.com/docs/rest-api/rest-api#get-host) endpoint to retrieve the host's `mdm.device_status`.
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#wipe-host
+examples:
+- name: 200 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/hosts/:id/wipe'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required**. ID of the host to be wiped.'
+    body:
+      type: json
+      data: |-
+        {
+          "windows": {
+            "wipe_type": "doWipe"
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "device_status": "unlocked",
+          "pending_action": "wipe"
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

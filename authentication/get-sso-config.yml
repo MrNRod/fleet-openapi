@@ -1,0 +1,54 @@
+info:
+  name: SSO config
+  type: http
+  seq: 8
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/sso'
+docs: |-
+  Gets the current SSO configuration.
+
+  `GET /api/v1/fleet/sso`
+
+  #### Example
+
+  `GET /api/v1/fleet/sso`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "settings": {
+      "idp_name": "IDP Vendor 1",
+      "idp_image_url": "",
+      "sso_enabled": false
+    }
+  }
+  ```
+
+  ---
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#sso-config
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/sso'
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "settings": {
+            "idp_name": "IDP Vendor 1",
+            "idp_image_url": "",
+            "sso_enabled": false
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

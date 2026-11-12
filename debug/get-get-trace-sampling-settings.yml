@@ -1,0 +1,55 @@
+info:
+  name: Get trace sampling settings
+  type: http
+  seq: 4
+http:
+  method: GET
+  url: '{{baseUrl}}/debug/trace_sampler'
+  auth: inherit
+docs: |-
+  Returns the current [trace sampling](https://fleetdm.com/docs/deploy/reference-architectures#sampling) settings. Only has effect when tracing is enabled (see [logging_tracing_enabled](https://fleetdm.com/docs/configuration/fleet-server-configuration#logging-tracing-enabled)). Requires a global admin.
+
+  `GET /debug/trace_sampler`
+
+  #### Parameters
+
+  None.
+
+  #### Example
+
+  `GET /debug/trace_sampler`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "high_volume_ratio": 0.001,
+    "standard_ratio": 0.02,
+    "force_full": false,
+    "updated_at": "2026-06-01T00:00:00Z"
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#get-trace-sampling-settings
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/debug/trace_sampler'
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "high_volume_ratio": 0.001,
+          "standard_ratio": 0.02,
+          "force_full": false,
+          "updated_at": "2026-06-01T00:00:00Z"
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

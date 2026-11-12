@@ -1,0 +1,93 @@
+info:
+  name: Update custom MDM setup enrollment profile
+  type: http
+  seq: 1
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/enrollment_profiles/automatic'
+  auth: inherit
+  body:
+    type: json
+    data: |-
+      {
+        "fleet_id": 0,
+        "name": "",
+        "enrollment_profile": {}
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  _Available in Fleet Premium_
+
+  Sets the custom MDM setup enrollment profile for a fleet or "Unassigned".
+
+  `POST /api/v1/fleet/enrollment_profiles/automatic`
+
+  #### Parameters
+
+  | Name                      | Type    | In    | Description                                                                   |
+  | ------------------------- | ------  | ----- | -------------------------------------------------------------------------     |
+  | fleet_id                   | integer | json  | The fleet ID this custom enrollment profile applies to, or "Unassigned" if omitted. |
+  | name                      | string  | json  | The filename of the uploaded custom enrollment profile.                       |
+  | enrollment_profile        | object  | json  | The custom enrollment profile's json, as documented in https://developer.apple.com/documentation/devicemanagement/profile. |
+
+  #### Example
+
+  `POST /api/v1/fleet/enrollment_profiles/automatic`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "team_id": 123,
+    "fleet_id": 123,
+    "name": "dep_profile.json",
+    "uploaded_at": "2023-04-04:00:00Z",
+    "enrollment_profile": {
+      "is_mandatory": true,
+      "is_mdm_removable": false
+    }
+  }
+  ```
+
+  > NOTE: The `ConfigurationWebURL` and `URL` values in the custom MDM setup enrollment profile are automatically populated. Attempting to populate them with custom values may generate server response errors.
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#update-custom-mdm-setup-enrollment-profile
+examples:
+- name: 200 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/enrollment_profiles/automatic'
+    body:
+      type: json
+      data: |-
+        {
+          "fleet_id": 0,
+          "name": "",
+          "enrollment_profile": {}
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "team_id": 123,
+          "fleet_id": 123,
+          "name": "dep_profile.json",
+          "uploaded_at": "2023-04-04:00:00Z",
+          "enrollment_profile": {
+            "is_mandatory": true,
+            "is_mdm_removable": false
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

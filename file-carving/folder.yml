@@ -1,0 +1,6 @@
+info:
+  name: File carving
+  type: folder
+  seq: 6
+request:
+  auth: inherit

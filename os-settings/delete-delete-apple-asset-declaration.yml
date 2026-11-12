@@ -1,0 +1,48 @@
+info:
+  name: Delete Apple asset declaration
+  type: http
+  seq: 11
+http:
+  method: DELETE
+  url: '{{baseUrl}}/api/v1/fleet/assets/:asset_uuid'
+  auth: inherit
+  params:
+  - name: asset_uuid
+    value: ''
+    type: path
+    description: '**Required** The UUID of the asset to delete.'
+docs: |-
+  Deletes an Apple asset declaration.
+
+  > If an asset is referenced in a configuration profile, you must delete the configuration profile first before being able to remove the asset.
+
+  `DELETE /api/v1/fleet/assets/:asset_uuid`
+
+  #### Parameters
+
+  | Name                      | Type    | In    | Description                                       |
+  | ------------------------- | ------- | ----- | ------------------------------------------------- |
+  | asset_uuid                | string  | url   | **Required** The UUID of the asset to delete.     |
+
+  #### Example
+
+  `DELETE /api/v1/fleet/assets/954ec5ea-a334-4825-87b3-937e7e381f24`
+
+  ##### Default response
+
+  `Status: 204`
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#delete-apple-asset-declaration
+examples:
+- name: 204 Default response
+  request:
+    method: DELETE
+    url: '{{baseUrl}}/api/v1/fleet/assets/:asset_uuid'
+    params:
+    - name: asset_uuid
+      value: ''
+      type: path
+      description: '**Required** The UUID of the asset to delete.'
+  response:
+    status: 204
+    statusText: No Content

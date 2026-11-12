@@ -1,0 +1,360 @@
+opencollection: 1.0.0
+info:
+  name: Fleet REST API
+  version: 4.94.1
+request:
+  auth:
+    type: bearer
+    token: '{{token}}'
+docs:
+  type: text/markdown
+  content: |-
+    Unofficial Fleet API collection generated directly from fleet-v4.94.1. HTTP only; excludes WebSocket/SockJS and historical routes mentioned only in deprecation notices.
+
+    Licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). Adapted from [Fleet REST API documentation](https://github.com/fleetdm/fleet/blob/fleet-v4.94.1/docs/REST%20API/rest-api.md).
+
+    Copyright (c) 2020-present Fleet Device Management Inc. Copyright (c) 2017 Kolide.
+
+    Changes: converted Markdown to OpenCollection YAML, organized requests into folders, and normalized parameters and examples. Not endorsed by Fleet. No warranties are given.
+bundled: false
+extensions:
+  fleet:
+    source_ref: fleet-v4.94.1
+    source_sha256: 41aa3cdf443c812574f7e084690659e295bf0c448d26029ef2a8ac17ef724bae
+    operation_count: 273
+    path_count: 204
+    skipped_sections:
+    - Retrieve your API token
+    - Retrieve live report results (standard WebSocket API)
+    - Parameters
+    - Example
+    - Detailed request and response walkthrough with example data
+    - Retrieve live report results (SockJS)
+    - Parameters
+    - Example
+    warnings:
+    - 'GET /api/v1/fleet/activities: response without status retained in request documentation'
+    - 'GET /api/v1/fleet/policies/:id/automation_activities: status corrected from path to query'
+    - 'GET /api/v1/fleet/policies/:id/automation_activities: query corrected from path to query'
+    - 'GET /api/v1/fleet/configuration_profiles/:profile_uuid: response without status retained in request documentation'
+    - 'GET /api/v1/fleet/configuration_profiles/:profile_uuid: response without status retained in request documentation'
+    - 'GET /api/v1/fleet/assets/:asset_uuid: response without status retained in request documentation'
+    - 'GET /api/v1/fleet/assets/:asset_uuid: response without status retained in request documentation'
+    - 'GET /api/v1/fleet/enrollment_profiles/ota: response without status retained in request documentation'
+    - 'GET /api/v1/fleet/enrollment_profiles/ota: response without status retained in request documentation'
+    - 'GET /api/v1/fleet/setup_experience/script: response without status retained in request documentation'
+    - 'POST /api/v1/fleet/reports/:id/run: path parameter report_id normalized to id'
+    - 'POST /api/v1/fleet/reports/:id/run: response without status retained in request documentation'
+    - 'GET /api/v1/fleet/scripts/:id: response without status retained in request documentation'
+    - 'POST /api/v1/fleet/targets: response without status retained in request documentation'
+    generated_files:
+    - activities/folder.yml
+    - activities/get-list-activities.yml
+    - activities/get-list-policy-automation-activities.yml
+    - activities/post-reset-policy-results.yml
+    - authentication/folder.yml
+    - authentication/get-me.yml
+    - authentication/get-sso-config.yml
+    - authentication/post-forgot-password.yml
+    - authentication/post-initiate-sso.yml
+    - authentication/post-log-in.yml
+    - authentication/post-log-out.yml
+    - authentication/post-perform-required-password-reset.yml
+    - authentication/post-reset-password.yml
+    - authentication/post-sso-callback.yml
+    - authentication/post-update-password.yml
+    - certificates/delete-delete-certificate-authority-ca.yml
+    - certificates/delete-delete-certificate-template.yml
+    - certificates/folder.yml
+    - certificates/get-get-certificate-authority-ca.yml
+    - certificates/get-get-certificate-template.yml
+    - certificates/get-list-certificate-authorities-cas.yml
+    - certificates/get-list-certificate-templates.yml
+    - certificates/patch-update-certificate-authority-ca.yml
+    - certificates/post-add-certificate-template.yml
+    - certificates/post-connect-certificate-authority-ca.yml
+    - certificates/post-request-certificate.yml
+    - certificates/post-resend-hosts-certificate.yml
+    - charts/folder.yml
+    - charts/get-get-chart-data.yml
+    - commands/delete-cancel-hosts-pending-mdm-command.yml
+    - commands/folder.yml
+    - commands/get-get-mdm-command-results.yml
+    - commands/get-list-mdm-commands.yml
+    - commands/post-run-mdm-command.yml
+    - conditional-access/delete-delete-microsoft-entra-id.yml
+    - conditional-access/folder.yml
+    - conditional-access/get-get-okta-certificate.yml
+    - conditional-access/get-get-okta-configuration-profile.yml
+    - custom-host-vitals/delete-delete-custom-host-vital.yml
+    - custom-host-vitals/folder.yml
+    - custom-host-vitals/get-list-custom-host-vitals.yml
+    - custom-host-vitals/patch-update-custom-host-vital.yml
+    - custom-host-vitals/post-create-custom-host-vital.yml
+    - custom-host-vitals/put-replace-all-custom-host-vitals.yml
+    - custom-host-vitals/put-update-hosts-custom-host-vital-value.yml
+    - custom-variables/delete-delete-custom-variable.yml
+    - custom-variables/folder.yml
+    - custom-variables/get-list-custom-variables.yml
+    - custom-variables/post-create-custom-variable.yml
+    - debug/folder.yml
+    - debug/get-get-database-information.yml
+    - debug/get-get-errors.yml
+    - debug/get-get-profiling-information.yml
+    - debug/get-get-trace-sampling-settings.yml
+    - debug/patch-adjust-trace-sampling.yml
+    - environments/Fleet.yml
+    - file-carving/folder.yml
+    - file-carving/get-get-carve-block.yml
+    - file-carving/get-get-carve.yml
+    - file-carving/get-list-carves.yml
+    - fleet-configuration/delete-delete-organization-logo.yml
+    - fleet-configuration/folder.yml
+    - fleet-configuration/get-get-configuration.yml
+    - fleet-configuration/get-get-fleet-certificate.yml
+    - fleet-configuration/get-get-fleet-level-enroll-secrets.yml
+    - fleet-configuration/get-get-global-enroll-secrets.yml
+    - fleet-configuration/get-get-version.yml
+    - fleet-configuration/patch-update-configuration.yml
+    - fleet-configuration/patch-update-fleet-level-enroll-secrets.yml
+    - fleet-configuration/post-update-global-enroll-secrets.yml
+    - fleet-configuration/put-update-organization-logo.yml
+    - fleets/delete-delete-fleet.yml
+    - fleets/delete-remove-users-to-fleet.yml
+    - fleets/folder.yml
+    - fleets/get-get-fleet.yml
+    - fleets/get-list-fleets.yml
+    - fleets/patch-add-users-to-fleet.yml
+    - fleets/patch-update-fleet.yml
+    - fleets/post-create-fleet.yml
+    - fleets/post-update-fleet-level-agent-options.yml
+    - hosts/delete-cancel-hosts-upcoming-activity.yml
+    - hosts/delete-delete-host.yml
+    - hosts/delete-remove-labels-from-host.yml
+    - hosts/delete-turn-off-hosts-mdm.yml
+    - hosts/folder.yml
+    - hosts/get-count-hosts.yml
+    - hosts/get-get-host-by-fleet-desktop-token.yml
+    - hosts/get-get-host-by-identifier.yml
+    - hosts/get-get-host.yml
+    - hosts/get-get-hosts-aggregate-mobile-device-management-mdm-and-munki-information.yml
+    - hosts/get-get-hosts-certificates.yml
+    - hosts/get-get-hosts-device-health-report.yml
+    - hosts/get-get-hosts-device-page-url.yml
+    - hosts/get-get-hosts-disk-encryption-key.yml
+    - hosts/get-get-hosts-managed-account-password.yml
+    - hosts/get-get-hosts-mobile-device-management-mdm-and-munki-information.yml
+    - hosts/get-get-hosts-mobile-device-management-mdm-information.yml
+    - hosts/get-get-hosts-os-settings-configuration-profile.yml
+    - hosts/get-get-hosts-past-activity.yml
+    - hosts/get-get-hosts-recovery-lock-password.yml
+    - hosts/get-get-hosts-report-in-csv.yml
+    - hosts/get-get-hosts-software-by-fleet-desktop-token.yml
+    - hosts/get-get-hosts-software.yml
+    - hosts/get-get-hosts-summary.yml
+    - hosts/get-get-hosts-upcoming-activity.yml
+    - hosts/get-get-mobile-device-management-mdm-status.yml
+    - hosts/get-list-hosts.yml
+    - hosts/post-add-labels-to-host.yml
+    - hosts/post-batch-delete-hosts.yml
+    - hosts/post-bypass-hosts-conditional-access.yml
+    - hosts/post-clear-host-passcode.yml
+    - hosts/post-lock-host.yml
+    - hosts/post-refetch-host-by-fleet-desktop-token.yml
+    - hosts/post-refetch-host.yml
+    - hosts/post-release-host-from-apple-business.yml
+    - hosts/post-rotate-hosts-managed-local-account-password.yml
+    - hosts/post-rotate-hosts-recovery-lock-password.yml
+    - hosts/post-run-live-report-on-host-ad-hoc.yml
+    - hosts/post-run-live-report-on-host-by-identifier-ad-hoc.yml
+    - hosts/post-send-apns-ping-to-host.yml
+    - hosts/post-unlock-host.yml
+    - hosts/post-update-hosts-fleet-by-filter.yml
+    - hosts/post-update-hosts-fleet.yml
+    - hosts/post-wipe-host.yml
+    - hosts/put-update-human-device-mapping.yml
+    - integrations/delete-delete-android-enterprise.yml
+    - integrations/folder.yml
+    - integrations/get-get-android-enterprise.yml
+    - integrations/get-get-android-zero-touch-enrollment-configuration.yml
+    - integrations/get-get-apple-push-notification-service-apns.yml
+    - integrations/get-list-apple-business-ab-tokens.yml
+    - integrations/get-list-microsoft-graph-credentials.yml
+    - integrations/get-list-volume-purchasing-program-vpp-tokens.yml
+    - integrations/put-modify-microsoft-graph-credentials.yml
+    - labels/delete-delete-label-by-id.yml
+    - labels/delete-delete-label-by-name.yml
+    - labels/folder.yml
+    - labels/get-get-label.yml
+    - labels/get-get-labels-summary.yml
+    - labels/get-list-labels-hosts.yml
+    - labels/get-list-labels.yml
+    - labels/patch-update-label.yml
+    - labels/post-add-label.yml
+    - os-settings/delete-delete-apple-asset-declaration.yml
+    - os-settings/delete-delete-configuration-profile.yml
+    - os-settings/folder.yml
+    - os-settings/get-get-disk-encryption-status.yml
+    - os-settings/get-get-or-download-apple-asset-declaration.yml
+    - os-settings/get-get-or-download-configuration-profile.yml
+    - os-settings/get-get-os-setting-configuration-profile-status.yml
+    - os-settings/get-get-os-settings-configuration-profiles-status.yml
+    - os-settings/get-list-apple-asset-declarations.yml
+    - os-settings/get-list-configuration-profiles.yml
+    - os-settings/patch-update-configuration-profile.yml
+    - os-settings/post-batch-resend-configuration-profile.yml
+    - os-settings/post-batch-update-configuration-profiles.yml
+    - os-settings/post-create-apple-asset-declaration.yml
+    - os-settings/post-create-configuration-profile.yml
+    - os-settings/post-resend-configuration-profile-by-fleet-desktop-token.yml
+    - os-settings/post-resend-configuration-profile.yml
+    - os-settings/post-resend-host-name-template.yml
+    - os-settings/post-update-disk-encryption.yml
+    - os-settings/post-update-host-name-template.yml
+    - policies/folder.yml
+    - policies/get-get-fleet-level-policies-count.yml
+    - policies/get-get-fleet-level-policy.yml
+    - policies/get-get-policies-count.yml
+    - policies/get-get-policy.yml
+    - policies/get-list-fleet-level-policies.yml
+    - policies/get-list-policies.yml
+    - policies/patch-update-fleet-level-policy.yml
+    - policies/patch-update-policy.yml
+    - policies/post-create-fleet-level-policy.yml
+    - policies/post-create-policy.yml
+    - policies/post-delete-fleet-level-policies.yml
+    - policies/post-delete-policies.yml
+    - policies/post-reset-policy-automations.yml
+    - reports/delete-delete-report-by-id.yml
+    - reports/delete-delete-report-by-name.yml
+    - reports/folder.yml
+    - reports/get-get-hosts-report-data.yml
+    - reports/get-get-report-data.yml
+    - reports/get-get-report.yml
+    - reports/get-list-hosts-reports.yml
+    - reports/get-list-reports.yml
+    - reports/patch-update-report.yml
+    - reports/post-create-report.yml
+    - reports/post-delete-reports.yml
+    - reports/post-run-live-report-ad-hoc.yml
+    - reports/post-run-live-report-by-target-name-ad-hoc.yml
+    - reports/post-run-live-report.yml
+    - scim/delete-delete-scim-group.yml
+    - scim/delete-delete-scim-user.yml
+    - scim/folder.yml
+    - scim/get-get-identity-provider-idp-details.yml
+    - scim/get-get-scim-group.yml
+    - scim/get-get-scim-resource-types.yml
+    - scim/get-get-scim-schemas.yml
+    - scim/get-get-scim-service-provider-config.yml
+    - scim/get-get-scim-user.yml
+    - scim/get-list-scim-groups.yml
+    - scim/get-list-scim-users.yml
+    - scim/patch-update-scim-group.yml
+    - scim/patch-update-scim-user.yml
+    - scim/post-create-scim-group.yml
+    - scim/post-create-scim-user.yml
+    - scim/put-replace-scim-group.yml
+    - scim/put-replace-scim-user.yml
+    - scripts-api/delete-delete-script.yml
+    - scripts-api/folder.yml
+    - scripts-api/get-get-batch-script.yml
+    - scripts-api/get-get-or-download-script.yml
+    - scripts-api/get-get-script-result.yml
+    - scripts-api/get-list-batch-scripts.yml
+    - scripts-api/get-list-hosts-scripts.yml
+    - scripts-api/get-list-hosts-targeted-in-batch-script.yml
+    - scripts-api/get-list-scripts.yml
+    - scripts-api/patch-update-script.yml
+    - scripts-api/post-batch-run-script.yml
+    - scripts-api/post-cancel-batch-script.yml
+    - scripts-api/post-create-script.yml
+    - scripts-api/post-run-script.yml
+    - self-service-categories/delete-delete-self-service-category.yml
+    - self-service-categories/folder.yml
+    - self-service-categories/get-list-self-service-categories.yml
+    - self-service-categories/patch-update-self-service-category.yml
+    - self-service-categories/post-add-self-service-category.yml
+    - sessions/delete-delete-session.yml
+    - sessions/folder.yml
+    - sessions/get-get-session.yml
+    - setup-experience/delete-delete-bootstrap-package.yml
+    - setup-experience/delete-delete-custom-mdm-setup-enrollment-profile.yml
+    - setup-experience/delete-delete-eula.yml
+    - setup-experience/delete-delete-setup-experience-script.yml
+    - setup-experience/folder.yml
+    - setup-experience/get-download-bootstrap-package.yml
+    - setup-experience/get-download-eula.yml
+    - setup-experience/get-get-bootstrap-package-metadata.yml
+    - setup-experience/get-get-bootstrap-package-status.yml
+    - setup-experience/get-get-custom-mdm-setup-enrollment-profile.yml
+    - setup-experience/get-get-eula-metadata.yml
+    - setup-experience/get-get-fleet-default-mdm-setup-enrollment-profile.yml
+    - setup-experience/get-get-manual-enrollment-profile.yml
+    - setup-experience/get-get-or-download-setup-experience-script.yml
+    - setup-experience/get-get-over-the-air-ota-enrollment-profile.yml
+    - setup-experience/get-list-setup-experience-software.yml
+    - setup-experience/patch-update-setup-experience.yml
+    - setup-experience/post-create-bootstrap-package.yml
+    - setup-experience/post-create-eula.yml
+    - setup-experience/post-create-setup-experience-script.yml
+    - setup-experience/post-update-custom-mdm-setup-enrollment-profile.yml
+    - setup-experience/post-update-managed-local-account.yml
+    - setup-experience/put-update-setup-experience-software.yml
+    - software/delete-delete-software-icon.yml
+    - software/delete-delete-software.yml
+    - software/folder.yml
+    - software/get-download-software-icon.yml
+    - software/get-download-software.yml
+    - software/get-get-fleet-maintained-app.yml
+    - software/get-get-operating-system-version.yml
+    - software/get-get-software-install-result.yml
+    - software/get-get-software-version.yml
+    - software/get-get-software.yml
+    - software/get-list-apple-app-store-apps.yml
+    - software/get-list-fleet-maintained-apps.yml
+    - software/get-list-operating-systems.yml
+    - software/get-list-software-versions.yml
+    - software/get-list-software.yml
+    - software/patch-update-app-store-app.yml
+    - software/patch-update-package.yml
+    - software/post-add-app-store-app.yml
+    - software/post-add-fleet-maintained-app.yml
+    - software/post-add-package.yml
+    - software/post-create-android-web-app.yml
+    - software/post-install-self-service-software-by-fleet-desktop-token.yml
+    - software/post-install-software.yml
+    - software/post-uninstall-software.yml
+    - software/put-update-software-icon.yml
+    - targets/folder.yml
+    - targets/post-search-targets.yml
+    - translator/folder.yml
+    - translator/post-translate-ids.yml
+    - users/delete-delete-invite.yml
+    - users/delete-delete-sessions.yml
+    - users/delete-delete-user.yml
+    - users/folder.yml
+    - users/get-get-user.yml
+    - users/get-list-api-endpoints-for-api-only-user-permissions.yml
+    - users/get-list-invites.yml
+    - users/get-list-sessions.yml
+    - users/get-list-users.yml
+    - users/get-verify-invite.yml
+    - users/patch-update-invite.yml
+    - users/patch-update-user.yml
+    - users/post-create-api-only-user.yml
+    - users/post-create-user-from-invite.yml
+    - users/post-create-user.yml
+    - users/post-invite-user.yml
+    - users/post-require-password-reset.yml
+    - vulnerabilities/folder.yml
+    - vulnerabilities/get-get-vulnerability.yml
+    - vulnerabilities/get-list-vulnerabilities.yml
+  bruno:
+    ignore:
+    - .git
+    - .github
+    - .venv
+    - scripts
+    - node_modules
+    - dist

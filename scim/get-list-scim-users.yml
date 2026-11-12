@@ -1,0 +1,147 @@
+info:
+  name: List SCIM users
+  type: http
+  seq: 1
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/scim/Users'
+  auth: inherit
+  params:
+  - name: startIndex
+    value: ''
+    type: query
+    disabled: true
+    description: 1-based index of the first result to return. Defaults to 1.
+  - name: count
+    value: ''
+    type: query
+    disabled: true
+    description: Number of results per page. Maximum 100. Defaults to 100.
+  - name: filter
+    value: ''
+    type: query
+    disabled: true
+    description: SCIM filter expression. Only `userName eq "<value>"` and `emails[type eq "<type>"].value eq "<value>"`
+      are supported.
+docs: |-
+  _Available in Fleet Premium_
+
+  `GET /api/v1/fleet/scim/Users`
+
+  #### Parameters
+
+  | Name       | Type    | In    | Description                                                                                            |
+  | ---------- | ------- | ----- | ------------------------------------------------------------------------------------------------------ |
+  | startIndex | integer | query | 1-based index of the first result to return. Defaults to 1.                                           |
+  | count      | integer | query | Number of results per page. Maximum 100. Defaults to 100.                                             |
+  | filter     | string  | query | SCIM filter expression. Only `userName eq "<value>"` and `emails[type eq "<type>"].value eq "<value>"` are supported. |
+
+  #### Example
+
+  `GET /api/v1/fleet/scim/Users`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "schemas": ["urn:ietf:params:scim:api:messages:2.0:ListResponse"],
+    "totalResults": 1,
+    "startIndex": 1,
+    "itemsPerPage": 100,
+    "Resources": [
+      {
+        "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
+        "id": "1",
+        "externalId": "ext-123",
+        "userName": "user@example.com",
+        "name": {
+          "givenName": "Jane",
+          "familyName": "Doe"
+        },
+        "emails": [
+          {
+            "value": "user@example.com",
+            "type": "work",
+            "primary": true
+          }
+        ],
+        "active": true,
+        "groups": [],
+        "meta": {
+          "resourceType": "User"
+        }
+      }
+    ]
+  }
+  ```
+
+  ---
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#list-scim-users
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/scim/Users'
+    params:
+    - name: startIndex
+      value: ''
+      type: query
+      disabled: true
+      description: 1-based index of the first result to return. Defaults to 1.
+    - name: count
+      value: ''
+      type: query
+      disabled: true
+      description: Number of results per page. Maximum 100. Defaults to 100.
+    - name: filter
+      value: ''
+      type: query
+      disabled: true
+      description: SCIM filter expression. Only `userName eq "<value>"` and `emails[type eq "<type>"].value eq "<value>"`
+        are supported.
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "schemas": [
+            "urn:ietf:params:scim:api:messages:2.0:ListResponse"
+          ],
+          "totalResults": 1,
+          "startIndex": 1,
+          "itemsPerPage": 100,
+          "Resources": [
+            {
+              "schemas": [
+                "urn:ietf:params:scim:schemas:core:2.0:User"
+              ],
+              "id": "1",
+              "externalId": "ext-123",
+              "userName": "user@example.com",
+              "name": {
+                "givenName": "Jane",
+                "familyName": "Doe"
+              },
+              "emails": [
+                {
+                  "value": "user@example.com",
+                  "type": "work",
+                  "primary": true
+                }
+              ],
+              "active": true,
+              "groups": [],
+              "meta": {
+                "resourceType": "User"
+              }
+            }
+          ]
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

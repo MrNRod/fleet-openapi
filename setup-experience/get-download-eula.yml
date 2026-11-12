@@ -1,0 +1,64 @@
+info:
+  name: Download EULA
+  type: http
+  seq: 16
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/setup_experience/eula/:token'
+  auth: inherit
+  params:
+  - name: token
+    value: ''
+    type: path
+    description: '**Required** The token of the EULA file.'
+docs: |-
+  _Available in Fleet Premium_
+
+  Download an EULA file
+
+  `GET /api/v1/fleet/setup_experience/eula/:token`
+
+  #### Parameters
+
+  | Name  | Type   | In    | Description                              |
+  | ----- | ------ | ----- | ---------------------------------------- |
+  | token | string | path  | **Required** The token of the EULA file. |
+
+  #### Example
+
+  `GET /api/v1/fleet/setup_experience/eula/AA598E2A-7952-46E3-B89D-526D45F7E233`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```http
+  Status: 200
+  Content-Type: application/pdf
+  Content-Disposition: attachment
+  Content-Length: <length>
+  Body: <blob>
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#download-eula
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/setup_experience/eula/:token'
+    params:
+    - name: token
+      value: ''
+      type: path
+      description: '**Required** The token of the EULA file.'
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: text
+      data: |-
+        Status: 200
+        Content-Type: application/pdf
+        Content-Disposition: attachment
+        Content-Length: <length>
+        Body: <blob>

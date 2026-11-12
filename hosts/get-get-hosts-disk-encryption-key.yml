@@ -1,0 +1,85 @@
+info:
+  name: Get host's disk encryption key
+  type: http
+  seq: 24
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/hosts/:id/encryption_key'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required** The id of the host to get the disk encryption key for.'
+  - name: allow_serial_lookup
+    value: ''
+    type: query
+    disabled: true
+    description: Tells Fleet whether or not to fallback to serial lookup for archived encryption keys. Requires
+      global user permission to use.
+docs: |-
+  Retrieves the disk encryption key for a host.
+
+  The host will only return a key if its disk encryption status is "Verified." Get hosts' disk encryption statuses using the [List hosts endpoint](#list-hosts) and `os_settings_disk_encryption` parameter.
+
+  `GET /api/v1/fleet/hosts/:id/encryption_key`
+
+  #### Parameters
+
+  | Name | Type    | In   | Description                                                        |
+  | ---- | ------- | ---- | ------------------------------------------------------------------ |
+  | id   | integer | path | **Required** The id of the host to get the disk encryption key for. |
+  | allow_serial_lookup | boolean | query | Tells Fleet whether or not to fallback to serial lookup for archived encryption keys. Requires global user permission to use.
+
+
+  #### Example
+
+  `GET /api/v1/fleet/hosts/8/encryption_key`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "host_id": 8,
+    "encryption_key": {
+      "key": "5ADZ-HTZ8-LJJ4-B2F8-JWH3-YPBT",
+      "updated_at": "2022-12-01T05:31:43Z"
+    }
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#get-hosts-disk-encryption-key
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/hosts/:id/encryption_key'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required** The id of the host to get the disk encryption key for.'
+    - name: allow_serial_lookup
+      value: ''
+      type: query
+      disabled: true
+      description: Tells Fleet whether or not to fallback to serial lookup for archived encryption keys. Requires
+        global user permission to use.
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "host_id": 8,
+          "encryption_key": {
+            "key": "5ADZ-HTZ8-LJJ4-B2F8-JWH3-YPBT",
+            "updated_at": "2022-12-01T05:31:43Z"
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

@@ -1,0 +1,122 @@
+info:
+  name: Get mobile device management (MDM) status
+  type: http
+  seq: 18
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/hosts/summary/mdm'
+  auth: inherit
+  params:
+  - name: fleet_id
+    value: ''
+    type: query
+    disabled: true
+    description: _Available in Fleet Premium_. Filter by fleet.
+  - name: platform
+    value: ''
+    type: query
+    disabled: true
+    description: Filter by platform ("windows" or "darwin")
+docs: |-
+  Currently supports Windows and macOS.
+
+  Retrieves MDM enrollment summary. Windows servers are excluded from the aggregated data.
+
+  `GET /api/v1/fleet/hosts/summary/mdm`
+
+  #### Parameters
+
+  | Name     | Type    | In    | Description                                                                                                                                                                                                                                                                                                                        |
+  | -------- | ------- | ----- | -------------------------------------------------------------------------------- |
+  | fleet_id  | integer | query | _Available in Fleet Premium_. Filter by fleet.                                      |
+  | platform | string  | query | Filter by platform ("windows" or "darwin")                                       |
+
+  A `fleet_id` of `0` returns the statistics for hosts that are "Unassigned". A `null` or missing `fleet_id` returns statistics for all hosts on all fleets.
+
+  #### Example
+
+  `GET /api/v1/fleet/hosts/summary/mdm?fleet_id=1&platform=windows`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "counts_updated_at": "2021-03-21T12:32:44Z",
+    "mobile_device_management_enrollment_status": {
+      "enrolled_manual_hosts_count": 10,
+      "enrolled_automated_hosts_count": 200,
+      "enrolled_personal_hosts_count": 30,
+      "unenrolled_hosts_count": 0,
+      "hosts_count": 240
+    },
+    "mobile_device_management_solution": [
+      {
+        "id": 2,
+        "name": "Solution1",
+        "server_url": "solution1.com",
+        "hosts_count": 1
+      },
+      {
+        "id": 3,
+        "name": "Solution2",
+        "server_url": "solution2.com",
+        "hosts_count": 1
+      }
+    ]
+  }
+  ```
+
+  ---
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#get-mobile-device-management-mdm-status
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/hosts/summary/mdm'
+    params:
+    - name: fleet_id
+      value: ''
+      type: query
+      disabled: true
+      description: _Available in Fleet Premium_. Filter by fleet.
+    - name: platform
+      value: ''
+      type: query
+      disabled: true
+      description: Filter by platform ("windows" or "darwin")
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "counts_updated_at": "2021-03-21T12:32:44Z",
+          "mobile_device_management_enrollment_status": {
+            "enrolled_manual_hosts_count": 10,
+            "enrolled_automated_hosts_count": 200,
+            "enrolled_personal_hosts_count": 30,
+            "unenrolled_hosts_count": 0,
+            "hosts_count": 240
+          },
+          "mobile_device_management_solution": [
+            {
+              "id": 2,
+              "name": "Solution1",
+              "server_url": "solution1.com",
+              "hosts_count": 1
+            },
+            {
+              "id": 3,
+              "name": "Solution2",
+              "server_url": "solution2.com",
+              "hosts_count": 1
+            }
+          ]
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

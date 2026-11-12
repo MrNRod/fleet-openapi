@@ -1,0 +1,66 @@
+info:
+  name: Download bootstrap package
+  type: http
+  seq: 10
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/bootstrap'
+  auth: inherit
+  params:
+  - name: token
+    value: ''
+    type: query
+    disabled: true
+    description: '**Required** The token of the bootstrap package.'
+docs: |-
+  _Available in Fleet Premium_
+
+  Download a bootstrap package.
+
+  `GET /api/v1/fleet/bootstrap`
+
+  #### Parameters
+
+  | Name  | Type   | In    | Description                                      |
+  | ----- | ------ | ----- | ------------------------------------------------ |
+  | token | string | query | **Required** The token of the bootstrap package. |
+
+  #### Example
+
+  `GET /api/v1/fleet/bootstrap?token=AA598E2A-7952-46E3-B89D-526D45F7E233`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```http
+  Status: 200
+  Content-Type: application/octet-stream
+  Content-Disposition: attachment
+  Content-Length: <length>
+  Body: <blob>
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#download-bootstrap-package
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/bootstrap'
+    params:
+    - name: token
+      value: ''
+      type: query
+      disabled: true
+      description: '**Required** The token of the bootstrap package.'
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: text
+      data: |-
+        Status: 200
+        Content-Type: application/octet-stream
+        Content-Disposition: attachment
+        Content-Length: <length>
+        Body: <blob>

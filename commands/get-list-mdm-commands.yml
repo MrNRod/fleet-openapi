@@ -1,0 +1,268 @@
+info:
+  name: List MDM commands
+  type: http
+  seq: 3
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/commands'
+  auth: inherit
+  params:
+  - name: host_identifier
+    value: ''
+    type: query
+    disabled: true
+    description: '**Required.** The host''s `hostname`, `uuid`, or `hardware_serial`. Returns only commands that
+      target the specified host. Omitting `host_identifier` is deprecated (see the deprecation notice below). Requests
+      w/o it continue to work for backward compatibility but are not recommended; the underlying query is not performant
+      at scale and may time out on large fleets. Support will be removed in Fleet 5.'
+  - name: page
+    value: ''
+    type: query
+    disabled: true
+    description: Page number of the results to fetch. Maximum is `100`.
+  - name: per_page
+    value: ''
+    type: query
+    disabled: true
+    description: Results per page. Default is `10`. Maximum is 1,000 records.
+  - name: order_key
+    value: ''
+    type: query
+    disabled: true
+    description: 'What to order results by. Allowed values: `host_uuid`, `command_uuid`, `status`, `updated_at`,
+      `request_type`, `hostname`. Default is `updated_at`.'
+  - name: order_direction
+    value: ''
+    type: query
+    disabled: true
+    description: '**Requires `order_key`**. The direction of the order given the order key. Options include `"asc"`
+      and `"desc"`. Default is `"asc"`.'
+  - name: request_type
+    value: ''
+    type: query
+    disabled: true
+    description: The request type to filter commands by.
+  - name: command_status
+    value: ''
+    type: query
+    disabled: true
+    description: 'Comma-separated string of one of the following options: ''ran'', ''pending'', or ''failed''.'
+  - name: after
+    value: ''
+    type: query
+    disabled: true
+    description: The value to get results after. This needs `order_key` defined, as that's the column that would
+      be used.
+docs: |-
+  > `GET /api/v1/fleet/mdm/apple/commands` API endpoint is deprecated as of Fleet 4.40. It is maintained for backward compatibility. Please use the new API endpoint below.  [Archived documentation](https://github.com/fleetdm/fleet/blob/fleet-v4.39.0/docs/REST%20API/rest-api.md#list-custom-mdm-commands) is available for the deprecated endpoint.
+
+  This endpoint returns the list of custom MDM commands that have been executed.
+
+  `GET /api/v1/fleet/commands`
+
+  #### Parameters
+
+  | Name                      | Type    | In    | Description                                                               |
+  | ------------------------- | ------  | ----- | ------------------------------------------------------------------------- |
+  | host_identifier           | string  | query | **Required.** The host's `hostname`, `uuid`, or `hardware_serial`. Returns only commands that target the specified host. Omitting `host_identifier` is deprecated (see the deprecation notice below). Requests w/o it continue to work for backward compatibility but are not recommended; the underlying query is not performant at scale and may time out on large fleets. Support will be removed in Fleet 5. |
+  | page                      | integer | query | Page number of the results to fetch. Maximum is `100`.                    |
+  | per_page                  | integer | query | Results per page. Default is `10`. Maximum is 1,000 records. |
+  | order_key                 | string  | query | What to order results by. Allowed values: `host_uuid`, `command_uuid`, `status`, `updated_at`, `request_type`, `hostname`. Default is `updated_at`. |
+  | order_direction           | string  | query | **Requires `order_key`**. The direction of the order given the order key. Options include `"asc"` and `"desc"`. Default is `"asc"`. |
+  | request_type              | string  | query | The request type to filter commands by. |
+  | command_status            | string  | query | Comma-separated string of one of the following options: 'ran', 'pending', or 'failed'. |
+  | after                     | string  | query | The value to get results after. This needs `order_key` defined, as that's the column that would be used. |
+
+  > Currently, `⁠command_status` is only available when ⁠`host_identifier` is provided and the host is macOS, iOS, iPadOS, or Android. Additionally, ⁠`count` is returned only when ⁠`command_status` is `⁠pending`; for any other values, ⁠`count` will be `⁠null`.
+  >
+  > Apple (macOS, iOS, iPadOS) MDM commands that 'ran' have an 'Acknowledged' `status`. Commands that are 'pending' have a 'Pending' or 'NotNow' `status`. Apple commands that 'failed' have an 'Error' `status`.
+  >
+  > Android MDM commands that 'ran' have an 'acknowledged' `status`. Commands that are 'pending' have a 'pending' `status`. Android commands that 'failed' have an 'error' `status`.
+  >
+  > Apple (macOS, iOS, iPadOS) InstallProfile and RemoveProfile commands enqueued by Fleet going forward will have a non-`null` "name" which represents the profile name. Previously-enqueued(prior to v4.84.0) or manually-enqueued commands will have a `null` name, as will other types of Apple MDM commands and all Windows and Android commands.
+
+  #### Example
+
+  `GET /api/v1/fleet/commands?host_identifier=A1B2C3D4-E5F6-7890-1234-567890ABCDEF&per_page=5`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "meta": {
+      "has_next_results": true,
+      "has_previous_results": false
+    },
+    "count": null,
+    "results": [
+      {
+        "host_uuid": "A1B2C3D4-E5F6-7890-1234-567890ABCDEF",
+        "command_uuid": "a3650ec9-6dd0-40e9-b5d8-feffe9939461",
+        "status": "Acknowledged",
+        "command_status": "ran",
+        "updated_at": "2026-03-20T19:45:27Z",
+        "request_type": "DeclarativeManagement",
+        "name": null,
+        "hostname": "Mac-mini.local"
+      },
+      {
+        "host_uuid": "A1B2C3D4-E5F6-7890-1234-567890ABCDEF",
+        "command_uuid": "97ceaa39-eadc-4953-98a8-2ffe72ab120d",
+        "status": "Error",
+        "command_status": "failed",
+        "updated_at": "2026-03-24T21:37:32Z",
+        "request_type": "InstallProfile",
+        "name": null,
+        "hostname": "Mac-mini.local"
+      }
+    ]
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#list-mdm-commands
+examples:
+- name: 100 Parameters
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/commands'
+    params:
+    - name: host_identifier
+      value: ''
+      type: query
+      disabled: true
+      description: '**Required.** The host''s `hostname`, `uuid`, or `hardware_serial`. Returns only commands that
+        target the specified host. Omitting `host_identifier` is deprecated (see the deprecation notice below).
+        Requests w/o it continue to work for backward compatibility but are not recommended; the underlying query
+        is not performant at scale and may time out on large fleets. Support will be removed in Fleet 5.'
+    - name: page
+      value: ''
+      type: query
+      disabled: true
+      description: Page number of the results to fetch. Maximum is `100`.
+    - name: per_page
+      value: ''
+      type: query
+      disabled: true
+      description: Results per page. Default is `10`. Maximum is 1,000 records.
+    - name: order_key
+      value: ''
+      type: query
+      disabled: true
+      description: 'What to order results by. Allowed values: `host_uuid`, `command_uuid`, `status`, `updated_at`,
+        `request_type`, `hostname`. Default is `updated_at`.'
+    - name: order_direction
+      value: ''
+      type: query
+      disabled: true
+      description: '**Requires `order_key`**. The direction of the order given the order key. Options include `"asc"`
+        and `"desc"`. Default is `"asc"`.'
+    - name: request_type
+      value: ''
+      type: query
+      disabled: true
+      description: The request type to filter commands by.
+    - name: command_status
+      value: ''
+      type: query
+      disabled: true
+      description: 'Comma-separated string of one of the following options: ''ran'', ''pending'', or ''failed''.'
+    - name: after
+      value: ''
+      type: query
+      disabled: true
+      description: The value to get results after. This needs `order_key` defined, as that's the column that would
+        be used.
+  response:
+    status: 100
+    statusText: Continue
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/commands'
+    params:
+    - name: host_identifier
+      value: ''
+      type: query
+      disabled: true
+      description: '**Required.** The host''s `hostname`, `uuid`, or `hardware_serial`. Returns only commands that
+        target the specified host. Omitting `host_identifier` is deprecated (see the deprecation notice below).
+        Requests w/o it continue to work for backward compatibility but are not recommended; the underlying query
+        is not performant at scale and may time out on large fleets. Support will be removed in Fleet 5.'
+    - name: page
+      value: ''
+      type: query
+      disabled: true
+      description: Page number of the results to fetch. Maximum is `100`.
+    - name: per_page
+      value: ''
+      type: query
+      disabled: true
+      description: Results per page. Default is `10`. Maximum is 1,000 records.
+    - name: order_key
+      value: ''
+      type: query
+      disabled: true
+      description: 'What to order results by. Allowed values: `host_uuid`, `command_uuid`, `status`, `updated_at`,
+        `request_type`, `hostname`. Default is `updated_at`.'
+    - name: order_direction
+      value: ''
+      type: query
+      disabled: true
+      description: '**Requires `order_key`**. The direction of the order given the order key. Options include `"asc"`
+        and `"desc"`. Default is `"asc"`.'
+    - name: request_type
+      value: ''
+      type: query
+      disabled: true
+      description: The request type to filter commands by.
+    - name: command_status
+      value: ''
+      type: query
+      disabled: true
+      description: 'Comma-separated string of one of the following options: ''ran'', ''pending'', or ''failed''.'
+    - name: after
+      value: ''
+      type: query
+      disabled: true
+      description: The value to get results after. This needs `order_key` defined, as that's the column that would
+        be used.
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "meta": {
+            "has_next_results": true,
+            "has_previous_results": false
+          },
+          "count": null,
+          "results": [
+            {
+              "host_uuid": "A1B2C3D4-E5F6-7890-1234-567890ABCDEF",
+              "command_uuid": "a3650ec9-6dd0-40e9-b5d8-feffe9939461",
+              "status": "Acknowledged",
+              "command_status": "ran",
+              "updated_at": "2026-03-20T19:45:27Z",
+              "request_type": "DeclarativeManagement",
+              "name": null,
+              "hostname": "Mac-mini.local"
+            },
+            {
+              "host_uuid": "A1B2C3D4-E5F6-7890-1234-567890ABCDEF",
+              "command_uuid": "97ceaa39-eadc-4953-98a8-2ffe72ab120d",
+              "status": "Error",
+              "command_status": "failed",
+              "updated_at": "2026-03-24T21:37:32Z",
+              "request_type": "InstallProfile",
+              "name": null,
+              "hostname": "Mac-mini.local"
+            }
+          ]
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

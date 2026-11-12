@@ -1,0 +1,103 @@
+info:
+  name: Get fleet-level policy
+  type: http
+  seq: 6
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/fleets/:fleet_id/policies/:policy_id'
+  auth: inherit
+  params:
+  - name: fleet_id
+    value: ''
+    type: path
+    description: '**Required.** Defines what fleet ID to operate on'
+  - name: policy_id
+    value: ''
+    type: path
+    description: '**Required.** The policy''s ID.'
+docs: "_Available in Fleet Premium_\n\n`GET /api/v1/fleet/fleets/:fleet_id/policies/:policy_id`\n\n#### Parameters\n\
+  \n| Name               | Type    | In   | Description                                                        \
+  \                                           |\n| ------------------ | ------- | ---- | -------------------------------------------------------------------------------------------------------------\
+  \ |\n| fleet_id           | integer | path  | **Required.** Defines what fleet ID to operate on              \
+  \                                              |\n| policy_id          | integer | path | **Required.** The policy's\
+  \ ID.                                                                                |\n\n#### Example\n\n`GET\
+  \ /api/v1/fleet/fleets/1/policies/43`\n\n##### Default response\n\n`Status: 200`\n\n```json\n{\n  \"policy\":\
+  \ {\n    \"id\": 43,\n    \"name\": \"Gatekeeper enabled\",\n    \"query\": \"SELECT 1 FROM gatekeeper WHERE assessments_enabled\
+  \ = 1;\",\n    \"description\": \"Checks if gatekeeper is enabled on macOS devices\",\n    \"critical\": true,\n\
+  \    \"type\": \"dynamic\",\n    \"author_id\": 42,\n    \"author_name\": \"John\",\n    \"author_email\": \"\
+  john@example.com\",\n    \"team_id\": 1,\n    \"resolution\": \"Resolution steps\",\n    \"platform\": \"darwin\"\
+  ,\n    \"created_at\": \"2021-12-16T14:37:37Z\",\n    \"updated_at\": \"2021-12-16T16:39:00Z\",\n    \"passing_host_count\"\
+  : 0,\n    \"failing_host_count\": 0,\n    \"host_count_updated_at\": null,\n    \"calendar_events_enabled\": true,\n\
+  \    \"conditional_access_enabled\": false,\n    \"fleet_maintained\": false,\n    \"labels_include_any\": [\"\
+  Macs on Sonoma\"],\n    \"patch_software\": {\n      \"display_name\": \"\", \n      \"name\": \"Adobe Acrobat.app\"\
+  ,\n      \"software_title_id\": 1234\n    },\n    \"install_software\": {\n      \"name\": \"Adobe Acrobat.app\"\
+  ,\n      \"software_title_id\": 1234\n    },\n    \"run_script\": {\n      \"name\": \"Enable gatekeeper\",\n\
+  \      \"id\": 1337\n    },\n    \"resend_configuration_profile\": {\n      \"profile_uuid\": \"954ec5ea-a334-4825-87b3-937e7e381f24\"\
+  ,\n      \"name\": \"Passcode requirements\"\n    }\n  }\n}\n```\n\n---\n\nReference: https://fleetdm.com/docs/rest-api/rest-api#get-fleet-level-policy"
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/fleets/:fleet_id/policies/:policy_id'
+    params:
+    - name: fleet_id
+      value: ''
+      type: path
+      description: '**Required.** Defines what fleet ID to operate on'
+    - name: policy_id
+      value: ''
+      type: path
+      description: '**Required.** The policy''s ID.'
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "policy": {
+            "id": 43,
+            "name": "Gatekeeper enabled",
+            "query": "SELECT 1 FROM gatekeeper WHERE assessments_enabled = 1;",
+            "description": "Checks if gatekeeper is enabled on macOS devices",
+            "critical": true,
+            "type": "dynamic",
+            "author_id": 42,
+            "author_name": "John",
+            "author_email": "john@example.com",
+            "team_id": 1,
+            "resolution": "Resolution steps",
+            "platform": "darwin",
+            "created_at": "2021-12-16T14:37:37Z",
+            "updated_at": "2021-12-16T16:39:00Z",
+            "passing_host_count": 0,
+            "failing_host_count": 0,
+            "host_count_updated_at": null,
+            "calendar_events_enabled": true,
+            "conditional_access_enabled": false,
+            "fleet_maintained": false,
+            "labels_include_any": [
+              "Macs on Sonoma"
+            ],
+            "patch_software": {
+              "display_name": "",
+              "name": "Adobe Acrobat.app",
+              "software_title_id": 1234
+            },
+            "install_software": {
+              "name": "Adobe Acrobat.app",
+              "software_title_id": 1234
+            },
+            "run_script": {
+              "name": "Enable gatekeeper",
+              "id": 1337
+            },
+            "resend_configuration_profile": {
+              "profile_uuid": "954ec5ea-a334-4825-87b3-937e7e381f24",
+              "name": "Passcode requirements"
+            }
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

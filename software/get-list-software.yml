@@ -1,0 +1,475 @@
+info:
+  name: List software
+  type: http
+  seq: 1
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/software/titles'
+  auth: inherit
+  params:
+  - name: page
+    value: ''
+    type: query
+    disabled: true
+    description: Page number of the results to fetch.
+  - name: per_page
+    value: ''
+    type: query
+    disabled: true
+    description: Results per page.
+  - name: order_key
+    value: ''
+    type: query
+    disabled: true
+    description: What to order results by. Allowed fields are `name` and `hosts_count`. Default is `hosts_count`
+      (descending).
+  - name: order_direction
+    value: ''
+    type: query
+    disabled: true
+    description: '**Requires `order_key`**. The direction of the order given the order key. Options include `"asc"`
+      and `"desc"`. Default is `"asc"`.'
+  - name: query
+    value: ''
+    type: query
+    disabled: true
+    description: Search query keywords. Searchable fields include `title` and `cve`.
+  - name: fleet_id
+    value: ''
+    type: query
+    disabled: true
+    description: _Available in Fleet Premium_. Filters the software to only include the software installed on the
+      hosts that are assigned to the specified fleet. Use `0` to filter by "Unassigned" hosts.
+  - name: vulnerable
+    value: ''
+    type: query
+    disabled: true
+    description: If true or 1, only list software that has detected vulnerabilities. Default is `false`.
+  - name: available_for_install
+    value: ''
+    type: query
+    disabled: true
+    description: If `true` or `1`, only list software that is available for install (added by the user). Default
+      is `false`.
+  - name: self_service
+    value: ''
+    type: query
+    disabled: true
+    description: If `true` or `1`, only lists self-service software. Default is `false`.
+  - name: packages_only
+    value: ''
+    type: query
+    disabled: true
+    description: _Available in Fleet Premium_. If `true` or `1`, only lists packages available for install (without
+      app store apps).
+  - name: min_cvss_score
+    value: ''
+    type: query
+    disabled: true
+    description: _Available in Fleet Premium_. Filters to include only software with vulnerabilities that have a
+      CVSS version 3.x base score higher than the specified value.
+  - name: max_cvss_score
+    value: ''
+    type: query
+    disabled: true
+    description: _Available in Fleet Premium_. Filters to only include software with vulnerabilities that have a
+      CVSS version 3.x base score lower than what's specified.
+  - name: exploit
+    value: ''
+    type: query
+    disabled: true
+    description: '_Available in Fleet Premium_. If `true`, filters to only include software with vulnerabilities
+      that have been actively exploited in the wild (`cisa_known_exploit: true`). Default is `false`.'
+  - name: platform
+    value: ''
+    type: query
+    disabled: true
+    description: 'Filters software titles available for install by platforms. `fleet_id` must be specified to filter
+      by platform. Options are: `"macos"` (alias of `"darwin"`), `"darwin"` `"windows"`, `"linux"`, `"chrome"`,
+      `"ios"`, `"ipados"`. To show titles from multiple platforms, separate the platforms with commas (e.g. `?platform=darwin,windows`).'
+  - name: hash_sha256
+    value: ''
+    type: query
+    disabled: true
+    description: Filters to only include custom software packages (uploaded installers) with the specified SHA-256
+      hash. `fleet_id` must be specified to filter by hash. This allows checking if a specific package already exists
+      before uploading.
+  - name: package_name
+    value: ''
+    type: query
+    disabled: true
+    description: Filters to only include custom software packages (uploaded installers) with the specified package
+      filename. `fleet_id` must be specified to filter by package name. This allows checking if a specific package
+      already exists before uploading.
+docs: |-
+  Get a list of all software.
+
+  `GET /api/v1/fleet/software/titles`
+
+  #### Parameters
+
+  | Name                    | Type    | In    | Description                                                                                                                                                                |
+  | ----------------------- | ------- | ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+  | page                    | integer | query | Page number of the results to fetch.                                                                                                                                       |
+  | per_page                | integer | query | Results per page.                                                                                                                                                          |
+  | order_key               | string  | query | What to order results by. Allowed fields are `name` and `hosts_count`. Default is `hosts_count` (descending).                                                              |
+  | order_direction         | string  | query | **Requires `order_key`**. The direction of the order given the order key. Options include `"asc"` and `"desc"`. Default is `"asc"`.                                              |
+  | query                   | string  | query | Search query keywords. Searchable fields include `title` and `cve`.                                                                                                        |
+  | fleet_id                 | integer | query | _Available in Fleet Premium_. Filters the software to only include the software installed on the hosts that are assigned to the specified fleet. Use `0` to filter by "Unassigned" hosts.                            |
+  | vulnerable              | boolean | query | If true or 1, only list software that has detected vulnerabilities. Default is `false`.                                                                                    |
+  | available_for_install   | boolean | query | If `true` or `1`, only list software that is available for install (added by the user). Default is `false`.                                                                |
+  | self_service            | boolean | query | If `true` or `1`, only lists self-service software. Default is `false`.  |
+  | packages_only           | boolean | query | _Available in Fleet Premium_. If `true` or `1`, only lists packages available for install (without app store apps).  |
+  | min_cvss_score | integer | query | _Available in Fleet Premium_. Filters to include only software with vulnerabilities that have a CVSS version 3.x base score higher than the specified value.   |
+  | max_cvss_score | integer | query | _Available in Fleet Premium_. Filters to only include software with vulnerabilities that have a CVSS version 3.x base score lower than what's specified.   |
+  | exploit | boolean | query | _Available in Fleet Premium_. If `true`, filters to only include software with vulnerabilities that have been actively exploited in the wild (`cisa_known_exploit: true`). Default is `false`.  |
+  | platform | string | query | Filters software titles available for install by platforms. `fleet_id` must be specified to filter by platform. Options are: `"macos"` (alias of `"darwin"`), `"darwin"` `"windows"`, `"linux"`, `"chrome"`, `"ios"`, `"ipados"`. To show titles from multiple platforms, separate the platforms with commas (e.g. `?platform=darwin,windows`). |
+  | hash_sha256 | string | query | Filters to only include custom software packages (uploaded installers) with the specified SHA-256 hash. `fleet_id` must be specified to filter by hash. This allows checking if a specific package already exists before uploading. |
+  | package_name | string | query | Filters to only include custom software packages (uploaded installers) with the specified package filename. `fleet_id` must be specified to filter by package name. This allows checking if a specific package already exists before uploading. |
+
+
+  #### Example
+
+  `GET /api/v1/fleet/software/titles?fleet_id=3&platform=darwin,windows`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "counts_updated_at": "2026-06-04T12:34:56Z",
+    "count": 3,
+    "software_titles": [
+      {
+        "id": 2792,
+        "name": "Slack",
+        "icon_url": null,
+        "source": "apps",
+        "extension_for": "",
+        "browser": "",
+        "hosts_count": 5,
+        "versions_count": 4,
+        "versions": [
+            {
+                "id": 515953,
+                "version": "4.39.88",
+                "vulnerabilities": null
+            },
+            {
+                "id": 610801,
+                "version": "4.47.72",
+                "vulnerabilities": null
+            }
+        ],
+        "packages": [
+            {
+                "name": "Slack-4.50.128-macOS.pkg",
+                "automatic_install_policies": null,
+                "version": "4.50.128",
+                "platform": "darwin",
+                "self_service": false,
+                "package_url": ""
+            },
+            {
+                "name": "Slack-4.51.133-macOS.pkg",
+                "automatic_install_policies": null,
+                "version": "4.51.133",
+                "platform": "darwin",
+                "self_service": true,
+                "package_url": ""
+            }
+        ],
+        "software_package": {
+            "name": "Slack-4.50.128-macOS.pkg",
+            "automatic_install_policies": null,
+            "version": "4.50.128",
+            "platform": "darwin",
+            "self_service": false,
+            "last_install": null,
+            "last_uninstall": null,
+            "package_url": ""
+        },
+        "app_store_app": null,
+        "bundle_identifier": "com.tinyspeck.slackmacgap",
+        "hash_sha256": "f7e4cba7676dacb03ac4cdbe5a99cc1d80ef751c484a13c6a7cf6a93de4a494e",
+        "display_name": ""
+      },
+      {
+        "id": 3104,
+        "name": "gopls",
+        "icon_url": null,
+        "source": "go_binaries",
+        "extension_for": "",
+        "browser": "",
+        "hosts_count": 19,
+        "versions_count": 1,
+        "versions": [
+            {
+                "id": 702113,
+                "version": "v0.21.1",
+                "release": "go1.26.1",
+                "vulnerabilities": ["CVE-2026-56860"]
+            }
+        ],
+        "packages": null,
+        "software_package": null,
+        "app_store_app": null,
+        "display_name": ""
+      },
+      {
+        "id": 2618,
+        "name": "Raycast",
+        "icon_url": null,
+        "source": "apps",
+        "extension_for": "",
+        "browser": "",
+        "hosts_count": 1,
+        "versions_count": 1,
+        "versions": [
+            {
+                "id": 651354,
+                "version": "1.104.19",
+                "vulnerabilities": null
+            }
+        ],
+        "packages": null,
+        "software_package": null,
+        "app_store_app": null,
+        "bundle_identifier": "com.raycast.macos",
+        "display_name": ""
+      }
+    ],
+    "meta": {
+      "has_next_results": false,
+      "has_previous_results": false
+    }
+  }
+  ```
+
+  `browser` and `extension_for` fields are included when set and when empty. `extension_for` will show the browser or Visual Studio Code fork associated with the extension, allowing for differentiation between e.g. an extension installed on Visual Studio Code and one installed on Cursor. `browser` is deprecated, and only shows this information for browser plugins.
+
+  Each entry in `versions` includes `release` when set. For `rpm_packages`, it's the package release (for example, `1.212.el6`). For `go_binaries`, it's the version of the Go toolchain the binary was built with (for example, `go1.26.1`). Fleet uses it to detect Go standard library vulnerabilities, so the same binary version built with two toolchains is listed as two versions.
+
+  A software title can have more than one package. The `packages` array lists all packages added for the title. `software_package` is kept for backwards compatibility and contains the oldest (first added) package; it's `null` when no package is available.
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#list-software
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/software/titles'
+    params:
+    - name: page
+      value: ''
+      type: query
+      disabled: true
+      description: Page number of the results to fetch.
+    - name: per_page
+      value: ''
+      type: query
+      disabled: true
+      description: Results per page.
+    - name: order_key
+      value: ''
+      type: query
+      disabled: true
+      description: What to order results by. Allowed fields are `name` and `hosts_count`. Default is `hosts_count`
+        (descending).
+    - name: order_direction
+      value: ''
+      type: query
+      disabled: true
+      description: '**Requires `order_key`**. The direction of the order given the order key. Options include `"asc"`
+        and `"desc"`. Default is `"asc"`.'
+    - name: query
+      value: ''
+      type: query
+      disabled: true
+      description: Search query keywords. Searchable fields include `title` and `cve`.
+    - name: fleet_id
+      value: ''
+      type: query
+      disabled: true
+      description: _Available in Fleet Premium_. Filters the software to only include the software installed on
+        the hosts that are assigned to the specified fleet. Use `0` to filter by "Unassigned" hosts.
+    - name: vulnerable
+      value: ''
+      type: query
+      disabled: true
+      description: If true or 1, only list software that has detected vulnerabilities. Default is `false`.
+    - name: available_for_install
+      value: ''
+      type: query
+      disabled: true
+      description: If `true` or `1`, only list software that is available for install (added by the user). Default
+        is `false`.
+    - name: self_service
+      value: ''
+      type: query
+      disabled: true
+      description: If `true` or `1`, only lists self-service software. Default is `false`.
+    - name: packages_only
+      value: ''
+      type: query
+      disabled: true
+      description: _Available in Fleet Premium_. If `true` or `1`, only lists packages available for install (without
+        app store apps).
+    - name: min_cvss_score
+      value: ''
+      type: query
+      disabled: true
+      description: _Available in Fleet Premium_. Filters to include only software with vulnerabilities that have
+        a CVSS version 3.x base score higher than the specified value.
+    - name: max_cvss_score
+      value: ''
+      type: query
+      disabled: true
+      description: _Available in Fleet Premium_. Filters to only include software with vulnerabilities that have
+        a CVSS version 3.x base score lower than what's specified.
+    - name: exploit
+      value: ''
+      type: query
+      disabled: true
+      description: '_Available in Fleet Premium_. If `true`, filters to only include software with vulnerabilities
+        that have been actively exploited in the wild (`cisa_known_exploit: true`). Default is `false`.'
+    - name: platform
+      value: ''
+      type: query
+      disabled: true
+      description: 'Filters software titles available for install by platforms. `fleet_id` must be specified to
+        filter by platform. Options are: `"macos"` (alias of `"darwin"`), `"darwin"` `"windows"`, `"linux"`, `"chrome"`,
+        `"ios"`, `"ipados"`. To show titles from multiple platforms, separate the platforms with commas (e.g. `?platform=darwin,windows`).'
+    - name: hash_sha256
+      value: ''
+      type: query
+      disabled: true
+      description: Filters to only include custom software packages (uploaded installers) with the specified SHA-256
+        hash. `fleet_id` must be specified to filter by hash. This allows checking if a specific package already
+        exists before uploading.
+    - name: package_name
+      value: ''
+      type: query
+      disabled: true
+      description: Filters to only include custom software packages (uploaded installers) with the specified package
+        filename. `fleet_id` must be specified to filter by package name. This allows checking if a specific package
+        already exists before uploading.
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "counts_updated_at": "2026-06-04T12:34:56Z",
+          "count": 3,
+          "software_titles": [
+            {
+              "id": 2792,
+              "name": "Slack",
+              "icon_url": null,
+              "source": "apps",
+              "extension_for": "",
+              "browser": "",
+              "hosts_count": 5,
+              "versions_count": 4,
+              "versions": [
+                {
+                  "id": 515953,
+                  "version": "4.39.88",
+                  "vulnerabilities": null
+                },
+                {
+                  "id": 610801,
+                  "version": "4.47.72",
+                  "vulnerabilities": null
+                }
+              ],
+              "packages": [
+                {
+                  "name": "Slack-4.50.128-macOS.pkg",
+                  "automatic_install_policies": null,
+                  "version": "4.50.128",
+                  "platform": "darwin",
+                  "self_service": false,
+                  "package_url": ""
+                },
+                {
+                  "name": "Slack-4.51.133-macOS.pkg",
+                  "automatic_install_policies": null,
+                  "version": "4.51.133",
+                  "platform": "darwin",
+                  "self_service": true,
+                  "package_url": ""
+                }
+              ],
+              "software_package": {
+                "name": "Slack-4.50.128-macOS.pkg",
+                "automatic_install_policies": null,
+                "version": "4.50.128",
+                "platform": "darwin",
+                "self_service": false,
+                "last_install": null,
+                "last_uninstall": null,
+                "package_url": ""
+              },
+              "app_store_app": null,
+              "bundle_identifier": "com.tinyspeck.slackmacgap",
+              "hash_sha256": "f7e4cba7676dacb03ac4cdbe5a99cc1d80ef751c484a13c6a7cf6a93de4a494e",
+              "display_name": ""
+            },
+            {
+              "id": 3104,
+              "name": "gopls",
+              "icon_url": null,
+              "source": "go_binaries",
+              "extension_for": "",
+              "browser": "",
+              "hosts_count": 19,
+              "versions_count": 1,
+              "versions": [
+                {
+                  "id": 702113,
+                  "version": "v0.21.1",
+                  "release": "go1.26.1",
+                  "vulnerabilities": [
+                    "CVE-2026-56860"
+                  ]
+                }
+              ],
+              "packages": null,
+              "software_package": null,
+              "app_store_app": null,
+              "display_name": ""
+            },
+            {
+              "id": 2618,
+              "name": "Raycast",
+              "icon_url": null,
+              "source": "apps",
+              "extension_for": "",
+              "browser": "",
+              "hosts_count": 1,
+              "versions_count": 1,
+              "versions": [
+                {
+                  "id": 651354,
+                  "version": "1.104.19",
+                  "vulnerabilities": null
+                }
+              ],
+              "packages": null,
+              "software_package": null,
+              "app_store_app": null,
+              "bundle_identifier": "com.raycast.macos",
+              "display_name": ""
+            }
+          ],
+          "meta": {
+            "has_next_results": false,
+            "has_previous_results": false
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

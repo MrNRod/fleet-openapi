@@ -1,0 +1,6 @@
+info:
+  name: Debug
+  type: folder
+  seq: 26
+request:
+  auth: inherit

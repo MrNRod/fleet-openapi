@@ -1,0 +1,95 @@
+info:
+  name: Create bootstrap package
+  type: http
+  seq: 7
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/bootstrap'
+  auth: inherit
+  body:
+    type: multipart-form
+    data:
+    - name: package
+      value: []
+      description: '**Required**. The bootstrap package installer. It must be a signed `pkg` file.'
+      disabled: false
+      type: file
+    - name: fleet_id
+      value: ''
+      description: The fleet ID for the package. If specified, the package will be installed to hosts that are assigned
+        to the specified fleet. If not specified, the package will be installed on "Unassigned" hosts.
+      disabled: true
+      type: text
+    - name: manual_agent_install
+      value: ''
+      description: 'If set to `true` Fleet''s agent (fleetd) won''t be installed as part of automatic enrollment
+        (ADE) on macOS hosts. (Default: `false`)'
+      disabled: true
+      type: text
+docs: |-
+  _Available in Fleet Premium_
+
+  Upload a bootstrap package that will be automatically installed during DEP setup.
+
+  > You need to send a request of type `multipart/form-data`.
+
+  > This endpoint accepts a maximum request body size of 10GB.
+
+  `POST /api/v1/fleet/bootstrap`
+
+  #### Parameters
+
+  | Name    | Type   | In   | Description                                                                                                                                                                                                            |
+  | ------- | ------ | ---- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+  | package | file   | body | **Required**. The bootstrap package installer. It must be a signed `pkg` file.                                                                                                                                         |
+  | fleet_id | string | body | The fleet ID for the package. If specified, the package will be installed to hosts that are assigned to the specified fleet. If not specified, the package will be installed on "Unassigned" hosts. |
+  | manual_agent_install | boolean | body | If set to `true` Fleet's agent (fleetd) won't be installed as part of automatic enrollment (ADE) on macOS hosts. (Default: `false`) |
+
+  #### Example
+
+  Upload a bootstrap package that will be installed to macOS hosts enrolled to MDM that are
+  assigned to a fleet. Note that in this example the form data specifies `fleet_id` in addition to
+  `package`.
+
+  `POST /api/v1/fleet/bootstrap`
+
+  ##### Request body
+
+  ```http
+  fleet_id="1"
+  package="bootstrap-package.pkg"
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#create-bootstrap-package
+examples:
+- name: 200 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/bootstrap'
+    body:
+      type: multipart-form
+      data:
+      - name: package
+        value: []
+        description: '**Required**. The bootstrap package installer. It must be a signed `pkg` file.'
+        disabled: false
+        type: file
+      - name: fleet_id
+        value: ''
+        description: The fleet ID for the package. If specified, the package will be installed to hosts that are
+          assigned to the specified fleet. If not specified, the package will be installed on "Unassigned" hosts.
+        disabled: true
+        type: text
+      - name: manual_agent_install
+        value: ''
+        description: 'If set to `true` Fleet''s agent (fleetd) won''t be installed as part of automatic enrollment
+          (ADE) on macOS hosts. (Default: `false`)'
+        disabled: true
+        type: text
+  response:
+    status: 200
+    statusText: OK

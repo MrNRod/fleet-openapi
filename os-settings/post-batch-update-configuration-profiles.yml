@@ -1,0 +1,151 @@
+info:
+  name: Batch-update configuration profiles
+  type: http
+  seq: 7
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/configuration_profiles/batch'
+  auth: inherit
+  params:
+  - name: fleet_id
+    value: ''
+    type: query
+    disabled: true
+    description: _Available in Fleet Premium_ The fleet ID to apply the configuration profiles to. Only one of `fleet_name`
+      or `fleet_id` may be included in the request.
+  - name: fleet_name
+    value: ''
+    type: query
+    disabled: true
+    description: _Available in Fleet Premium_ The name of the fleet to apply the custom settings to. Only one of
+      `fleet_name` or `fleet_id` may be included in the request.
+  - name: dry_run
+    value: ''
+    type: query
+    disabled: true
+    description: Validate the provided profiles and return any validation errors, but do not apply the changes.
+  body:
+    type: json
+    data: |-
+      {
+        "configuration_profiles": [
+          {
+            "profile": "<base64-encoded DDM profile>",
+            "display_name": "Passcode Settings",
+            "activation": "eyJldmVudCI6...",
+            "labels_include_any": [
+              "Apple Silicon macOS hosts"
+            ]
+          }
+        ]
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  Modify configuration profiles for a fleet. The provided list of profiles will be the active profiles for the specified fleet. If no fleet (`fleet_id` or `fleet_name`) is provided, the profiles are applied for all hosts (Fleet Free) or for hosts that are "Unassigned" (Fleet Premium).
+
+  For Apple (macOS, iOS, iPadOS) profiles, Fleet will send only an `InstallProfile` command (edit) for all existing profiles with the same `PayloadIdentifier` (specified in the .mobileconfig file). Fleet will send a `RemoveProfile` command to hosts for all existing profiles that are not part of the list.
+
+  For Windows profiles, Fleet applies new profiles or updates when content changes, and deletes profiles no longer in the list. It does not send commands to remove configuration profiles from Windows hosts.
+
+  For declaration (DDM) profiles, hosts with new, updated, or removed profiles are marked "Pending," and Fleet sends a [DeclarativeManagement command](https://developer.apple.com/documentation/devicemanagement/declarativemanagementcommand) to tell Apple (macOS, iOS, iPadOS) hosts to sync profiles. If declarations are current, no command is sent and the host is not marked "Pending."
+
+  For requests with 100+ profiles, requests will take 5+ seconds.
+
+  > This endpoint accepts a maximum request body size of 25MiB.
+
+  `POST /api/v1/fleet/configuration_profiles/batch`
+
+  #### Parameters
+
+  | Name      | Type   | In    | Description                                                                                                                       |
+  | --------- | ------ | ----- | --------------------------------------------------------------------------------------------------------------------------------- |
+  | fleet_id   | number | query | _Available in Fleet Premium_ The fleet ID to apply the configuration profiles to. Only one of `fleet_name` or `fleet_id` may be included in the request.          |
+  | fleet_name | string | query | _Available in Fleet Premium_ The name of the fleet to apply the custom settings to. Only one of `fleet_name` or `fleet_id` may be included in the request. |
+  | dry_run   | bool   | query | Validate the provided profiles and return any validation errors, but do not apply the changes.                                    |
+  | configuration_profiles  | object   | body  | **Required**. See [configuration_profiles](#configuration-profiles) |
+
+  ##### Configuration profiles
+
+  | Name                    | Type    | Description   |
+  | ------------------------| ------- | ----------------------------------------------------------------------------------- |
+  | profile                 | string  | Base64 encoded configuration profile (.mobileconfig) or declaration (DDM) profile for Apple (macOS, iOS, iPadOS) hosts, JSON profile for Android hosts, or XML profile for Windows hosts. |
+  | labels_include_all      | array   | _Available in Fleet Premium_. Target hosts that have all labels, specified by label name, in the array. |
+  | labels_include_any      | array   | _Available in Fleet Premium_. Target hosts that have any label, specified by label name, in the array. |
+  | labels_exclude_any      | array   | _Available in Fleet Premium_. Target hosts that that don't have any label, specified by label name, in the array. |
+  | display_name            | string  | Required for Windows and declaration (DDM) profiles. It's not supported for .mobileconfig profiles. Instead, the profiles `PayloadDisplayName` is used. |
+  | activation              | string  | _Available in Fleet Premium_. The Base64 encoded activation criteria for the profile. Only supported for declaration (DDM) profiles. For all other profile types, this value is `null`. |
+
+  For each `profile`, `labels_exclude_any` can be combined with either `labels_include_all` or `labels_include_any`, but `labels_include_all` and `labels_include_any` cannot be combined with each other. If neither is set, all hosts on the specified platform are targeted.
+
+  #### Example
+
+  `POST /api/v1/fleet/configuration_profiles/batch?fleet_id=1`
+
+  ##### Request body
+
+  ```json
+  {
+    "configuration_profiles": [
+      {
+        "profile": "<base64-encoded DDM profile>",
+        "display_name": "Passcode Settings",
+        "activation": "eyJldmVudCI6...",
+        "labels_include_any": [
+          "Apple Silicon macOS hosts"
+        ]
+      }
+    ]
+  }
+  ```
+
+  ##### Default response
+
+  `Status: 204`
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#batch-update-configuration-profiles
+examples:
+- name: 204 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/configuration_profiles/batch'
+    params:
+    - name: fleet_id
+      value: ''
+      type: query
+      disabled: true
+      description: _Available in Fleet Premium_ The fleet ID to apply the configuration profiles to. Only one of
+        `fleet_name` or `fleet_id` may be included in the request.
+    - name: fleet_name
+      value: ''
+      type: query
+      disabled: true
+      description: _Available in Fleet Premium_ The name of the fleet to apply the custom settings to. Only one
+        of `fleet_name` or `fleet_id` may be included in the request.
+    - name: dry_run
+      value: ''
+      type: query
+      disabled: true
+      description: Validate the provided profiles and return any validation errors, but do not apply the changes.
+    body:
+      type: json
+      data: |-
+        {
+          "configuration_profiles": [
+            {
+              "profile": "<base64-encoded DDM profile>",
+              "display_name": "Passcode Settings",
+              "activation": "eyJldmVudCI6...",
+              "labels_include_any": [
+                "Apple Silicon macOS hosts"
+              ]
+            }
+          ]
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 204
+    statusText: No Content

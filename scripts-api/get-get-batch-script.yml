@@ -1,0 +1,97 @@
+info:
+  name: Get batch script
+  type: http
+  seq: 5
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/scripts/batch/:batch_execution_id'
+  auth: inherit
+  params:
+  - name: batch_execution_id
+    value: ''
+    type: path
+    description: '**Required**. The ID returned from a batch script run.'
+docs: |-
+  Returns a summary of a batch-run script, including host counts and current status.
+
+  > The [Get batch script summary](https://github.com/fleetdm/fleet/blob/fleet-v4.71.1/docs/REST%20API/rest-api.md#get-batch-script-summary) endpoint is deprecated as of Fleet 4.73. It is maintained for backwards compatibility. Please use this endpoint instead.
+
+  `GET /api/v1/fleet/scripts/batch/:batch_execution_id`
+
+  #### Parameters
+
+  | Name               | Type    | In   | Description                                 |
+  | ------------------ | ------- | ---- | --------------------------------------------|
+  | batch_execution_id | string  | path | **Required**. The ID returned from a batch script run. |
+
+
+  #### Example
+
+  `GET /api/v1/fleet/scripts/batch/abc-def`
+
+
+
+  ##### Default response
+
+  `Status: 200`
+
+
+  ```json
+  {
+    "script_id": 555,
+    "script_name": "my-script.sh",
+    "team_id": 123,
+    "fleet_id": 123,
+    "not_before": "2025-07-01T15:00:00Z",
+    "finished_at": "2025-07-06T15:00:00Z",
+    "started_at": "2025-07-06T14:00:00Z",
+    "status": "finished",
+    "canceled": false,
+    "targeted_host_count": 12599,
+    "ran_host_count": 12345,
+    "pending_host_count": 234,
+    "errored_host_count": 18,
+    "incompatible_host_count": 3,
+    "canceled_host_count": 2,
+    "created_at": "2025-07-01T10:00:00Z"
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#get-batch-script
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/scripts/batch/:batch_execution_id'
+    params:
+    - name: batch_execution_id
+      value: ''
+      type: path
+      description: '**Required**. The ID returned from a batch script run.'
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "script_id": 555,
+          "script_name": "my-script.sh",
+          "team_id": 123,
+          "fleet_id": 123,
+          "not_before": "2025-07-01T15:00:00Z",
+          "finished_at": "2025-07-06T15:00:00Z",
+          "started_at": "2025-07-06T14:00:00Z",
+          "status": "finished",
+          "canceled": false,
+          "targeted_host_count": 12599,
+          "ran_host_count": 12345,
+          "pending_host_count": 234,
+          "errored_host_count": 18,
+          "incompatible_host_count": 3,
+          "canceled_host_count": 2,
+          "created_at": "2025-07-01T10:00:00Z"
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

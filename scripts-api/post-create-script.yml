@@ -1,0 +1,94 @@
+info:
+  name: Create script
+  type: http
+  seq: 8
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/scripts'
+  auth: inherit
+  body:
+    type: multipart-form
+    data:
+    - name: script
+      value: []
+      description: '**Required**. The file containing the script.'
+      disabled: false
+      type: file
+    - name: fleet_id
+      value: ''
+      description: _Available in Fleet Premium_. The fleet ID. If specified, the script will only be available to
+        hosts assigned to this fleet. If not specified, the script will only be available for "Unassigned" hosts.
+      disabled: true
+      type: text
+docs: |-
+  Uploads a script, making it available to run on hosts assigned to the specified fleet (or "Unassigned").
+
+  > You need to send a request of type `multipart/form-data`.
+
+  > This endpoint accepts a maximum request body size of 1.5MiB.
+
+  `POST /api/v1/fleet/scripts`
+
+  #### Parameters
+
+  | Name            | Type    | In   | Description                                      |
+  | ----            | ------- | ---- | --------------------------------------------     |
+  | script          | file    | body | **Required**. The file containing the script.    |
+  | fleet_id         | integer | body | _Available in Fleet Premium_. The fleet ID. If specified, the script will only be available to hosts assigned to this fleet. If not specified, the script will only be available for "Unassigned" hosts.  |
+
+  Script line endings are automatically converted from [CRLF to LF](https://en.wikipedia.org/wiki/Newline) for compatibility with both non-Windows shells and PowerShell.
+
+  #### Example
+
+  `POST /api/v1/fleet/scripts`
+
+  ##### Request body
+
+  ```http
+  fleet_id="1"
+  script="myscript.sh"
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "script_id": 1227
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#create-script
+examples:
+- name: 200 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/scripts'
+    body:
+      type: multipart-form
+      data:
+      - name: script
+        value: []
+        description: '**Required**. The file containing the script.'
+        disabled: false
+        type: file
+      - name: fleet_id
+        value: ''
+        description: _Available in Fleet Premium_. The fleet ID. If specified, the script will only be available
+          to hosts assigned to this fleet. If not specified, the script will only be available for "Unassigned"
+          hosts.
+        disabled: true
+        type: text
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "script_id": 1227
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

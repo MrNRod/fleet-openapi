@@ -1,0 +1,6 @@
+info:
+  name: Targets
+  type: folder
+  seq: 22
+request:
+  auth: inherit

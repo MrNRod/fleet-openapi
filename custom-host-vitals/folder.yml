@@ -1,0 +1,6 @@
+info:
+  name: Custom host vitals
+  type: folder
+  seq: 28
+request:
+  auth: inherit

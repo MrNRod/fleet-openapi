@@ -1,0 +1,98 @@
+info:
+  name: Reset policy automations
+  type: http
+  seq: 13
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/automations/reset'
+  auth: inherit
+  body:
+    type: json
+    data: |-
+      {
+        "team_ids": [
+          1
+        ],
+        "fleet_ids": [
+          1
+        ],
+        "policy_ids": [
+          1,
+          2,
+          3
+        ]
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  Resets [webhook and ticket policy automations](https://fleetdm.com/docs/using-fleet/automations#webhooks-and-tickets) status for *all* hosts failing the specified policies. On the next automation run, any failing host will be considered newly failing.
+
+  `POST /api/v1/fleet/automations/reset`
+
+  #### Parameters
+
+  | Name        | Type     | In   | Description                                              |
+  | ----------  | -------- | ---- | -------------------------------------------------------- |
+  | policy_ids  | array    | body | Filters to only run policy automations for the specified policies. |
+  | fleet_ids    | array    | body | _Available in Fleet Premium_. Filters to only run policy automations for hosts in the specified fleets. |
+
+
+  #### Example
+
+  `POST /api/v1/fleet/automations/reset`
+
+  ##### Request body
+
+  ```json
+  {
+      "team_ids": [1],
+      "fleet_ids": [1],
+      "policy_ids": [1, 2, 3]
+  }
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {}
+  ```
+
+  ---
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#reset-policy-automations
+examples:
+- name: 200 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/automations/reset'
+    body:
+      type: json
+      data: |-
+        {
+          "team_ids": [
+            1
+          ],
+          "fleet_ids": [
+            1
+          ],
+          "policy_ids": [
+            1,
+            2,
+            3
+          ]
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: '{}'
+    headers:
+    - name: Content-Type
+      value: application/json

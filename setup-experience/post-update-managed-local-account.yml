@@ -1,0 +1,74 @@
+info:
+  name: Update managed local account
+  type: http
+  seq: 22
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/managed_local_account'
+  auth: inherit
+  body:
+    type: json
+    data: |-
+      {
+        "fleet_id": 3,
+        "enable_managed_local_account": true,
+        "end_user_local_account_type": "admin"
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  _Available in Fleet Premium_
+
+  Edit managed local account enforcement settings for eligible hosts.
+
+  `POST /api/v1/fleet/managed_local_account`
+
+  #### Parameters
+
+  | Name                                 | Type    | In    | Description                                                                          |
+  | ------------------------------------ | ------  | ----  | -------------------------------------------------------------------------------------|
+  | fleet_id                             | integer | body  | The fleet ID to apply the settings to. If omitted, settings apply to unassigned hosts.|
+  | enable_managed_local_account         | boolean | body  | _Available in Fleet Premium._ During Setup experience, a managed local account will be created on eligible hosts if set to true. |
+  | end_user_local_account_type          | string  | body  | Specifies the type of local end user account created. (Default: `"admin"`) `enable_managed_local_account` must be true. |
+
+  #### Example
+
+  `POST /api/v1/fleet/managed_local_account`
+
+  ##### Request body
+
+  ```json
+  {
+    "fleet_id": 3,
+    "enable_managed_local_account": true,
+    "end_user_local_account_type": "admin"
+  }
+  ```
+
+  ##### Default response
+
+  `Status: 204`
+
+  ---
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#update-managed-local-account
+examples:
+- name: 204 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/managed_local_account'
+    body:
+      type: json
+      data: |-
+        {
+          "fleet_id": 3,
+          "enable_managed_local_account": true,
+          "end_user_local_account_type": "admin"
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 204
+    statusText: No Content

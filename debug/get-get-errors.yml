@@ -1,0 +1,101 @@
+info:
+  name: Get errors
+  type: http
+  seq: 1
+http:
+  method: GET
+  url: '{{baseUrl}}/debug/errors'
+  auth: inherit
+  params:
+  - name: flush
+    value: ''
+    type: query
+    disabled: true
+    description: Whether or not clear the errors from Redis after reading them. Default is `false`
+docs: |-
+  Returns a set of all the errors that happened in the server during the interval of time defined by the [logging_error_retention_period](https://fleetdm.com/docs/deploying/configuration#logging-error-retention-period) configuration.
+
+  The server only stores and returns a single instance of each error.
+
+  `GET /debug/errors`
+
+  #### Parameters
+
+  | Name  | Type    | In    | Description                                                                       |
+  | ----- | ------- | ----- | --------------------------------------------------------------------------------- |
+  | flush | boolean | query | Whether or not clear the errors from Redis after reading them. Default is `false` |
+
+  #### Example
+
+  `GET /debug/errors?flush=true`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  [
+    {
+      "count": "3",
+      "chain": [
+        {
+          "message": "Authorization header required"
+        },
+        {
+          "message": "missing FleetError in chain",
+          "data": {
+            "timestamp": "2022-06-03T14:16:01-03:00"
+          },
+          "stack": [
+            "github.com/fleetdm/fleet/v4/server/contexts/ctxerr.Handle (ctxerr.go:262)",
+            "github.com/fleetdm/fleet/v4/server/service.encodeError (transport_error.go:80)",
+            "github.com/go-kit/kit/transport/http.Server.ServeHTTP (server.go:124)"
+          ]
+        }
+      ]
+    }
+  ]
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#get-errors
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/debug/errors'
+    params:
+    - name: flush
+      value: ''
+      type: query
+      disabled: true
+      description: Whether or not clear the errors from Redis after reading them. Default is `false`
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        [
+          {
+            "count": "3",
+            "chain": [
+              {
+                "message": "Authorization header required"
+              },
+              {
+                "message": "missing FleetError in chain",
+                "data": {
+                  "timestamp": "2022-06-03T14:16:01-03:00"
+                },
+                "stack": [
+                  "github.com/fleetdm/fleet/v4/server/contexts/ctxerr.Handle (ctxerr.go:262)",
+                  "github.com/fleetdm/fleet/v4/server/service.encodeError (transport_error.go:80)",
+                  "github.com/go-kit/kit/transport/http.Server.ServeHTTP (server.go:124)"
+                ]
+              }
+            ]
+          }
+        ]
+    headers:
+    - name: Content-Type
+      value: application/json

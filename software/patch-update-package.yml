@@ -1,0 +1,369 @@
+info:
+  name: Update package
+  type: http
+  seq: 8
+http:
+  method: PATCH
+  url: '{{baseUrl}}/api/v1/fleet/software/titles/:id/package'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: ID of the software title being updated.
+  body:
+    type: multipart-form
+    data:
+    - name: software
+      value: []
+      description: Installer package file or custom script file. Supported packages are `.pkg`, `.msi`, `.exe`,
+        `.deb`, `.rpm`, `.tar.gz`, `.ipa`, `.sh`, `.py`, and `.ps1`.
+      disabled: true
+      type: file
+    - name: fleet_id
+      value: ''
+      description: '**Required**. The fleet ID. Updates a software package in the specified fleet.'
+      disabled: false
+      type: text
+    - name: display_name
+      value: ''
+      description: Optional override for the default `name`.
+      disabled: true
+      type: text
+    - name: categories
+      value: ''
+      description: Zero or more [self-service category](#list-self-service-categories) names defined on the fleet,
+        used to group self-service software on your end users' **Fleet Desktop > My device** page. Each value must
+        match a category that exists on the fleet. Software with no categories will still be shown under **All**.
+      disabled: true
+      type: text
+    - name: install_script
+      value: ''
+      description: Command that Fleet runs to install software. If not specified Fleet runs the [default install
+        command](https://github.com/fleetdm/fleet/tree/main/pkg/file/scripts) for each package type. Not supported
+        for `.sh`, `.py`, and `.ps1`.
+      disabled: true
+      type: text
+    - name: pre_install_query
+      value: ''
+      description: Query that is pre-install condition. If the query doesn't return any result, the package will
+        not be installed.
+      disabled: true
+      type: text
+    - name: post_install_script
+      value: ''
+      description: The contents of the script to run after install. If the specified script fails (exit code non-zero)
+        software install will be marked as failed and rolled back.
+      disabled: true
+      type: text
+    - name: self_service
+      value: ''
+      description: Whether this is optional self-service software that can be installed by the end user.
+      disabled: true
+      type: text
+    - name: labels_include_all
+      value: ''
+      description: Target hosts that have all labels, specified by label name, in the array.
+      disabled: true
+      type: text
+    - name: labels_include_any
+      value: ''
+      description: Target hosts that have any label, specified by label name, in the array. Only one of either `labels_include_any`
+        or `labels_exclude_any` can be specified.
+      disabled: true
+      type: text
+    - name: labels_exclude_any
+      value: ''
+      description: Target hosts that don't have any label, specified by label name, in the array.
+      disabled: true
+      type: text
+    - name: patch
+      value: ''
+      description: '_Available for Fleet-maintained apps only._ Enables or disables "Patch": a policy that triggers
+        a software install when the installed version is outdated. Set to `false` to remove the policy (and its
+        managed `pre_install_query`, if `patch_when_closed` was enabled).'
+      disabled: true
+      type: text
+    - name: patch_when_closed
+      value: ''
+      description: _Available for Fleet-maintained apps only. Only applies when `patch` is `true`._ If `true` (default),
+        Fleet adds a read-only pre-install condition that skips the automated install while the app is open. If
+        `false` ("Force patch"), Fleet installs the update the next time the policy fails, whether or not the app
+        is open.
+      disabled: true
+      type: text
+    - name: notify_before_patching
+      value: ''
+      description: _Available for Fleet-maintained apps only. Only applies when `patch` is `true`. If `true`, Fleet
+        shows the end user a notification listing the apps that will be patched in 1 hour. A reminder is shown 5
+        minutes before the install. Setting this to `true` also sets `continuous_automations_enabled` to `true`.
+        Only supported on macOS hosts with Fleet Desktop installed (available as Fleet-maintained app).
+      disabled: true
+      type: text
+    - name: version
+      value: ''
+      description: Only available for Fleet-maintained apps. Pins the app to a specific or major version. Available
+        versions are listed in the Fleet UI under **Actions > Versions**. To pin to a major version, use a caret
+        (`^`) constraint and specify only the major version, without the minor and patch versions. For example,
+        `"^147"` means Fleet continuously updates to the latest version until the app reaches 148.0. Set `version`
+        to an empty string (`""`) to switch back to automatically updating to the latest version found in [Fleet's
+        catalog](https://fleetdm.com/software-catalog). `version` can't be changed in the same request as other
+        fields; omit it to leave the current pin unchanged.
+      disabled: true
+      type: text
+docs: |-
+  _Available in Fleet Premium._
+
+  Update a package to install on macOS, Windows, Linux, iOS, or iPadOS hosts.
+
+  > You need to send a request of type `multipart/form-data`.
+
+  > This endpoint accepts a maximum request body size of 10GB.
+
+  `PATCH /api/v1/fleet/software/titles/:id/package`
+
+  #### Parameters
+
+  | Name            | Type    | In   | Description                                      |
+  | ----            | ------- | ---- | --------------------------------------------     |
+  | id | integer | path | ID of the software title being updated. |
+  | software        | file    | body | Installer package file or custom script file. Supported packages are `.pkg`, `.msi`, `.exe`, `.deb`, `.rpm`, `.tar.gz`, `.ipa`, `.sh`, `.py`, and `.ps1`.   |
+  | fleet_id         | integer | body | **Required**. The fleet ID. Updates a software package in the specified fleet. |
+  | display_name    | string  | body | Optional override for the default `name`. |
+  | categories        | array | body | Zero or more [self-service category](#list-self-service-categories) names defined on the fleet, used to group self-service software on your end users' **Fleet Desktop > My device** page. Each value must match a category that exists on the fleet. Software with no categories will still be shown under **All**. |
+  | install_script  | string | body | Command that Fleet runs to install software. If not specified Fleet runs the [default install command](https://github.com/fleetdm/fleet/tree/main/pkg/file/scripts) for each package type. Not supported for `.sh`, `.py`, and `.ps1`. |
+  | pre_install_query  | string | body | Query that is pre-install condition. If the query doesn't return any result, the package will not be installed. |
+  | post_install_script | string | body | The contents of the script to run after install. If the specified script fails (exit code non-zero) software install will be marked as failed and rolled back. |
+  | self_service | boolean | body | Whether this is optional self-service software that can be installed by the end user. |
+  | labels_include_all        | array     | body | Target hosts that have all labels, specified by label name, in the array. |
+  | labels_include_any        | array     | body | Target hosts that have any label, specified by label name, in the array. Only one of either `labels_include_any` or `labels_exclude_any` can be specified. |
+  | labels_exclude_any | array | body | Target hosts that don't have any label, specified by label name, in the array. |
+  | patch | boolean | body | _Available for Fleet-maintained apps only._ Enables or disables "Patch": a policy that triggers a software install when the installed version is outdated. Set to `false` to remove the policy (and its managed `pre_install_query`, if `patch_when_closed` was enabled). |
+  | patch_when_closed | boolean | body | _Available for Fleet-maintained apps only. Only applies when `patch` is `true`._ If `true` (default), Fleet adds a read-only pre-install condition that skips the automated install while the app is open. If `false` ("Force patch"), Fleet installs the update the next time the policy fails, whether or not the app is open. |
+  | notify_before_patching | boolean | body |_Available for Fleet-maintained apps only. Only applies when `patch` is `true`. If `true`, Fleet shows the end user a notification listing the apps that will be patched in 1 hour. A reminder is shown 5 minutes before the install. Setting this to `true` also sets `continuous_automations_enabled` to `true`. Only supported on macOS hosts with Fleet Desktop installed (available as Fleet-maintained app). |
+  | version | string | body | Only available for Fleet-maintained apps. Pins the app to a specific or major version. Available versions are listed in the Fleet UI under **Actions > Versions**. To pin to a major version, use a caret (`^`) constraint and specify only the major version, without the minor and patch versions. For example, `"^147"` means Fleet continuously updates to the latest version until the app reaches 148.0. Set `version` to an empty string (`""`) to switch back to automatically updating to the latest version found in [Fleet's catalog](https://fleetdm.com/software-catalog). `version` can't be changed in the same request as other fields; omit it to leave the current pin unchanged. |
+
+  > `patch` and `patch_when_closed` are only available for Fleet-maintained apps.
+
+  Only one of `labels_include_all`, `labels_include_any` or `labels_exclude_any` can be specified. If none are specified, all hosts are targeted.
+
+  > Changes to the installer package will reset installation counts. Changes to any field other than `self_service` will cancel pending installs for the old package.
+
+  > If this software title has a patch policy with `patch_when_closed` set to `true` (see [Update fleet-level policy](#update-fleet-level-policy)), `pre_install_query` is managed by Fleet and can't be set directly.
+
+  Add the `X-Fleet-Scripts-Encoded: base64` header line to parse `install_script`, `uninstall_script`, `post_install_script`, and `pre_install_query` fields as bas64-encoded rather than as-is.
+
+  #### Example
+
+  `PATCH /api/v1/fleet/software/titles/1/package`
+
+  ##### Request body
+
+  ```http
+  fleet_id="1"
+  software="FalconSensor-6.44.pkg"
+  self_service="true"
+  display_name="CrowdStrike agent"
+  install_script="sudo installer -pkg /temp/FalconSensor-6.44.pkg -target /"
+  pre_install_query="SELECT 1 FROM macos_profiles WHERE uuid='c9f4f0d5-8426-4eb8-b61b-27c543c9d3db';"
+  post_install_script="sudo /Applications/Falcon.app/Contents/Resources/falconctl license 0123456789ABCDEFGHIJKLMNOPQRSTUV-WX"
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "software_installer": {
+      "team_id": 310,
+      "title_id": 2792,
+      "name": "Slack-4.45.64-macOS.pkg",
+      "icon_url": null,
+      "version": "4.45.64",
+      "platform": "darwin",
+      "uploaded_at": "2026-06-04T17:47:23Z",
+      "installer_id": 36818,
+      "install_script": "#!/bin/sh\n\ninstaller -pkg \"$INSTALLER_PATH\" -target /\n",
+      "pre_install_query": "",
+      "post_install_script": "",
+      "uninstall_script": "#!/bin/sh\n\n# Fleet extracts and saves package IDs.\npkg_ids=(\n  'com.tinyspeck.slackmacgap'\n)\n\n# For each package id, get all .app folders associated with the package and remove them.\nfor pkg_id in \"${pkg_ids[@]}\"\ndo\n  # Get volume and location of the package.\n  volume=$(pkgutil --pkg-info \"$pkg_id\" | grep -i \"volume\" | awk '{if (NF>1) print $NF}')\n  location=$(pkgutil --pkg-info \"$pkg_id\" | grep -i \"location\" | awk '{if (NF>1) print $NF}')\n  # Check if this package id corresponds to a valid/installed package\n  if [[ ! -z \"$volume\" ]]; then\n    # Remove individual directories that end with \".app\" belonging to the package.\n    # Only process directories that end with \".app\" to prevent Fleet from removing top level directories.\n    pkgutil --only-dirs --files \"$pkg_id\" | grep \"\\.app$\" | sed -e 's@^@'\"$volume\"\"$location\"'/@' | tr '\\n' '\\0' | xargs -n 1 -0 rm -rf\n    # Remove receipts\n    pkgutil --forget \"$pkg_id\"\n  else\n    echo \"WARNING: volume is empty for package ID $pkg_id\"\n  fi\ndone\n",
+      "hash_sha256": "dff5434f8ef573f108ec6a48f19ab56c76985178e152ae45de9a575634f849e2",
+      "status": {
+        "installed": 0,
+        "pending_install": 0,
+        "failed_install": 0,
+        "pending_uninstall": 0,
+        "failed_uninstall": 0
+      },
+      "self_service": false,
+      "url": "",
+      "fleet_maintained_app_id": null,
+      "automatic_install_policies": null,
+      "labels_include_any": null,
+      "labels_exclude_any": null,
+      "labels_include_all": null,
+      "categories": null,
+      "display_name": "",
+      "patch_policy": null,
+      "fleet_id": 310
+    }
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#update-package
+examples:
+- name: 200 Default response
+  request:
+    method: PATCH
+    url: '{{baseUrl}}/api/v1/fleet/software/titles/:id/package'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: ID of the software title being updated.
+    body:
+      type: multipart-form
+      data:
+      - name: software
+        value: []
+        description: Installer package file or custom script file. Supported packages are `.pkg`, `.msi`, `.exe`,
+          `.deb`, `.rpm`, `.tar.gz`, `.ipa`, `.sh`, `.py`, and `.ps1`.
+        disabled: true
+        type: file
+      - name: fleet_id
+        value: ''
+        description: '**Required**. The fleet ID. Updates a software package in the specified fleet.'
+        disabled: false
+        type: text
+      - name: display_name
+        value: ''
+        description: Optional override for the default `name`.
+        disabled: true
+        type: text
+      - name: categories
+        value: ''
+        description: Zero or more [self-service category](#list-self-service-categories) names defined on the fleet,
+          used to group self-service software on your end users' **Fleet Desktop > My device** page. Each value
+          must match a category that exists on the fleet. Software with no categories will still be shown under
+          **All**.
+        disabled: true
+        type: text
+      - name: install_script
+        value: ''
+        description: Command that Fleet runs to install software. If not specified Fleet runs the [default install
+          command](https://github.com/fleetdm/fleet/tree/main/pkg/file/scripts) for each package type. Not supported
+          for `.sh`, `.py`, and `.ps1`.
+        disabled: true
+        type: text
+      - name: pre_install_query
+        value: ''
+        description: Query that is pre-install condition. If the query doesn't return any result, the package will
+          not be installed.
+        disabled: true
+        type: text
+      - name: post_install_script
+        value: ''
+        description: The contents of the script to run after install. If the specified script fails (exit code non-zero)
+          software install will be marked as failed and rolled back.
+        disabled: true
+        type: text
+      - name: self_service
+        value: ''
+        description: Whether this is optional self-service software that can be installed by the end user.
+        disabled: true
+        type: text
+      - name: labels_include_all
+        value: ''
+        description: Target hosts that have all labels, specified by label name, in the array.
+        disabled: true
+        type: text
+      - name: labels_include_any
+        value: ''
+        description: Target hosts that have any label, specified by label name, in the array. Only one of either
+          `labels_include_any` or `labels_exclude_any` can be specified.
+        disabled: true
+        type: text
+      - name: labels_exclude_any
+        value: ''
+        description: Target hosts that don't have any label, specified by label name, in the array.
+        disabled: true
+        type: text
+      - name: patch
+        value: ''
+        description: '_Available for Fleet-maintained apps only._ Enables or disables "Patch": a policy that triggers
+          a software install when the installed version is outdated. Set to `false` to remove the policy (and its
+          managed `pre_install_query`, if `patch_when_closed` was enabled).'
+        disabled: true
+        type: text
+      - name: patch_when_closed
+        value: ''
+        description: _Available for Fleet-maintained apps only. Only applies when `patch` is `true`._ If `true`
+          (default), Fleet adds a read-only pre-install condition that skips the automated install while the app
+          is open. If `false` ("Force patch"), Fleet installs the update the next time the policy fails, whether
+          or not the app is open.
+        disabled: true
+        type: text
+      - name: notify_before_patching
+        value: ''
+        description: _Available for Fleet-maintained apps only. Only applies when `patch` is `true`. If `true`,
+          Fleet shows the end user a notification listing the apps that will be patched in 1 hour. A reminder is
+          shown 5 minutes before the install. Setting this to `true` also sets `continuous_automations_enabled`
+          to `true`. Only supported on macOS hosts with Fleet Desktop installed (available as Fleet-maintained app).
+        disabled: true
+        type: text
+      - name: version
+        value: ''
+        description: Only available for Fleet-maintained apps. Pins the app to a specific or major version. Available
+          versions are listed in the Fleet UI under **Actions > Versions**. To pin to a major version, use a caret
+          (`^`) constraint and specify only the major version, without the minor and patch versions. For example,
+          `"^147"` means Fleet continuously updates to the latest version until the app reaches 148.0. Set `version`
+          to an empty string (`""`) to switch back to automatically updating to the latest version found in [Fleet's
+          catalog](https://fleetdm.com/software-catalog). `version` can't be changed in the same request as other
+          fields; omit it to leave the current pin unchanged.
+        disabled: true
+        type: text
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "software_installer": {
+            "team_id": 310,
+            "title_id": 2792,
+            "name": "Slack-4.45.64-macOS.pkg",
+            "icon_url": null,
+            "version": "4.45.64",
+            "platform": "darwin",
+            "uploaded_at": "2026-06-04T17:47:23Z",
+            "installer_id": 36818,
+            "install_script": "#!/bin/sh\n\ninstaller -pkg \"$INSTALLER_PATH\" -target /\n",
+            "pre_install_query": "",
+            "post_install_script": "",
+            "uninstall_script": "#!/bin/sh\n\n# Fleet extracts and saves package IDs.\npkg_ids=(\n  'com.tinyspeck.slackmacgap'\n)\n\n# For each package id, get all .app folders associated with the package and remove them.\nfor pkg_id in \"${pkg_ids[@]}\"\ndo\n  # Get volume and location of the package.\n  volume=$(pkgutil --pkg-info \"$pkg_id\" | grep -i \"volume\" | awk '{if (NF>1) print $NF}')\n  location=$(pkgutil --pkg-info \"$pkg_id\" | grep -i \"location\" | awk '{if (NF>1) print $NF}')\n  # Check if this package id corresponds to a valid/installed package\n  if [[ ! -z \"$volume\" ]]; then\n    # Remove individual directories that end with \".app\" belonging to the package.\n    # Only process directories that end with \".app\" to prevent Fleet from removing top level directories.\n    pkgutil --only-dirs --files \"$pkg_id\" | grep \"\\.app$\" | sed -e 's@^@'\"$volume\"\"$location\"'/@' | tr '\\n' '\\0' | xargs -n 1 -0 rm -rf\n    # Remove receipts\n    pkgutil --forget \"$pkg_id\"\n  else\n    echo \"WARNING: volume is empty for package ID $pkg_id\"\n  fi\ndone\n",
+            "hash_sha256": "dff5434f8ef573f108ec6a48f19ab56c76985178e152ae45de9a575634f849e2",
+            "status": {
+              "installed": 0,
+              "pending_install": 0,
+              "failed_install": 0,
+              "pending_uninstall": 0,
+              "failed_uninstall": 0
+            },
+            "self_service": false,
+            "url": "",
+            "fleet_maintained_app_id": null,
+            "automatic_install_policies": null,
+            "labels_include_any": null,
+            "labels_exclude_any": null,
+            "labels_include_all": null,
+            "categories": null,
+            "display_name": "",
+            "patch_policy": null,
+            "fleet_id": 310
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

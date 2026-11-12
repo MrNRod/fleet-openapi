@@ -1,0 +1,73 @@
+info:
+  name: Get host's mobile device management (MDM) information
+  type: http
+  seq: 17
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/hosts/:id/mdm'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required** The id of the host to get the details for'
+docs: |-
+  Currently supports Windows and macOS.
+
+  Retrieves a host's MDM enrollment status and MDM server URL.
+
+  If the host exists but is not enrolled to an MDM server, then this API returns `null`.
+
+  `GET /api/v1/fleet/hosts/:id/mdm`
+
+  #### Parameters
+
+  | Name    | Type    | In   | Description                                                                                                                                                                                                                                                                                                                        |
+  | ------- | ------- | ---- | -------------------------------------------------------------------------------- |
+  | id      | integer | path | **Required** The id of the host to get the details for                           |
+
+  #### Example
+
+  `GET /api/v1/fleet/hosts/32/mdm`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "enrollment_status": "On (automatic)",
+    "server_url": "some.mdm.com",
+    "name": "Some MDM",
+    "id": 3
+  }
+  ```
+
+  ---
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#get-hosts-mobile-device-management-mdm-information
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/hosts/:id/mdm'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required** The id of the host to get the details for'
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "enrollment_status": "On (automatic)",
+          "server_url": "some.mdm.com",
+          "name": "Some MDM",
+          "id": 3
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

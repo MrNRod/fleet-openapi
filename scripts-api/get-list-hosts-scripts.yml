@@ -1,0 +1,182 @@
+info:
+  name: List host's scripts
+  type: http
+  seq: 12
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/hosts/:id/scripts'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required**. The host''s id.'
+  - name: page
+    value: ''
+    type: query
+    disabled: true
+    description: Page number of the results to fetch.
+  - name: per_page
+    value: ''
+    type: query
+    disabled: true
+    description: Results per page.
+  - name: order_key
+    value: ''
+    type: query
+    disabled: true
+    description: What to order results by. Can be ordered by `name` or `executed_at`.
+  - name: order_direction
+    value: ''
+    type: query
+    disabled: true
+    description: '**Requires `order_key`**. The direction of the order given the order key. Options include `"asc"`
+      and `"desc"`. Default is `"asc"`.'
+  - name: after
+    value: ''
+    type: query
+    disabled: true
+    description: The value to get results after. This needs `order_key` defined, as that's the column that would
+      be used.
+docs: |-
+  `GET /api/v1/fleet/hosts/:id/scripts`
+
+  #### Parameters
+
+  | Name | Type    | In   | Description                  |
+  | ---- | ------- | ---- | ---------------------------- |
+  | id   | integer | path | **Required**. The host's id. |
+  | page | integer | query | Page number of the results to fetch.|
+  | per_page | integer | query | Results per page.|
+  | order_key | string | query | What to order results by. Can be ordered by `name` or `executed_at`. |
+  | order_direction | string | query | **Requires `order_key`**. The direction of the order given the order key. Options include `"asc"` and `"desc"`. Default is `"asc"`. |
+  | after | string | query | The value to get results after. This needs `order_key` defined, as that's the column that would be used. |
+
+  #### Example
+
+  `GET /api/v1/fleet/hosts/123/scripts`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "scripts": [
+      {
+        "script_id": 3,
+        "name": "remove-zoom-artifacts.sh",
+        "last_execution": {
+          "execution_id": "e797d6c6-3aae-11ee-be56-0242ac120002",
+          "executed_at": "2021-12-15T15:23:57Z",
+          "status": "error"
+        }
+      },
+      {
+        "script_id": 5,
+        "name": "set-timezone.sh",
+        "last_execution": {
+          "id": "e797d6c6-3aae-11ee-be56-0242ac120002",
+          "executed_at": "2021-12-15T15:23:57Z",
+          "status": "pending"
+        }
+      },
+      {
+        "script_id": 8,
+        "name": "uninstall-zoom.sh",
+        "last_execution": {
+          "id": "e797d6c6-3aae-11ee-be56-0242ac120002",
+          "executed_at": "2021-12-15T15:23:57Z",
+          "status": "ran"
+        }
+      }
+    ],
+    "meta": {
+      "has_next_results": false,
+      "has_previous_results": false
+    }
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#list-hosts-scripts
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/hosts/:id/scripts'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required**. The host''s id.'
+    - name: page
+      value: ''
+      type: query
+      disabled: true
+      description: Page number of the results to fetch.
+    - name: per_page
+      value: ''
+      type: query
+      disabled: true
+      description: Results per page.
+    - name: order_key
+      value: ''
+      type: query
+      disabled: true
+      description: What to order results by. Can be ordered by `name` or `executed_at`.
+    - name: order_direction
+      value: ''
+      type: query
+      disabled: true
+      description: '**Requires `order_key`**. The direction of the order given the order key. Options include `"asc"`
+        and `"desc"`. Default is `"asc"`.'
+    - name: after
+      value: ''
+      type: query
+      disabled: true
+      description: The value to get results after. This needs `order_key` defined, as that's the column that would
+        be used.
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "scripts": [
+            {
+              "script_id": 3,
+              "name": "remove-zoom-artifacts.sh",
+              "last_execution": {
+                "execution_id": "e797d6c6-3aae-11ee-be56-0242ac120002",
+                "executed_at": "2021-12-15T15:23:57Z",
+                "status": "error"
+              }
+            },
+            {
+              "script_id": 5,
+              "name": "set-timezone.sh",
+              "last_execution": {
+                "id": "e797d6c6-3aae-11ee-be56-0242ac120002",
+                "executed_at": "2021-12-15T15:23:57Z",
+                "status": "pending"
+              }
+            },
+            {
+              "script_id": 8,
+              "name": "uninstall-zoom.sh",
+              "last_execution": {
+                "id": "e797d6c6-3aae-11ee-be56-0242ac120002",
+                "executed_at": "2021-12-15T15:23:57Z",
+                "status": "ran"
+              }
+            }
+          ],
+          "meta": {
+            "has_next_results": false,
+            "has_previous_results": false
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

@@ -1,0 +1,81 @@
+info:
+  name: Delete policies
+  type: http
+  seq: 9
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/global/policies/delete'
+  auth: inherit
+  body:
+    type: json
+    data: |-
+      {
+        "ids": [
+          1
+        ]
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  `POST /api/v1/fleet/global/policies/delete`
+
+  #### Parameters
+
+  | Name     | Type    | In   | Description                                       |
+  | -------- | ------- | ---- | ------------------------------------------------- |
+  | ids      | array   | body | **Required.** The IDs of the policies to delete.  |
+
+  #### Example
+
+  `POST /api/v1/fleet/global/policies/delete`
+
+  #### Request body
+
+  ```json
+  {
+    "ids": [ 1 ]
+  }
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "deleted": 1
+  }
+  ```
+
+  ---
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#delete-policies
+examples:
+- name: 200 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/global/policies/delete'
+    body:
+      type: json
+      data: |-
+        {
+          "ids": [
+            1
+          ]
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "deleted": 1
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

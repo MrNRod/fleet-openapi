@@ -1,0 +1,48 @@
+info:
+  name: Turn off host's MDM
+  type: http
+  seq: 12
+http:
+  method: DELETE
+  url: '{{baseUrl}}/api/v1/fleet/hosts/:id/mdm'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required.** The host''s ID in Fleet.'
+docs: |-
+  Turns off MDM for the specified macOS, iOS, iPadOS, or Android host.
+
+  > On BYOD Android (work profile), Fleet sends a wipe command via the Android Management API. Unlike the [delete device command](https://developers.google.com/android/management/deprovision-device) in the Android Management API, the wipe command does not expire after 30 days. That way, Fleet makes sure that the work profile is wiped even if the host is offline for more than 30 days.
+
+  `DELETE /api/v1/fleet/hosts/:id/mdm`
+
+  #### Parameters
+
+  | Name | Type    | In   | Description                           |
+  | ---- | ------- | ---- | ------------------------------------- |
+  | id   | integer | path | **Required.** The host's ID in Fleet. |
+
+  #### Example
+
+  `DELETE /api/v1/fleet/hosts/42/mdm`
+
+  ##### Default response
+
+  `Status: 204`
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#turn-off-hosts-mdm
+examples:
+- name: 204 Default response
+  request:
+    method: DELETE
+    url: '{{baseUrl}}/api/v1/fleet/hosts/:id/mdm'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required.** The host''s ID in Fleet.'
+  response:
+    status: 204
+    statusText: No Content

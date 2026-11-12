@@ -1,0 +1,112 @@
+info:
+  name: Run live report on host (ad hoc)
+  type: http
+  seq: 38
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/hosts/:id/query'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required**. The target host ID.'
+  body:
+    type: json
+    data: |-
+      {
+        "query": "SELECT model, vendor FROM usb_devices;"
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  Runs an ad hoc live report against the specified host and responds with the results.
+
+  The live report will stop if the targeted host is offline, or if the query times out. Timeouts happen if the host hasn't responded after the configured `FLEET_LIVE_QUERY_REST_PERIOD` (default 25 seconds) or if the `distributed_interval` agent option (default 10 seconds) is higher than the `FLEET_LIVE_QUERY_REST_PERIOD`.
+
+
+  `POST /api/v1/fleet/hosts/:id/query`
+
+  #### Parameters
+
+  | Name      | Type  | In   | Description                                                                                                                                                        |
+  |-----------|-------|------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+  | id        | integer  | path | **Required**. The target host ID. |
+  | query     | string   | body | **Required**. The query SQL. |
+
+
+  #### Example
+
+  `POST /api/v1/fleet/hosts/123/query`
+
+  ##### Request body
+
+  ```json
+  {
+    "query": "SELECT model, vendor FROM usb_devices;"
+  }
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "host_id": 123,
+    "query": "SELECT model, vendor FROM usb_devices;",
+    "status": "online", // "online" or "offline"
+    "error": null,
+    "rows": [
+      {
+        "model": "USB2.0 Hub",
+        "vendor": "VIA Labs, Inc."
+      }
+    ]
+  }
+  ```
+
+  Note that if the host is online and the query times out, this endpoint will return an error and `rows` will be `null`. If the host is offline, no error will be returned, and `rows` will be`null`.
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#run-live-report-on-host-ad-hoc
+examples:
+- name: 200 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/hosts/:id/query'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required**. The target host ID.'
+    body:
+      type: json
+      data: |-
+        {
+          "query": "SELECT model, vendor FROM usb_devices;"
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "host_id": 123,
+          "query": "SELECT model, vendor FROM usb_devices;",
+          "status": "online",
+          "error": null,
+          "rows": [
+            {
+              "model": "USB2.0 Hub",
+              "vendor": "VIA Labs, Inc."
+            }
+          ]
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

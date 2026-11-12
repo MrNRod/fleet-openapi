@@ -1,0 +1,268 @@
+info:
+  name: List users
+  type: http
+  seq: 1
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/users'
+  auth: inherit
+  params:
+  - name: query
+    value: ''
+    type: query
+    disabled: true
+    description: Search query keywords. Searchable fields include `name` and `email`.
+  - name: order_key
+    value: ''
+    type: query
+    disabled: true
+    description: What to order results by. Can be any column in the users table.
+  - name: order_direction
+    value: ''
+    type: query
+    disabled: true
+    description: '**Requires `order_key`**. The direction of the order given the order key. Options include `"asc"`
+      and `"desc"`. Default is `"asc"`.'
+  - name: page
+    value: ''
+    type: query
+    disabled: true
+    description: Page number of the results to fetch.
+  - name: per_page
+    value: ''
+    type: query
+    disabled: true
+    description: Results per page.
+  - name: fleet_id
+    value: ''
+    type: query
+    disabled: true
+    description: _Available in Fleet Premium_. Filters the users to only include users in the specified fleet.
+  - name: after
+    value: ''
+    type: query
+    disabled: true
+    description: The value to get results after. This needs `order_key` defined, as that's the column that would
+      be used.
+docs: |-
+  Returns a list of all enabled users
+
+  `GET /api/v1/fleet/users`
+
+  #### Parameters
+
+  | Name            | Type    | In    | Description                                                                                                                   |
+  | --------------- | ------- | ----- | ----------------------------------------------------------------------------------------------------------------------------- |
+  | query           | string  | query | Search query keywords. Searchable fields include `name` and `email`.                                                          |
+  | order_key       | string  | query | What to order results by. Can be any column in the users table.                                                               |
+  | order_direction | string  | query | **Requires `order_key`**. The direction of the order given the order key. Options include `"asc"` and `"desc"`. Default is `"asc"`. |
+  | page            | integer | query | Page number of the results to fetch.                                                                                          |
+  | query           | string  | query | Search query keywords. Searchable fields include `name` and `email`.                                                          |
+  | per_page        | integer | query | Results per page.                                                                                                             |
+  | fleet_id         | integer | query | _Available in Fleet Premium_. Filters the users to only include users in the specified fleet.                                   |
+  | after           | string  | query | The value to get results after. This needs `order_key` defined, as that's the column that would be used. |
+
+  #### Example
+
+  `GET /api/v1/fleet/users`
+
+  ##### Request query parameters
+
+  None.
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "users": [
+      {
+        "created_at": "2020-12-10T03:52:53Z",
+        "updated_at": "2020-12-10T03:52:53Z",
+        "id": 1,
+        "name": "Jane Doe",
+        "email": "janedoe@example.com",
+        "force_password_reset": false,
+        "gravatar_url": "",
+        "sso_enabled": false,
+        "mfa_enabled": false,
+        "global_role": null,
+        "api_only": false,
+        "last_login_at": "2020-12-10T04:15:20Z",
+        "last_activity_at": "2020-12-10T04:32:41Z",
+        "status": "active",
+        "api_endpoints": [],
+        "fleets": [
+          {
+            "id": 1,
+            "created_at": "0001-01-01T00:00:00Z",
+            "name": "workstations",
+            "description": "",
+            "role": "admin"
+          }
+        ]
+      }
+    ]
+  }
+  ```
+
+  ##### Failed authentication
+
+  `Status: 401 Authentication Failed`
+
+  ```json
+  {
+    "message": "Authentication Failed",
+    "errors": [
+      {
+        "name": "base",
+        "reason": "Authentication failed"
+      }
+    ]
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#list-users
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/users'
+    params:
+    - name: query
+      value: ''
+      type: query
+      disabled: true
+      description: Search query keywords. Searchable fields include `name` and `email`.
+    - name: order_key
+      value: ''
+      type: query
+      disabled: true
+      description: What to order results by. Can be any column in the users table.
+    - name: order_direction
+      value: ''
+      type: query
+      disabled: true
+      description: '**Requires `order_key`**. The direction of the order given the order key. Options include `"asc"`
+        and `"desc"`. Default is `"asc"`.'
+    - name: page
+      value: ''
+      type: query
+      disabled: true
+      description: Page number of the results to fetch.
+    - name: per_page
+      value: ''
+      type: query
+      disabled: true
+      description: Results per page.
+    - name: fleet_id
+      value: ''
+      type: query
+      disabled: true
+      description: _Available in Fleet Premium_. Filters the users to only include users in the specified fleet.
+    - name: after
+      value: ''
+      type: query
+      disabled: true
+      description: The value to get results after. This needs `order_key` defined, as that's the column that would
+        be used.
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "users": [
+            {
+              "created_at": "2020-12-10T03:52:53Z",
+              "updated_at": "2020-12-10T03:52:53Z",
+              "id": 1,
+              "name": "Jane Doe",
+              "email": "janedoe@example.com",
+              "force_password_reset": false,
+              "gravatar_url": "",
+              "sso_enabled": false,
+              "mfa_enabled": false,
+              "global_role": null,
+              "api_only": false,
+              "last_login_at": "2020-12-10T04:15:20Z",
+              "last_activity_at": "2020-12-10T04:32:41Z",
+              "status": "active",
+              "api_endpoints": [],
+              "fleets": [
+                {
+                  "id": 1,
+                  "created_at": "0001-01-01T00:00:00Z",
+                  "name": "workstations",
+                  "description": "",
+                  "role": "admin"
+                }
+              ]
+            }
+          ]
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+- name: 401 Failed authentication
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/users'
+    params:
+    - name: query
+      value: ''
+      type: query
+      disabled: true
+      description: Search query keywords. Searchable fields include `name` and `email`.
+    - name: order_key
+      value: ''
+      type: query
+      disabled: true
+      description: What to order results by. Can be any column in the users table.
+    - name: order_direction
+      value: ''
+      type: query
+      disabled: true
+      description: '**Requires `order_key`**. The direction of the order given the order key. Options include `"asc"`
+        and `"desc"`. Default is `"asc"`.'
+    - name: page
+      value: ''
+      type: query
+      disabled: true
+      description: Page number of the results to fetch.
+    - name: per_page
+      value: ''
+      type: query
+      disabled: true
+      description: Results per page.
+    - name: fleet_id
+      value: ''
+      type: query
+      disabled: true
+      description: _Available in Fleet Premium_. Filters the users to only include users in the specified fleet.
+    - name: after
+      value: ''
+      type: query
+      disabled: true
+      description: The value to get results after. This needs `order_key` defined, as that's the column that would
+        be used.
+  response:
+    status: 401
+    statusText: Unauthorized
+    body:
+      type: json
+      data: |-
+        {
+          "message": "Authentication Failed",
+          "errors": [
+            {
+              "name": "base",
+              "reason": "Authentication failed"
+            }
+          ]
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

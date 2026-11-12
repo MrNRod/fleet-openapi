@@ -1,0 +1,115 @@
+info:
+  name: Get SCIM user
+  type: http
+  seq: 3
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/scim/Users/:id'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required**. The user''s ID.'
+docs: |-
+  _Available in Fleet Premium_
+
+  `GET /api/v1/fleet/scim/Users/:id`
+
+  #### Parameters
+
+  | Name | Type   | In   | Description                  |
+  | ---- | ------ | ---- | ---------------------------- |
+  | id   | string | path | **Required**. The user's ID. |
+
+  #### Example
+
+  `GET /api/v1/fleet/scim/Users/1`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
+    "id": "1",
+    "externalId": "ext-123",
+    "userName": "user@example.com",
+    "name": {
+      "givenName": "Jane",
+      "familyName": "Doe"
+    },
+    "emails": [
+      {
+        "value": "user@example.com",
+        "type": "work",
+        "primary": true
+      }
+    ],
+    "active": true,
+    "groups": [
+      {
+        "value": "group-1",
+        "$ref": "Groups/group-1",
+        "display": "Engineering"
+      }
+    ],
+    "meta": {
+      "resourceType": "User"
+    }
+  }
+  ```
+
+  ---
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#get-scim-user
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/scim/Users/:id'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required**. The user''s ID.'
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "schemas": [
+            "urn:ietf:params:scim:schemas:core:2.0:User"
+          ],
+          "id": "1",
+          "externalId": "ext-123",
+          "userName": "user@example.com",
+          "name": {
+            "givenName": "Jane",
+            "familyName": "Doe"
+          },
+          "emails": [
+            {
+              "value": "user@example.com",
+              "type": "work",
+              "primary": true
+            }
+          ],
+          "active": true,
+          "groups": [
+            {
+              "value": "group-1",
+              "$ref": "Groups/group-1",
+              "display": "Engineering"
+            }
+          ],
+          "meta": {
+            "resourceType": "User"
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

@@ -1,0 +1,50 @@
+info:
+  name: Delete SCIM user
+  type: http
+  seq: 6
+http:
+  method: DELETE
+  url: '{{baseUrl}}/api/v1/fleet/scim/Users/:id'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required**. The user''s ID.'
+docs: |-
+  _Available in Fleet Premium_
+
+  `DELETE /api/v1/fleet/scim/Users/:id`
+
+  #### Parameters
+
+  | Name | Type   | In   | Description                  |
+  | ---- | ------ | ---- | ---------------------------- |
+  | id   | string | path | **Required**. The user's ID. |
+
+  #### Example
+
+  `DELETE /api/v1/fleet/scim/Users/1`
+
+  ##### Default response
+
+  `Status: 204`
+
+  No content.
+
+  ---
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#delete-scim-user
+examples:
+- name: 204 Default response
+  request:
+    method: DELETE
+    url: '{{baseUrl}}/api/v1/fleet/scim/Users/:id'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required**. The user''s ID.'
+  response:
+    status: 204
+    statusText: No Content

@@ -1,0 +1,48 @@
+info:
+  name: Refetch host
+  type: http
+  seq: 8
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/hosts/:id/refetch'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required**. The host''s id.'
+docs: |-
+  Flags the host details, labels and policies to be refetched the next time the host checks in. Note that we cannot be certain when the host will actually check in. Further requests to the host APIs will indicate that the refetch has been requested through the `refetch_requested` field on the host object.
+
+  Android hosts can't be refetched on demand because they sync data automatically when it changes. This endpoint and [Refetch host by Fleet Desktop token](#refetch-host-by-fleet-desktop-token) return a `400` for Android hosts.
+
+  `POST /api/v1/fleet/hosts/:id/refetch`
+
+  #### Parameters
+
+  | Name | Type    | In   | Description                  |
+  | ---- | ------- | ---- | ---------------------------- |
+  | id   | integer | path | **Required**. The host's id. |
+
+  #### Example
+
+  `POST /api/v1/fleet/hosts/121/refetch`
+
+  ##### Default response
+
+  `Status: 200`
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#refetch-host
+examples:
+- name: 200 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/hosts/:id/refetch'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required**. The host''s id.'
+  response:
+    status: 200
+    statusText: OK

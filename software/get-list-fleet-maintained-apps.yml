@@ -1,0 +1,202 @@
+info:
+  name: List Fleet-maintained apps
+  type: http
+  seq: 15
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/software/fleet_maintained_apps'
+  auth: inherit
+  params:
+  - name: fleet_id
+    value: ''
+    type: query
+    disabled: true
+    description: If specified, each app includes the `software_title_id` if the software has already been added
+      to that fleet.
+  - name: query
+    value: ''
+    type: query
+    disabled: true
+    description: Search query keywords. Searches app name.
+  - name: order_key
+    value: ''
+    type: query
+    disabled: true
+    description: What to order results by. Currently only `name` is supported.
+  - name: order_direction
+    value: ''
+    type: query
+    disabled: true
+    description: '**Requires `order_key`**. The direction of the order. Options are `"asc"` and `"desc"`. Default
+      is `"asc"`.'
+  - name: page
+    value: ''
+    type: query
+    disabled: true
+    description: 'Page number of the results to fetch. Pagination is by app: an app''s macOS and Windows entries
+      are counted as one result and always returned on the same page.'
+  - name: per_page
+    value: ''
+    type: query
+    disabled: true
+    description: Results (apps) per page.
+  - name: platform
+    value: ''
+    type: query
+    disabled: true
+    description: Filter to apps available on a platform. Options are `"darwin"` (macOS) and `"windows"`.
+  - name: available
+    value: ''
+    type: query
+    disabled: true
+    description: If `true`, only return apps that have not yet been added to the fleet. Requires `fleet_id`.
+docs: |-
+  List available Fleet-maintained apps.
+
+  `GET /api/v1/fleet/software/fleet_maintained_apps`
+
+  #### Parameters
+
+  | Name | Type | In | Description |
+  | ---- | ---- | -- | ----------- |
+  | fleet_id  | integer | query | If specified, each app includes the `software_title_id` if the software has already been added to that fleet.  |
+  | query | string | query | Search query keywords. Searches app name. |
+  | order_key | string | query | What to order results by. Currently only `name` is supported. |
+  | order_direction | string | query | **Requires `order_key`**. The direction of the order. Options are `"asc"` and `"desc"`. Default is `"asc"`. |
+  | page     | integer | query | Page number of the results to fetch. Pagination is by app: an app's macOS and Windows entries are counted as one result and always returned on the same page.  |
+  | per_page | integer | query | Results (apps) per page.  |
+  | platform | string | query | Filter to apps available on a platform. Options are `"darwin"` (macOS) and `"windows"`. |
+  | available | boolean | query | If `true`, only return apps that have not yet been added to the fleet. Requires `fleet_id`. |
+
+  #### Example
+
+  `GET /api/v1/fleet/software/fleet_maintained_apps?fleet_id=3`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "fleet_maintained_apps": [
+      {
+        "id": 1,
+        "name": "1Password",
+        "slug": "1password/darwin",
+        "platform": "darwin",
+        "software_title_id": 1
+      },
+      {
+        "id": 2,
+        "name": "Adobe Acrobat Reader",
+        "slug": "adobe-acrobat-reader/darwin",
+        "platform": "darwin",
+        "software_title_id": null
+      },
+      {
+        "id": 3,
+        "name": "Box Drive",
+        "slug": "box-drive/darwin",
+        "platform": "darwin",
+        "software_title_id": 3
+      }
+    ],
+    "count": 250,
+    "meta": {
+      "has_next_results": false,
+      "has_previous_results": false
+    }
+  }
+  ```
+
+  > `count` is the total number of Fleet-maintained apps matching the query. An app's macOS and Windows versions are counted separately, even though the UI combines them into a single row.
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#list-fleet-maintained-apps
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/software/fleet_maintained_apps'
+    params:
+    - name: fleet_id
+      value: ''
+      type: query
+      disabled: true
+      description: If specified, each app includes the `software_title_id` if the software has already been added
+        to that fleet.
+    - name: query
+      value: ''
+      type: query
+      disabled: true
+      description: Search query keywords. Searches app name.
+    - name: order_key
+      value: ''
+      type: query
+      disabled: true
+      description: What to order results by. Currently only `name` is supported.
+    - name: order_direction
+      value: ''
+      type: query
+      disabled: true
+      description: '**Requires `order_key`**. The direction of the order. Options are `"asc"` and `"desc"`. Default
+        is `"asc"`.'
+    - name: page
+      value: ''
+      type: query
+      disabled: true
+      description: 'Page number of the results to fetch. Pagination is by app: an app''s macOS and Windows entries
+        are counted as one result and always returned on the same page.'
+    - name: per_page
+      value: ''
+      type: query
+      disabled: true
+      description: Results (apps) per page.
+    - name: platform
+      value: ''
+      type: query
+      disabled: true
+      description: Filter to apps available on a platform. Options are `"darwin"` (macOS) and `"windows"`.
+    - name: available
+      value: ''
+      type: query
+      disabled: true
+      description: If `true`, only return apps that have not yet been added to the fleet. Requires `fleet_id`.
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "fleet_maintained_apps": [
+            {
+              "id": 1,
+              "name": "1Password",
+              "slug": "1password/darwin",
+              "platform": "darwin",
+              "software_title_id": 1
+            },
+            {
+              "id": 2,
+              "name": "Adobe Acrobat Reader",
+              "slug": "adobe-acrobat-reader/darwin",
+              "platform": "darwin",
+              "software_title_id": null
+            },
+            {
+              "id": 3,
+              "name": "Box Drive",
+              "slug": "box-drive/darwin",
+              "platform": "darwin",
+              "software_title_id": 3
+            }
+          ],
+          "count": 250,
+          "meta": {
+            "has_next_results": false,
+            "has_previous_results": false
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

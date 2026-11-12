@@ -1,0 +1,87 @@
+info:
+  name: Get carve
+  type: http
+  seq: 2
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/carves/:id'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required.** The desired carve''s ID.'
+docs: |-
+  Retrieves the specified carve.
+
+  `GET /api/v1/fleet/carves/:id`
+
+  #### Parameters
+
+  | Name | Type    | In   | Description                           |
+  | ---- | ------- | ---- | ------------------------------------- |
+  | id   | integer | path | **Required.** The desired carve's ID. |
+
+  #### Example
+
+  `GET /api/v1/fleet/carves/1`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "carve": {
+      "id": 1,
+      "created_at": "2021-02-23T22:52:01Z",
+      "host_id": 7,
+      "name": "macbook-pro.local-2021-02-23T22:52:01Z-fleet_distributed_query_30",
+      "block_count": 1,
+      "block_size": 2000000,
+      "carve_size": 2048,
+      "carve_id": "c6958b5f-4c10-4dc8-bc10-60aad5b20dc8",
+      "request_id": "fleet_distributed_query_30",
+      "session_id": "065a1dc3-40ad-441c-afff-80c2ad7dac28",
+      "expired": false,
+      "max_block": 0
+    }
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#get-carve
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/carves/:id'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required.** The desired carve''s ID.'
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "carve": {
+            "id": 1,
+            "created_at": "2021-02-23T22:52:01Z",
+            "host_id": 7,
+            "name": "macbook-pro.local-2021-02-23T22:52:01Z-fleet_distributed_query_30",
+            "block_count": 1,
+            "block_size": 2000000,
+            "carve_size": 2048,
+            "carve_id": "c6958b5f-4c10-4dc8-bc10-60aad5b20dc8",
+            "request_id": "fleet_distributed_query_30",
+            "session_id": "065a1dc3-40ad-441c-afff-80c2ad7dac28",
+            "expired": false,
+            "max_block": 0
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

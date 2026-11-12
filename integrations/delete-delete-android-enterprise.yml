@@ -1,0 +1,34 @@
+info:
+  name: Delete Android Enterprise
+  type: http
+  seq: 5
+http:
+  method: DELETE
+  url: '{{baseUrl}}/api/v1/fleet/android_enterprise'
+  auth: inherit
+docs: |-
+  Delete Android Enterprise that's connected to Fleet. Once deleted, hosts that belong to Android Enterprise will be un-enrolled and Android MDM features will be turned off.
+
+  `DELETE /api/v1/fleet/android_enterprise`
+
+  #### Parameters
+
+  None.
+
+  #### Example
+
+  `DELETE /api/v1/fleet/android_enterprise`
+
+  ##### Default response
+
+  `Status: 200`
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#delete-android-enterprise
+examples:
+- name: 200 Default response
+  request:
+    method: DELETE
+    url: '{{baseUrl}}/api/v1/fleet/android_enterprise'
+  response:
+    status: 200
+    statusText: OK

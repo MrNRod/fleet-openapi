@@ -1,0 +1,328 @@
+info:
+  name: Get fleet
+  type: http
+  seq: 2
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/fleets/:id'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required.** The desired fleet''s ID. Use `0` for "Unassigned" hosts.'
+docs: |-
+  _Available in Fleet Premium_
+
+  `GET /api/v1/fleet/fleets/:id`
+
+  `mdm.apple_settings.configuration_profiles`, `mdm.windows_settings.configuration_profiles`, `scripts`, and `mdm.setup_experience` only include the configuration profiles, scripts, and setup experience settings applied using [Fleet's YAML](https://fleetdm.com/docs/configuration/yaml-files). To list profiles, scripts, or setup experience settings added in the UI or API, use the [List configuration profiles](https://fleetdm.com/docs/rest-api/rest-api#list-configuration-profiles), [List scripts](https://fleetdm.com/docs/rest-api/rest-api#list-scripts), or GET endpoints from [Setup experience](https://fleetdm.com/docs/rest-api/rest-api#setup-experience) instead.
+
+  "Unassigned" (id 0) will only return `id`, `name`, `webhook_settings.failing_policies_webhook`, `webhook_settings.host_activities_webhook`, `integrations.jira`, and `integrations.zendesk` fields.
+
+  #### Parameters
+
+  | Name | Type    | In   | Description                                                                                  |
+  |------|---------|------|----------------------------------------------------------------------------------------------|
+  | id   | integer | path | **Required.** The desired fleet's ID. Use `0` for "Unassigned" hosts. |
+
+  #### Example
+
+  `GET /api/v1/fleet/fleets/1`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "team": {
+      "name": "Workstations",
+      "id": 1,
+      "user_count": 4,
+      "host_count": 0,
+      "agent_options": {
+        "config": {
+          "options": {
+            "pack_delimiter": "/",
+            "logger_tls_period": 10,
+            "distributed_plugin": "tls",
+            "disable_distributed": false,
+            "logger_tls_endpoint": "/api/v1/osquery/log",
+            "distributed_interval": 10,
+            "distributed_tls_max_attempts": 3
+          },
+          "decorators": {
+            "load": [
+              "SELECT uuid AS host_uuid FROM system_info;",
+              "SELECT hostname AS hostname FROM system_info;"
+            ]
+          }
+        },
+        "overrides": {},
+        "command_line_flags": {}
+      },
+      "webhook_settings": {
+        "failing_policies_webhook": {
+          "enable_failing_policies_webhook": false,
+          "destination_url": "",
+          "policy_ids": null,
+          "host_batch_size": 0
+        },
+        "host_activities_webhook": {
+          "enable_host_activities_webhook": true,
+          "destination_url": "https://server.com/example"
+        }
+      },
+      "integrations": {
+        "google_calendar": {
+          "enable_calendar_events": true,
+          "webhook_url": "https://server.com/example"
+        }
+      },
+      "mdm": {
+        "macos_updates": {
+          "minimum_version": "12.3.1",
+          "deadline": "2022-01-01",
+          "update_new_hosts": true
+        },
+        "windows_updates": {
+          "deadline_days": 5,
+          "grace_period_days": 1
+        },
+        "macos_settings": {
+          "custom_settings": [
+            {
+              "path": "path/to/profile1.mobileconfig",
+              "labels": ["Label 1", "Label 2"]
+            }
+          ]
+        },
+        "apple_settings": {
+          "configuration_profiles": [
+            {
+              "path": "path/to/profile1.mobileconfig",
+              "labels": ["Label 1", "Label 2"]
+            },
+            {
+              "path": "path/to/declaration.json",
+              "labels": ["Label 1", "Label 2"]
+            },
+            {
+              "path": "path/to/assets/asset.json"
+            }
+          ],
+          "enable_disk_encryption": true,
+          "enable_escrow_disk_encryption_key": true,
+          "assets": [
+            {
+              "path": "path/to/assets/asset.json"
+            }
+          ],
+          "managed_local_account_settings": {
+            "enabled": true
+          }
+        },
+        "windows_settings": {
+          "custom_settings": [
+            {
+              "path": "path/to/profile2.xml",
+              "labels": ["Label 3", "Label 4"]
+            }
+          ],
+          "configuration_profiles": [
+            {
+              "path": "path/to/profile2.xml",
+              "labels": ["Label 3", "Label 4"]
+            }
+          ],
+          "enable_disk_encryption": true,
+          "require_bitlocker_pin": true,
+          "enable_managed_local_account": true
+        },
+        "linux_settings": {
+          "enable_escrow_disk_encryption_key": true
+        },
+        "macos_setup": {
+          "bootstrap_package": "",
+          "enable_end_user_authentication": false,
+          "macos_setup_assistant": "path/to/config.json",
+          "enable_release_device_manually": false,
+          "manual_agent_install": false
+        },
+        "setup_experience": {
+          "bootstrap_package": "",
+          "enable_end_user_authentication": false,
+          "enable_managed_local_account": false,
+          "end_user_local_account_type": "admin",
+          "apple_setup_assistant": "path/to/config.json",
+          "enable_release_device_manually": false,
+          "manual_agent_install": false
+        }
+      }
+    }
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#get-fleet
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/fleets/:id'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required.** The desired fleet''s ID. Use `0` for "Unassigned" hosts.'
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "team": {
+            "name": "Workstations",
+            "id": 1,
+            "user_count": 4,
+            "host_count": 0,
+            "agent_options": {
+              "config": {
+                "options": {
+                  "pack_delimiter": "/",
+                  "logger_tls_period": 10,
+                  "distributed_plugin": "tls",
+                  "disable_distributed": false,
+                  "logger_tls_endpoint": "/api/v1/osquery/log",
+                  "distributed_interval": 10,
+                  "distributed_tls_max_attempts": 3
+                },
+                "decorators": {
+                  "load": [
+                    "SELECT uuid AS host_uuid FROM system_info;",
+                    "SELECT hostname AS hostname FROM system_info;"
+                  ]
+                }
+              },
+              "overrides": {},
+              "command_line_flags": {}
+            },
+            "webhook_settings": {
+              "failing_policies_webhook": {
+                "enable_failing_policies_webhook": false,
+                "destination_url": "",
+                "policy_ids": null,
+                "host_batch_size": 0
+              },
+              "host_activities_webhook": {
+                "enable_host_activities_webhook": true,
+                "destination_url": "https://server.com/example"
+              }
+            },
+            "integrations": {
+              "google_calendar": {
+                "enable_calendar_events": true,
+                "webhook_url": "https://server.com/example"
+              }
+            },
+            "mdm": {
+              "macos_updates": {
+                "minimum_version": "12.3.1",
+                "deadline": "2022-01-01",
+                "update_new_hosts": true
+              },
+              "windows_updates": {
+                "deadline_days": 5,
+                "grace_period_days": 1
+              },
+              "macos_settings": {
+                "custom_settings": [
+                  {
+                    "path": "path/to/profile1.mobileconfig",
+                    "labels": [
+                      "Label 1",
+                      "Label 2"
+                    ]
+                  }
+                ]
+              },
+              "apple_settings": {
+                "configuration_profiles": [
+                  {
+                    "path": "path/to/profile1.mobileconfig",
+                    "labels": [
+                      "Label 1",
+                      "Label 2"
+                    ]
+                  },
+                  {
+                    "path": "path/to/declaration.json",
+                    "labels": [
+                      "Label 1",
+                      "Label 2"
+                    ]
+                  },
+                  {
+                    "path": "path/to/assets/asset.json"
+                  }
+                ],
+                "enable_disk_encryption": true,
+                "enable_escrow_disk_encryption_key": true,
+                "assets": [
+                  {
+                    "path": "path/to/assets/asset.json"
+                  }
+                ],
+                "managed_local_account_settings": {
+                  "enabled": true
+                }
+              },
+              "windows_settings": {
+                "custom_settings": [
+                  {
+                    "path": "path/to/profile2.xml",
+                    "labels": [
+                      "Label 3",
+                      "Label 4"
+                    ]
+                  }
+                ],
+                "configuration_profiles": [
+                  {
+                    "path": "path/to/profile2.xml",
+                    "labels": [
+                      "Label 3",
+                      "Label 4"
+                    ]
+                  }
+                ],
+                "enable_disk_encryption": true,
+                "require_bitlocker_pin": true,
+                "enable_managed_local_account": true
+              },
+              "linux_settings": {
+                "enable_escrow_disk_encryption_key": true
+              },
+              "macos_setup": {
+                "bootstrap_package": "",
+                "enable_end_user_authentication": false,
+                "macos_setup_assistant": "path/to/config.json",
+                "enable_release_device_manually": false,
+                "manual_agent_install": false
+              },
+              "setup_experience": {
+                "bootstrap_package": "",
+                "enable_end_user_authentication": false,
+                "enable_managed_local_account": false,
+                "end_user_local_account_type": "admin",
+                "apple_setup_assistant": "path/to/config.json",
+                "enable_release_device_manually": false,
+                "manual_agent_install": false
+              }
+            }
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

@@ -1,0 +1,77 @@
+info:
+  name: Remove labels from host
+  type: http
+  seq: 37
+http:
+  method: DELETE
+  url: '{{baseUrl}}/api/v1/fleet/hosts/:id/labels'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+  body:
+    type: json
+    data: |-
+      {
+        "labels": [
+          "label3",
+          "label4"
+        ]
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  Removes manual labels from a host.
+
+  `DELETE /api/v1/fleet/hosts/:id/labels`
+
+  #### Parameters
+
+  | Name   | Type    | In   | Description                  |
+  | ------ | ------- | ---- | ---------------------------- |
+  | labels | array   | body | The list of label names to delete from the host. |
+
+
+  #### Example
+
+  `DELETE /api/v1/fleet/hosts/12/labels`
+
+  ##### Request body
+
+  ```json
+  {
+    "labels": ["label3", "label4"]
+  }
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#remove-labels-from-host
+examples:
+- name: 200 Default response
+  request:
+    method: DELETE
+    url: '{{baseUrl}}/api/v1/fleet/hosts/:id/labels'
+    params:
+    - name: id
+      value: ''
+      type: path
+    body:
+      type: json
+      data: |-
+        {
+          "labels": [
+            "label3",
+            "label4"
+          ]
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 200
+    statusText: OK

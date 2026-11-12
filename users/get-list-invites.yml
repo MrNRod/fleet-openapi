@@ -1,0 +1,168 @@
+info:
+  name: List invites
+  type: http
+  seq: 11
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/invites'
+  auth: inherit
+  params:
+  - name: order_key
+    value: ''
+    type: query
+    disabled: true
+    description: What to order results by. Can be any column in the invites table.
+  - name: order_direction
+    value: ''
+    type: query
+    disabled: true
+    description: '**Requires `order_key`**. The direction of the order given the order key. Options include `"asc"`
+      and `"desc"`. Default is `"asc"`.'
+  - name: query
+    value: ''
+    type: query
+    disabled: true
+    description: Search query keywords. Searchable fields include `name` and `email`.
+  - name: page
+    value: ''
+    type: query
+    disabled: true
+    description: Page number of the results to fetch.
+  - name: per_page
+    value: ''
+    type: query
+    disabled: true
+    description: Results per page.
+  - name: after
+    value: ''
+    type: query
+    disabled: true
+    description: The value to get results after. This needs `order_key` defined, as that's the column that would
+      be used.
+docs: |-
+  Returns a list of the active invitations in Fleet.
+
+  `GET /api/v1/fleet/invites`
+
+  #### Parameters
+
+  | Name            | Type   | In    | Description                                                                                                                   |
+  | --------------- | ------ | ----- | ----------------------------------------------------------------------------------------------------------------------------- |
+  | order_key       | string | query | What to order results by. Can be any column in the invites table.                                                             |
+  | order_direction | string | query | **Requires `order_key`**. The direction of the order given the order key. Options include `"asc"` and `"desc"`. Default is `"asc"`. |
+  | query           | string | query | Search query keywords. Searchable fields include `name` and `email`.                                                          |
+  | page            | integer | query | Page number of the results to fetch. |
+  | per_page        | integer | query | Results per page. |
+  | after           | string  | query | The value to get results after. This needs `order_key` defined, as that's the column that would be used. |
+
+  #### Example
+
+  `GET /api/v1/fleet/invites`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "invites": [
+      {
+        "created_at": "0001-01-01T00:00:00Z",
+        "updated_at": "0001-01-01T00:00:00Z",
+        "id": 3,
+        "email": "john_appleseed@example.com",
+        "name": "John",
+        "sso_enabled": false,
+        "mfa_enabled": false,
+        "global_role": "admin",
+        "fleets": []
+      },
+      {
+        "created_at": "0001-01-01T00:00:00Z",
+        "updated_at": "0001-01-01T00:00:00Z",
+        "id": 4,
+        "email": "bob_marks@example.com",
+        "name": "Bob",
+        "sso_enabled": false,
+        "mfa_enabled": false,
+        "global_role": "admin",
+        "fleets": []
+      }
+    ]
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#list-invites
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/invites'
+    params:
+    - name: order_key
+      value: ''
+      type: query
+      disabled: true
+      description: What to order results by. Can be any column in the invites table.
+    - name: order_direction
+      value: ''
+      type: query
+      disabled: true
+      description: '**Requires `order_key`**. The direction of the order given the order key. Options include `"asc"`
+        and `"desc"`. Default is `"asc"`.'
+    - name: query
+      value: ''
+      type: query
+      disabled: true
+      description: Search query keywords. Searchable fields include `name` and `email`.
+    - name: page
+      value: ''
+      type: query
+      disabled: true
+      description: Page number of the results to fetch.
+    - name: per_page
+      value: ''
+      type: query
+      disabled: true
+      description: Results per page.
+    - name: after
+      value: ''
+      type: query
+      disabled: true
+      description: The value to get results after. This needs `order_key` defined, as that's the column that would
+        be used.
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "invites": [
+            {
+              "created_at": "0001-01-01T00:00:00Z",
+              "updated_at": "0001-01-01T00:00:00Z",
+              "id": 3,
+              "email": "john_appleseed@example.com",
+              "name": "John",
+              "sso_enabled": false,
+              "mfa_enabled": false,
+              "global_role": "admin",
+              "fleets": []
+            },
+            {
+              "created_at": "0001-01-01T00:00:00Z",
+              "updated_at": "0001-01-01T00:00:00Z",
+              "id": 4,
+              "email": "bob_marks@example.com",
+              "name": "Bob",
+              "sso_enabled": false,
+              "mfa_enabled": false,
+              "global_role": "admin",
+              "fleets": []
+            }
+          ]
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

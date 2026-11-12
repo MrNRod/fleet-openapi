@@ -1,0 +1,38 @@
+info:
+  name: Delete custom variable
+  type: http
+  seq: 3
+http:
+  method: DELETE
+  url: '{{baseUrl}}/api/v1/fleet/custom_variables/:id'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+docs: |-
+  Removes a custom variable from Fleet.
+
+  `DELETE /api/v1/fleet/custom_variables/:id`
+
+  #### Example
+
+  `DELETE /api/v1/fleet/custom_variables/123`
+
+  ##### Default response
+
+  `Status: 200`
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#delete-custom-variable
+examples:
+- name: 200 Default response
+  request:
+    method: DELETE
+    url: '{{baseUrl}}/api/v1/fleet/custom_variables/:id'
+    params:
+    - name: id
+      value: ''
+      type: path
+  response:
+    status: 200
+    statusText: OK

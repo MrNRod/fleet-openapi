@@ -1,0 +1,93 @@
+info:
+  name: Add self-service category
+  type: http
+  seq: 2
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/software/self_service_categories'
+  auth: inherit
+  body:
+    type: json
+    data: |-
+      {
+        "fleet_id": 3,
+        "name": "💼 Engineering"
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  Creates a new self-service category on the specified fleet. Only global and fleet admins and maintainers can call this endpoint.
+
+  `POST /api/v1/fleet/software/self_service_categories`
+
+  #### Parameters
+
+  | Name     | Type    | In   | Description                                                                                                                                                                                                                                                                                |
+  | -------- | ------- | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+  | fleet_id | integer | body | **Required**. The fleet ID. Use `0` to add the category to "Unassigned" hosts.                                                                                                                                                                                                            |
+  | name     | string  | body | **Required**. The category name. Must be unique within the fleet (case-insensitive) and at most 255 characters. Emojis are supported and are part of the name (e.g. `"🌎 Browsers"`).                                                                                                       |
+
+  #### Example
+
+  `POST /api/v1/fleet/software/self_service_categories`
+
+  ##### Request body
+
+  ```json
+  {
+    "fleet_id": 3,
+    "name": "💼 Engineering"
+  }
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "self_service_category": {
+      "id": 42,
+      "name": "💼 Engineering",
+      "fleet_id": 3,
+      "created_at": "2026-05-12T18:45:00Z",
+      "updated_at": "2026-05-12T18:45:00Z"
+    }
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#add-self-service-category
+examples:
+- name: 200 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/software/self_service_categories'
+    body:
+      type: json
+      data: |-
+        {
+          "fleet_id": 3,
+          "name": "💼 Engineering"
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "self_service_category": {
+            "id": 42,
+            "name": "💼 Engineering",
+            "fleet_id": 3,
+            "created_at": "2026-05-12T18:45:00Z",
+            "updated_at": "2026-05-12T18:45:00Z"
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

@@ -1,0 +1,152 @@
+info:
+  name: List activities
+  type: http
+  seq: 1
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/activities'
+  auth: inherit
+  params:
+  - name: page
+    value: ''
+    type: query
+    disabled: true
+    description: Page number of the results to fetch.
+  - name: per_page
+    value: ''
+    type: query
+    disabled: true
+    description: Results per page. Maximum is 10,000 records. If no pagination parameters are specified, defaults
+      to 10,000.
+  - name: order_key
+    value: ''
+    type: query
+    disabled: true
+    description: What to order results by. Allowed fields are `id`, `created_at`, `user_id`, `activity_type`, `user_name`,
+      `user_email`, `fleet_initiated`, and `streamed`.
+  - name: order_direction
+    value: ''
+    type: query
+    disabled: true
+    description: '**Requires `order_key`**. The direction of the order given the order key. Options include `"asc"`
+      and `"desc"`. Default is `"asc"`.'
+  - name: after
+    value: ''
+    type: query
+    disabled: true
+    description: The value to get results after. This needs `order_key` defined, as that's the column that would
+      be used.
+  - name: query
+    value: ''
+    type: query
+    disabled: true
+    description: Search query keywords. Searchable fields include `actor_full_name` and `actor_email`.
+  - name: activity_type
+    value: ''
+    type: query
+    disabled: true
+    description: Indicates the activity `type` to filter by. See available activity types in the [Audit logs docs](https://github.com/fleetdm/fleet/blob/main/docs/Contributing/reference/audit-logs.md).
+  - name: start_created_at
+    value: ''
+    type: query
+    disabled: true
+    description: Filters to include only activities that happened after this date. If not specified, set to the
+      earliest possible date.
+  - name: end_created_at
+    value: ''
+    type: query
+    disabled: true
+    description: Filters to include only activities that happened before this date. If not specified, set to now.
+docs: |-
+  Returns a list of the activities that have been performed in Fleet. For a comprehensive list of activity types and detailed information, please see the [audit logs](https://fleetdm.com/docs/using-fleet/audit-activities) page.
+
+  `GET /api/v1/fleet/activities`
+
+  #### Parameters
+
+  | Name            | Type    | In    | Description                                                 |
+  |:--------------- |:------- |:----- |:------------------------------------------------------------|
+  | page            | integer | query | Page number of the results to fetch.                                                                                          |
+  | per_page        | integer | query | Results per page. Maximum is 10,000 records. If no pagination parameters are specified, defaults to 10,000.                    |
+  | order_key       | string  | query | What to order results by. Allowed fields are `id`, `created_at`, `user_id`, `activity_type`, `user_name`, `user_email`, `fleet_initiated`, and `streamed`.                                                         |
+  | order_direction | string  | query | **Requires `order_key`**. The direction of the order given the order key. Options include `"asc"` and `"desc"`. Default is `"asc"`. |
+  | after           | string  | query | The value to get results after. This needs `order_key` defined, as that's the column that would be used. |
+  | query | string | query | Search query keywords. Searchable fields include `actor_full_name` and `actor_email`.
+  | activity_type | string | query | Indicates the activity `type` to filter by. See available activity types in the [Audit logs docs](https://github.com/fleetdm/fleet/blob/main/docs/Contributing/reference/audit-logs.md).
+  | start_created_at | string | query | Filters to include only activities that happened after this date. If not specified, set to the earliest possible date.
+  | end_created_at | string | query | Filters to include only activities that happened before this date. If not specified, set to now. |
+
+  #### Example
+
+  `GET /api/v1/fleet/activities?page=0&per_page=10&order_key=created_at&order_direction=desc`
+
+  ##### Default response
+
+  ```json
+  {
+    "activities": [
+      {
+        "created_at": "2023-07-27T14:35:08Z",
+        "id": 25,
+        "actor_full_name": "Anna Chao",
+        "actor_id": 3,
+        "actor_gravatar": "",
+        "actor_email": "",
+        "type": "installed_software",
+        "fleet_initiated": false,
+        "details": {
+          "status": "installed",
+          "host_id": 1272,
+          "host_display_name": "MacBook Pro",
+          "policy_id": null,
+          "policy_name": null,
+          "install_uuid": "23c18ea1-8cd7-4af4-a1d8-f2666993a66b",
+          "self_service": false,
+          "software_title": "zoom.us.app",
+          "software_package": "ZoomInstallerIT.pkg"
+        }
+      },
+      {
+        "created_at": "2021-07-29T14:40:27Z",
+        "id": 21,
+        "actor_full_name": "name",
+        "actor_id": 1,
+        "actor_gravatar": "",
+        "actor_email": "name@example.com",
+        "type": "created_team",
+        "type": "created_fleet",
+        "fleet_initiated": false,
+        "details": {
+          "team_id": 2,
+          "fleet_id": 2,
+          "team_name": "Apples",
+          "fleet_name": "Apples"
+        }
+      },
+      {
+        "created_at": "2023-07-27T14:35:08Z",
+        "id": 25,
+        "type": "installed_software",
+        "fleet_initiated": true,
+        "details": {
+          "status": "installed",
+          "host_id": 1272,
+          "host_display_name": "MacBook Pro",
+          "policy_id": 24,
+          "policy_name": "[Install software] Zoom",
+          "install_uuid": "077970ab-0ed6-4573-9cdc-ca9ef9015283",
+          "self_service": false,
+          "software_title": "zoom.us.app",
+          "software_package": "ZoomInstallerIT.pkg"
+        }
+      }
+    ],
+    "meta": {
+      "has_next_results": false,
+      "has_previous_results": false
+    }
+  }
+
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#list-activities

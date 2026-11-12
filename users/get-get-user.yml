@@ -1,0 +1,136 @@
+info:
+  name: Get user
+  type: http
+  seq: 4
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/users/:id'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required**. The user''s id.'
+docs: |-
+  Returns all information about a specific user.
+
+  `GET /api/v1/fleet/users/:id`
+
+  #### Parameters
+
+  | Name | Type    | In   | Description                  |
+  | ---- | ------- | ---- | ---------------------------- |
+  | id   | integer | path | **Required**. The user's id. |
+
+  #### Example
+
+  `GET /api/v1/fleet/users/2`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "user": {
+      "created_at": "2020-12-10T05:20:25Z",
+      "updated_at": "2020-12-10T05:24:27Z",
+      "id": 2,
+      "name": "Jane Doe",
+      "email": "janedoe@example.com",
+      "force_password_reset": false,
+      "gravatar_url": "",
+      "sso_enabled": false,
+      "mfa_enabled": false,
+      "global_role": "admin",
+      "api_only": false,
+      "last_login_at": "2020-12-10T05:24:27Z",
+      "last_activity_at": "2020-12-10T05:31:03Z",
+      "status": "active",
+      "fleets": []
+    }
+  }
+  ```
+
+  ##### User doesn't exist
+
+  `Status: 404 Resource Not Found`
+
+  ```json
+  {
+    "message": "Resource Not Found",
+    "errors": [
+      {
+        "name": "base",
+        "reason": "User with id=5 was not found in the datastore"
+      }
+    ]
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#get-user
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/users/:id'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required**. The user''s id.'
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "user": {
+            "created_at": "2020-12-10T05:20:25Z",
+            "updated_at": "2020-12-10T05:24:27Z",
+            "id": 2,
+            "name": "Jane Doe",
+            "email": "janedoe@example.com",
+            "force_password_reset": false,
+            "gravatar_url": "",
+            "sso_enabled": false,
+            "mfa_enabled": false,
+            "global_role": "admin",
+            "api_only": false,
+            "last_login_at": "2020-12-10T05:24:27Z",
+            "last_activity_at": "2020-12-10T05:31:03Z",
+            "status": "active",
+            "fleets": []
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+- name: 404 User doesn't exist
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/users/:id'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required**. The user''s id.'
+  response:
+    status: 404
+    statusText: Not Found
+    body:
+      type: json
+      data: |-
+        {
+          "message": "Resource Not Found",
+          "errors": [
+            {
+              "name": "base",
+              "reason": "User with id=5 was not found in the datastore"
+            }
+          ]
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

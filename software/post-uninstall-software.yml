@@ -1,0 +1,57 @@
+info:
+  name: Uninstall software
+  type: http
+  seq: 21
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/hosts/:id/software/:software_title_id/uninstall'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required**. The host''s ID.'
+  - name: software_title_id
+    value: ''
+    type: path
+    description: '**Required**. The software title''s ID.'
+docs: |-
+  _Available in Fleet Premium._
+
+  Uninstalls software from a host.
+
+  `POST /api/v1/fleet/hosts/:id/software/:software_title_id/uninstall`
+
+  #### Parameters
+
+  | Name              | Type       | In   | Description                                      |
+  | ---------         | ---------- | ---- | --------------------------------------------     |
+  | id                | integer    | path | **Required**. The host's ID.                     |
+  | software_title_id | integer    | path | **Required**. The software title's ID.           |
+
+  #### Example
+
+  `POST /api/v1/fleet/hosts/123/software/3435/uninstall`
+
+  ##### Default response
+
+  `Status: 202`
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#uninstall-software
+examples:
+- name: 202 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/hosts/:id/software/:software_title_id/uninstall'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required**. The host''s ID.'
+    - name: software_title_id
+      value: ''
+      type: path
+      description: '**Required**. The software title''s ID.'
+  response:
+    status: 202
+    statusText: Accepted

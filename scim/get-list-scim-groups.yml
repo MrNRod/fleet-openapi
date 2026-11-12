@@ -1,0 +1,142 @@
+info:
+  name: List SCIM groups
+  type: http
+  seq: 7
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/scim/Groups'
+  auth: inherit
+  params:
+  - name: startIndex
+    value: ''
+    type: query
+    disabled: true
+    description: 1-based index of the first result to return. Defaults to 1.
+  - name: count
+    value: ''
+    type: query
+    disabled: true
+    description: Number of results per page. Maximum 100. Defaults to 100.
+  - name: filter
+    value: ''
+    type: query
+    disabled: true
+    description: SCIM filter expression. Only `displayName eq "<value>"` is supported.
+  - name: excludedAttributes
+    value: ''
+    type: query
+    disabled: true
+    description: Comma-separated list of attributes to exclude. Use `members` to omit group member lists.
+docs: |-
+  _Available in Fleet Premium_
+
+  `GET /api/v1/fleet/scim/Groups`
+
+  #### Parameters
+
+  | Name               | Type    | In    | Description                                                                              |
+  | ------------------ | ------- | ----- | ---------------------------------------------------------------------------------------- |
+  | startIndex         | integer | query | 1-based index of the first result to return. Defaults to 1.                              |
+  | count              | integer | query | Number of results per page. Maximum 100. Defaults to 100.                                |
+  | filter             | string  | query | SCIM filter expression. Only `displayName eq "<value>"` is supported.                    |
+  | excludedAttributes | string  | query | Comma-separated list of attributes to exclude. Use `members` to omit group member lists. |
+
+  #### Example
+
+  `GET /api/v1/fleet/scim/Groups`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "schemas": ["urn:ietf:params:scim:api:messages:2.0:ListResponse"],
+    "totalResults": 1,
+    "startIndex": 1,
+    "itemsPerPage": 100,
+    "Resources": [
+      {
+        "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
+        "id": "group-1",
+        "externalId": "ext-group-123",
+        "displayName": "Engineering",
+        "members": [
+          {
+            "value": "1",
+            "type": "User"
+          }
+        ],
+        "meta": {
+          "resourceType": "Group"
+        }
+      }
+    ]
+  }
+  ```
+
+  ---
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#list-scim-groups
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/scim/Groups'
+    params:
+    - name: startIndex
+      value: ''
+      type: query
+      disabled: true
+      description: 1-based index of the first result to return. Defaults to 1.
+    - name: count
+      value: ''
+      type: query
+      disabled: true
+      description: Number of results per page. Maximum 100. Defaults to 100.
+    - name: filter
+      value: ''
+      type: query
+      disabled: true
+      description: SCIM filter expression. Only `displayName eq "<value>"` is supported.
+    - name: excludedAttributes
+      value: ''
+      type: query
+      disabled: true
+      description: Comma-separated list of attributes to exclude. Use `members` to omit group member lists.
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "schemas": [
+            "urn:ietf:params:scim:api:messages:2.0:ListResponse"
+          ],
+          "totalResults": 1,
+          "startIndex": 1,
+          "itemsPerPage": 100,
+          "Resources": [
+            {
+              "schemas": [
+                "urn:ietf:params:scim:schemas:core:2.0:Group"
+              ],
+              "id": "group-1",
+              "externalId": "ext-group-123",
+              "displayName": "Engineering",
+              "members": [
+                {
+                  "value": "1",
+                  "type": "User"
+                }
+              ],
+              "meta": {
+                "resourceType": "Group"
+              }
+            }
+          ]
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

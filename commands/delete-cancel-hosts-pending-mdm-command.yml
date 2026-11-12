@@ -1,0 +1,71 @@
+info:
+  name: Cancel host's pending MDM command
+  type: http
+  seq: 4
+http:
+  method: DELETE
+  url: '{{baseUrl}}/api/v1/fleet/hosts/:id/commands/:command_uuid'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required.** The host''s ID.'
+  - name: command_uuid
+    value: ''
+    type: path
+    description: '**Required.** The UUID of the pending MDM command to cancel.'
+docs: |-
+  _Available in Fleet Premium._
+
+  Cancels a pending MDM command (lock, wipe, or clear passcode) for the specified Apple host. The command will not be delivered to the host if it hasn't been sent yet.
+
+  Only Apple (macOS, iOS, iPadOS) `DeviceLock`, `EraseDevice`, `ClearPasscode`, and `EnableLostMode` command types can be canceled. Commands that have already been acknowledged or errored can't be canceled. Canceling a pending command isn't supported yet for Windows or Android hosts.
+
+  `DELETE /api/v1/fleet/hosts/:id/commands/:command_uuid`
+
+  #### Parameters
+
+  | Name          | Type    | In   | Description                                                            |
+  | ------------- | ------- | ---- | ---------------------------------------------------------------------- |
+  | id            | integer | path | **Required.** The host's ID.                                           |
+  | command_uuid  | string  | path | **Required.** The UUID of the pending MDM command to cancel.           |
+
+  #### Example
+
+  `DELETE /api/v1/fleet/hosts/12/commands/81e10a70-730b-4c45-9b40-b14373e04757`
+
+  ##### Default response
+
+  `Status: 204`
+
+  #### Errors
+
+  | Status | Error code                | Description                                                          |
+  | ------ | ------------------------- | -------------------------------------------------------------------- |
+  | 400    | bad_request               | The command is not a eligible type (lock, wipe, or clear passcode).   |
+  | 400    | bad_request               | The command has already been delivered to the host (not pending).    |
+  | 404    | not_found                 | The host or command was not found, or the command doesn't belong to the specified host. |
+  | 403    | forbidden                 | The user doesn't have permission to cancel commands for this host.   |
+
+
+  ---
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#cancel-hosts-pending-mdm-command
+examples:
+- name: 204 Default response
+  request:
+    method: DELETE
+    url: '{{baseUrl}}/api/v1/fleet/hosts/:id/commands/:command_uuid'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required.** The host''s ID.'
+    - name: command_uuid
+      value: ''
+      type: path
+      description: '**Required.** The UUID of the pending MDM command to cancel.'
+  response:
+    status: 204
+    statusText: No Content

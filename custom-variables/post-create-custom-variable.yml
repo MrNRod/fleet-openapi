@@ -1,0 +1,86 @@
+info:
+  name: Create custom variable
+  type: http
+  seq: 2
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/custom_variables'
+  auth: inherit
+  body:
+    type: json
+    data: |-
+      {
+        "name": "SOME_API_TOKEN",
+        "value": "971ef02b93c74ca9b22b694a9251f1d6"
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  Creates a custom variable that can be used in scripts, configuration profiles, and host name templates prefixed with `$FLEET_SECRET_`.
+
+
+  `POST /api/v1/fleet/custom_variables`
+
+  #### Parameters
+
+  | Name            | Type    | In    | Description                                                 |
+  |:--------------- |:------- |:----- |:------------------------------------------------------------|
+  | name            | string  | body  | **Required.** The desired variable name, without the `FLEET_SECRET_` prefix. |
+  | value           | string  | body  | **Required.** The value for the custom variable. |
+
+
+  #### Example
+
+  `POST /api/v1/fleet/custom_variables`
+
+  ##### Request body
+
+  ```json
+  {
+    "name": "SOME_API_TOKEN",
+    "value": "971ef02b93c74ca9b22b694a9251f1d6"
+  }
+
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "id": 123,
+    "name": "SOME_API_TOKEN"
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#create-custom-variable
+examples:
+- name: 200 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/custom_variables'
+    body:
+      type: json
+      data: |-
+        {
+          "name": "SOME_API_TOKEN",
+          "value": "971ef02b93c74ca9b22b694a9251f1d6"
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "id": 123,
+          "name": "SOME_API_TOKEN"
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

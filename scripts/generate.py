@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate native Bruno OpenCollection YAML directly from Fleet Markdown."""
+"""Generate OpenCollection YAML directly from Fleet REST API Markdown."""
 import argparse
 import copy
 import hashlib
@@ -363,7 +363,7 @@ def build(text, version, source_ref):
                  'Adapted from [Fleet REST API documentation]('
                  f'https://github.com/fleetdm/fleet/blob/{urllib.parse.quote(source_ref, safe="")}/docs/REST%20API/rest-api.md).\n\n'
                  'Copyright (c) 2020-present Fleet Device Management Inc. Copyright (c) 2017 Kolide.\n\n'
-                 'Changes: converted Markdown to Bruno YAML, organized requests into folders, '
+                 'Changes: converted Markdown to OpenCollection YAML, organized requests into folders, '
                  'and normalized parameters and examples. Not endorsed by Fleet. No warranties are given.'},
         'bundled': True,
         'extensions': {'fleet': {
@@ -373,14 +373,108 @@ def build(text, version, source_ref):
     }
 
 
+def collection_files(collection):
+    """Render OpenCollection files directly from the parsed collection model."""
+    root = copy.deepcopy(collection)
+    folders = root.pop('items')
+    environments = root['config'].pop('environments')
+    if not root['config']:
+        root.pop('config')
+    root['bundled'] = False
+    root['extensions']['bruno'] = {'ignore': ['.git', '.github', '.venv', 'scripts', 'node_modules', 'dist']}
+    files = {}
+
+    def add(path, value):
+        if path in files:
+            raise ValueError(f'Generated filename collision: {path}')
+        files[path] = dump(value).encode('utf-8')
+
+    for environment in environments:
+        add(f'environments/{environment["name"]}.yml', environment)
+    for folder in folders:
+        directory = slug(folder['info']['name'])
+        # Keep API groups separate from repository support directories. Bruno
+        # displays info.name, so scripts-api still appears as "Scripts".
+        if directory in {'environments', 'scripts', 'node_modules', 'dist'}:
+            directory += '-api'
+        if not directory:
+            raise ValueError(f'Invalid collection folder: {directory!r}')
+        requests = folder.pop('items')
+        add(f'{directory}/folder.yml', folder)
+        for request in requests:
+            filename = slug(request['info']['name'])
+            if not filename:
+                raise ValueError('Empty request filename')
+            add(f'{directory}/{request["http"]["method"].lower()}-{filename}.yml', request)
+    # Track ownership so removed/renamed endpoints are pruned without deleting
+    # personal environments or other user-created files.
+    root['extensions']['fleet']['generated_files'] = sorted(files)
+    add('opencollection.yml', root)
+    return files
+
+
 def write_collection(output, collection, check=False):
+    output = output.resolve()
+    files = collection_files(collection)
+    root_file = output / 'opencollection.yml'
+    previous = []
+    if root_file.is_symlink():
+        raise ValueError(f'Refusing to replace a symlink: {root_file}')
+    if root_file.exists():
+        previous = yaml.safe_load(root_file.read_text(encoding='utf-8'))['extensions']['fleet']['generated_files']
+    if not isinstance(previous, list) or not all(isinstance(path, str) for path in previous):
+        raise ValueError('Invalid generated file list')
+    owned = set(previous) | {'opencollection.yml'}
+    stale = set(previous) - files.keys()
+    for name in owned | files.keys():
+        if name != 'opencollection.yml' and not re.fullmatch(r'[a-z0-9_-]+/[A-Za-z0-9_-]+\.yml', name):
+            raise ValueError(f'Invalid generated path: {name}')
+        if name.startswith(('scripts/', 'node_modules/')) or (name.startswith('environments/') and name != 'environments/Fleet.yml'):
+            raise ValueError(f'Protected path in generated file list: {name}')
+        path = output / name
+        if any(parent.is_symlink() for parent in (path, *path.parents)):
+            raise ValueError(f'Refusing to write through a symlink: {path}')
+        if path.exists() and not path.is_file():
+            raise ValueError(f'Expected a generated file: {path}')
+        if name in files and name not in owned and path.exists() and path.read_bytes() != files[name]:
+            raise ValueError(f'Refusing to overwrite an unmanaged file: {path}')
+    if check:
+        changed = sorted(name for name, content in files.items()
+                         if not (output / name).exists() or (output / name).read_bytes() != content)
+        if changed or stale:
+            raise ValueError('Generated collection is out of date: ' + ', '.join(sorted(set(changed) | stale)))
+        return
+    # Serialize and preflight the complete tree before changing any files.
+    # Write the root manifest last, so interrupted runs can be retried.
+    for name, content in files.items():
+        path = output / name
+        if name == 'opencollection.yml':
+            for obsolete in sorted(stale):
+                old_path = output / obsolete
+                old_path.unlink(missing_ok=True)
+                if old_path.parent.exists() and not any(old_path.parent.iterdir()):
+                    old_path.parent.rmdir()
+        if path.exists() and path.read_bytes() == content:
+            continue
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with tempfile.NamedTemporaryFile(dir=path.parent, delete=False) as handle:
+            temporary = Path(handle.name)
+            handle.write(content)
+        try:
+            temporary.chmod(0o644)
+            temporary.replace(path)
+        finally:
+            temporary.unlink(missing_ok=True)
+
+
+def write_bundle(output, collection, check=False):
+    """Write the same collection model as a portable, self-contained file."""
     content = dump(collection).encode('utf-8')
     if check:
-        if not output.exists() or output.read_bytes() != content:
-            raise ValueError(f'Generated collection is out of date: {output}')
+        if not output.is_file() or output.read_bytes() != content:
+            raise ValueError(f'Generated bundle is out of date: {output}')
         return
     output.parent.mkdir(parents=True, exist_ok=True)
-    # Replace atomically only after parsing and serialization succeed.
     with tempfile.NamedTemporaryFile(dir=output.parent, delete=False) as handle:
         temporary = Path(handle.name)
         handle.write(content)
@@ -392,7 +486,7 @@ def write_collection(output, collection, check=False):
 
 
 def fetch(url, github_api=False):
-    headers = {'User-Agent': 'fleet-bruno-collection-generator'}
+    headers = {'User-Agent': 'fleet-opencollection-generator'}
     if github_api and os.environ.get('GH_TOKEN'):
         headers['Authorization'] = 'Bearer ' + os.environ['GH_TOKEN']
     with urllib.request.urlopen(urllib.request.Request(url, headers=headers), timeout=60) as response:
@@ -405,13 +499,17 @@ def main():
     source.add_argument('--tag', help='Fleet release tag (fleet-v4.x.y), or latest')
     source.add_argument('--input', type=Path, help='Local REST API Markdown (offline)')
     parser.add_argument('--version', help='Required with --input, e.g. 4.92.3 or snapshot')
-    parser.add_argument('--output', '-o', type=Path, default=ROOT / 'fleet.bruno.yml')
+    target = parser.add_mutually_exclusive_group()
+    target.add_argument('--output', '-o', type=Path, default=ROOT, help='Collection directory (default: repository root)')
+    target.add_argument('--bundle', type=Path, help='Write a single-file bundle instead of the directory layout')
     parser.add_argument('--check', action='store_true', help='Verify generated files without changing them')
     args = parser.parse_args()
+    args.output = args.output.resolve()
     if not args.tag and not args.input:
-        if not args.check:
+        if not args.check and not args.bundle:
             parser.error('Choose --tag or --input')
-        args.tag = yaml.safe_load(args.output.read_text())['extensions']['fleet']['source_ref']
+        source_file = args.bundle if args.bundle and args.check else args.output / 'opencollection.yml'
+        args.tag = yaml.safe_load(source_file.read_text())['extensions']['fleet']['source_ref']
     if args.tag:
         tag = json.loads(fetch('https://api.github.com/repos/fleetdm/fleet/releases/latest', True))['tag_name'] if args.tag == 'latest' else args.tag
         if not re.fullmatch(r'fleet-v\d+\.\d+\.\d+(?:[-.][A-Za-z0-9.-]+)?', tag):
@@ -424,10 +522,13 @@ def main():
         version, text = args.version, args.input.read_text(encoding='utf-8')
         tag = 'fleet-v' + version if re.fullmatch(r'\d+\.\d+\.\d+(?:[-.][A-Za-z0-9.-]+)?', version) else version
     collection = build(text, version, tag)
-    write_collection(args.output, collection, args.check)
+    if args.bundle:
+        write_bundle(args.bundle, collection, args.check)
+    else:
+        write_collection(args.output, collection, args.check)
     report = collection['extensions']['fleet']
     action = 'Verified' if args.check else 'Generated'
-    print(f'{action} {args.output.name}: Fleet {version}, '
+    print(f'{action} {(args.bundle or args.output).name}: Fleet {version}, '
           f'{report["operation_count"]} requests, {len(report["warnings"])} parsing notes')
 
 

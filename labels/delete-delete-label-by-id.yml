@@ -1,0 +1,49 @@
+info:
+  name: Delete label by ID
+  type: http
+  seq: 8
+http:
+  method: DELETE
+  url: '{{baseUrl}}/api/v1/fleet/labels/id/:id'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required**. The label''s id.'
+docs: |-
+  Deletes the label specified by ID.
+
+  `DELETE /api/v1/fleet/labels/id/:id`
+
+  #### Parameters
+
+  | Name | Type    | In   | Description                   |
+  | ---- | ------- | ---- | ----------------------------- |
+  | id   | integer | path | **Required**. The label's id. |
+
+  #### Example
+
+  `DELETE /api/v1/fleet/labels/id/13`
+
+  ##### Default response
+
+  `Status: 200`
+
+
+  ---
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#delete-label-by-id
+examples:
+- name: 200 Default response
+  request:
+    method: DELETE
+    url: '{{baseUrl}}/api/v1/fleet/labels/id/:id'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required**. The label''s id.'
+  response:
+    status: 200
+    statusText: OK

@@ -1,0 +1,194 @@
+info:
+  name: Update configuration profile
+  type: http
+  seq: 4
+http:
+  method: PATCH
+  url: '{{baseUrl}}/api/v1/fleet/configuration_profiles/:profile_uuid'
+  auth: inherit
+  params:
+  - name: profile_uuid
+    value: ''
+    type: path
+    description: '**Required.** The UUID of the configuration profile to update.'
+  body:
+    type: multipart-form
+    data:
+    - name: profile
+      value: []
+      description: A replacement profile file (`.mobileconfig`, `.json`, or `.xml`). See requirements below.
+      disabled: true
+      type: file
+    - name: labels_include_all
+      value: ''
+      description: Target hosts that have all labels, specified by label name, in the array.
+      disabled: true
+      type: text
+    - name: labels_include_any
+      value: ''
+      description: Target hosts that have any label, specified by label name, in the array.
+      disabled: true
+      type: text
+    - name: labels_exclude_any
+      value: ''
+      description: Target hosts that don't have any label, specified by label name, in the array.
+      disabled: true
+      type: text
+    - name: activation
+      value: []
+      description: _Available in Fleet Premium_. The activation criteria for the profile as a JSON file. Only supported
+        for declaration (DDM) profiles. For all other profile types, this value is `null`.
+      disabled: true
+      type: file
+docs: |-
+  _Available in Fleet Premium._
+
+  Update an existing configuration profile. Use this endpoint to change which hosts a profile is applied to (labels/custom targets) and/or to upload a new profile file.
+
+  `PATCH /api/v1/fleet/configuration_profiles/:profile_uuid`
+
+  #### Parameters
+
+  | Name                      | Type    | In   | Description                                                                                                   |
+  | ------------------------- | ------- | ---- | ------------------------------------------------------------------------------------------------------------- |
+  | profile_uuid              | string  | url  | **Required.** The UUID of the configuration profile to update. |
+  | profile                   | file    | form | A replacement profile file (`.mobileconfig`, `.json`, or `.xml`). See requirements below. |
+  | labels_include_all        | array   | body | Target hosts that have all labels, specified by label name, in the array. |
+  | labels_include_any        | array   | body | Target hosts that have any label, specified by label name, in the array. |
+  | labels_exclude_any        | array   | body | Target hosts that don't have any label, specified by label name, in the array. |
+  | activation                | file     | body | _Available in Fleet Premium_. The activation criteria for the profile as a JSON file. Only supported for declaration (DDM) profiles. For all other profile types, this value is `null`. |
+
+  Only one of `labels_include_all`, `labels_include_any`, or `labels_exclude_any` can be specified. If none are specified, the profile targets all hosts.
+
+  ##### Uploading a new profile file
+
+  You can upload a new profile file to replace the contents of the existing profile. What the new file must match, and how the profile is renamed, depends on the profile type:
+
+  - **.mobileconfig profiles**: The new file must have the same **PayloadIdentifier** as the existing profile. The profile is renamed to the new file's **PayloadDisplayName**.
+  - **DDM (declarative management) profiles** (`.json`): The new file must have the same **Identifier** as the existing profile. The profile keeps its current name.
+  - **Windows profiles** (`.xml`): There's no identifier to match, so the new file's settings can differ completely from the ones it replaces. The profile is renamed to the uploaded file's name, without its extension.
+  - **Android profiles** (`.json`): There's no identifier to match, so the new file's settings can differ completely from the ones it replaces. The profile keeps its current name.
+
+  If a `.mobileconfig` or DDM profile doesn't have the required identifier, the request is rejected.
+
+  Renaming a profile doesn't change its `profile_uuid` or which hosts it targets, and doesn't reinstall it on hosts unless the contents changed too. If another configuration profile in the same fleet already uses the new name, the request is rejected with a `409` status.
+
+  Requests that only update labels don't include a file, so the profile's name is left unchanged.
+
+  #### Example
+
+  Update a configuration profile to target hosts with specific labels.
+
+  `PATCH /api/v1/fleet/configuration_profiles/f663713f-04ee-40f0-a95a-7af428c351a9`
+
+  ##### Request body
+
+  ```json
+  {
+    "labels_include_all": ["Label name 1", "Label name 2"]
+  }
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "profile_uuid": "f663713f-04ee-40f0-a95a-7af428c351a9"
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#update-configuration-profile
+examples:
+- name: 409 Uploading a new profile file
+  request:
+    method: PATCH
+    url: '{{baseUrl}}/api/v1/fleet/configuration_profiles/:profile_uuid'
+    params:
+    - name: profile_uuid
+      value: ''
+      type: path
+      description: '**Required.** The UUID of the configuration profile to update.'
+    body:
+      type: multipart-form
+      data:
+      - name: profile
+        value: []
+        description: A replacement profile file (`.mobileconfig`, `.json`, or `.xml`). See requirements below.
+        disabled: true
+        type: file
+      - name: labels_include_all
+        value: ''
+        description: Target hosts that have all labels, specified by label name, in the array.
+        disabled: true
+        type: text
+      - name: labels_include_any
+        value: ''
+        description: Target hosts that have any label, specified by label name, in the array.
+        disabled: true
+        type: text
+      - name: labels_exclude_any
+        value: ''
+        description: Target hosts that don't have any label, specified by label name, in the array.
+        disabled: true
+        type: text
+      - name: activation
+        value: []
+        description: _Available in Fleet Premium_. The activation criteria for the profile as a JSON file. Only
+          supported for declaration (DDM) profiles. For all other profile types, this value is `null`.
+        disabled: true
+        type: file
+  response:
+    status: 409
+    statusText: Conflict
+- name: 200 Default response
+  request:
+    method: PATCH
+    url: '{{baseUrl}}/api/v1/fleet/configuration_profiles/:profile_uuid'
+    params:
+    - name: profile_uuid
+      value: ''
+      type: path
+      description: '**Required.** The UUID of the configuration profile to update.'
+    body:
+      type: multipart-form
+      data:
+      - name: profile
+        value: []
+        description: A replacement profile file (`.mobileconfig`, `.json`, or `.xml`). See requirements below.
+        disabled: true
+        type: file
+      - name: labels_include_all
+        value: ''
+        description: Target hosts that have all labels, specified by label name, in the array.
+        disabled: true
+        type: text
+      - name: labels_include_any
+        value: ''
+        description: Target hosts that have any label, specified by label name, in the array.
+        disabled: true
+        type: text
+      - name: labels_exclude_any
+        value: ''
+        description: Target hosts that don't have any label, specified by label name, in the array.
+        disabled: true
+        type: text
+      - name: activation
+        value: []
+        description: _Available in Fleet Premium_. The activation criteria for the profile as a JSON file. Only
+          supported for declaration (DDM) profiles. For all other profile types, this value is `null`.
+        disabled: true
+        type: file
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "profile_uuid": "f663713f-04ee-40f0-a95a-7af428c351a9"
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

@@ -1,0 +1,48 @@
+info:
+  name: Delete fleet
+  type: http
+  seq: 8
+http:
+  method: DELETE
+  url: '{{baseUrl}}/api/v1/fleet/fleets/:id'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required.** The desired fleet''s ID.'
+docs: |-
+  _Available in Fleet Premium_
+
+  `DELETE /api/v1/fleet/fleets/:id`
+
+  #### Parameters
+
+  | Name | Type    | In   | Description                          |
+  | ---- | ------  | ---- | ------------------------------------ |
+  | id   | integer | path | **Required.** The desired fleet's ID. |
+
+  #### Example
+
+  `DELETE /api/v1/fleet/fleets/1`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ---
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#delete-fleet
+examples:
+- name: 200 Default response
+  request:
+    method: DELETE
+    url: '{{baseUrl}}/api/v1/fleet/fleets/:id'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required.** The desired fleet''s ID.'
+  response:
+    status: 200
+    statusText: OK

@@ -1,0 +1,81 @@
+info:
+  name: Get SCIM schemas
+  type: http
+  seq: 13
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/scim/Schemas'
+  auth: inherit
+docs: |-
+  _Available in Fleet Premium_
+
+  Returns the SCIM schemas supported by Fleet: the core User schema and Group schema.
+
+  `GET /api/v1/fleet/scim/Schemas`
+
+  #### Parameters
+
+  None.
+
+  #### Example
+
+  `GET /api/v1/fleet/scim/Schemas`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "schemas": ["urn:ietf:params:scim:api:messages:2.0:ListResponse"],
+    "totalResults": 2,
+    "Resources": [
+      {
+        "id": "urn:ietf:params:scim:schemas:core:2.0:User",
+        "name": "User",
+        "description": "SCIM User"
+      },
+      {
+        "id": "urn:ietf:params:scim:schemas:core:2.0:Group",
+        "name": "Group",
+        "description": "SCIM Group"
+      }
+    ]
+  }
+  ```
+
+  ---
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#get-scim-schemas
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/scim/Schemas'
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "schemas": [
+            "urn:ietf:params:scim:api:messages:2.0:ListResponse"
+          ],
+          "totalResults": 2,
+          "Resources": [
+            {
+              "id": "urn:ietf:params:scim:schemas:core:2.0:User",
+              "name": "User",
+              "description": "SCIM User"
+            },
+            {
+              "id": "urn:ietf:params:scim:schemas:core:2.0:Group",
+              "name": "Group",
+              "description": "SCIM Group"
+            }
+          ]
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

@@ -1,0 +1,46 @@
+info:
+  name: Delete configuration profile
+  type: http
+  seq: 5
+http:
+  method: DELETE
+  url: '{{baseUrl}}/api/v1/fleet/configuration_profiles/:profile_uuid'
+  auth: inherit
+  params:
+  - name: profile_uuid
+    value: ''
+    type: path
+    description: '**Required** The UUID of the profile to delete.'
+docs: |-
+  > [Delete custom macOS setting](https://github.com/fleetdm/fleet/blob/fleet-v4.40.0/docs/REST%20API/rest-api.md#delete-custom-macos-setting-configuration-profile) (`DELETE /api/v1/fleet/mdm/apple/profiles/:profile_id`) API endpoint is deprecated as of Fleet 4.41. It is maintained for backwards compatibility. Please use the below API endpoint instead.
+
+  `DELETE /api/v1/fleet/configuration_profiles/:profile_uuid`
+
+  #### Parameters
+
+  | Name                      | Type    | In    | Description                                                               |
+  | ------------------------- | ------- | ----- | ------------------------------------------------------------------------- |
+  | profile_uuid              | string  | url   | **Required** The UUID of the profile to delete. |
+
+  #### Example
+
+  `DELETE /api/v1/fleet/configuration_profiles/f663713f-04ee-40f0-a95a-7af428c351a9`
+
+  ##### Default response
+
+  `Status: 200`
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#delete-configuration-profile
+examples:
+- name: 200 Default response
+  request:
+    method: DELETE
+    url: '{{baseUrl}}/api/v1/fleet/configuration_profiles/:profile_uuid'
+    params:
+    - name: profile_uuid
+      value: ''
+      type: path
+      description: '**Required** The UUID of the profile to delete.'
+  response:
+    status: 200
+    statusText: OK

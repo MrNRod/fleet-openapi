@@ -1,0 +1,665 @@
+info:
+  name: Update fleet
+  type: http
+  seq: 4
+http:
+  method: PATCH
+  url: '{{baseUrl}}/api/v1/fleet/fleets/:id'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required.** The desired fleet''s ID. Use `0` for "Unassigned" hosts. **Note:** When using `id=0`,
+      only `webhook_settings.failing_policies_webhook`, `webhook_settings.host_activities_webhook`, `integrations.jira`,
+      and `integrations.zendesk` fields are supported in the request body.'
+  body:
+    type: json
+    data: |-
+      {
+        "host_ids": [
+          3,
+          6,
+          7,
+          8,
+          9,
+          20,
+          32,
+          44
+        ]
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  _Available in Fleet Premium_
+
+  `PATCH /api/v1/fleet/fleets/:id`
+
+  `mdm.apple_settings.configuration_profiles`, `mdm.windows_settings.configuration_profiles`, `scripts`, and `mdm.setup_experience` only include the configuration profiles, scripts, and setup experience settings applied using [Fleet's YAML](https://fleetdm.com/docs/configuration/yaml-files). To list profiles, scripts, or setup experience settings added in the UI or API, use the [List configuration profiles](https://fleetdm.com/docs/rest-api/rest-api#list-custom-os-settings-configuration-profiles), [List scripts](https://fleetdm.com/docs/rest-api/rest-api#list-scripts), or GET endpoints from [Setup experience](https://fleetdm.com/docs/rest-api/rest-api#setup-experience) instead.
+
+  #### Parameters
+
+  | Name                                                    | Type    | In   | Description                                                                                                                                                                                               |
+  | ------------------------------------------------------- | ------- | ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+  | id                                                      | integer | path | **Required.** The desired fleet's ID. Use `0` for "Unassigned" hosts. **Note:** When using `id=0`, only `webhook_settings.failing_policies_webhook`, `webhook_settings.host_activities_webhook`, `integrations.jira`, and `integrations.zendesk` fields are supported in the request body. |
+  | name                                                    | string  | body | The fleet's name. Fleet names must differ by more than letter case. Renaming a fleet into another fleet's name returns a 409 Conflict error.                                                                                                                                                                                          |
+  | host_ids                                                | array    | body | A list of hosts that belong to the fleet.                                                                                                                                                                  |
+  | user_ids                                                | array    | body | A list of users on the fleet.                                                                                                                                                             |
+  | webhook_settings                                        | object  | body | Webhook settings for the fleet. See [webhook_settings](#webhook-settings2).                                                                                                                                                          |
+  | integrations                                            | object  | body | Integrations settings for the fleet. See [integrations](#integrations3) for details. Note that integrations referenced here must already exist globally, created by a call to [Modify configuration](#modify-configuration).                               |
+  | mdm                                                     | object  | body | MDM settings for the fleet. See [mdm](#mdm2) for details.                                                                                                                                                                                |
+  | host_expiry_settings                                    | object  | body | Host expiry settings for the fleet. See [host_expiry_settings](#host-expiry-settings2) for details.   |
+  | features                                                | object  | body | Per-fleet feature toggles. Accepts only certain sub-fields; other `features` sub-fields are writable per-fleet only via GitOps. See [features](#features2) below. |
+
+  #### Example (transfer hosts to a fleet)
+
+  `PATCH /api/v1/fleet/fleets/1`
+
+  ##### Request body
+
+  ```json
+  {
+    "host_ids": [3, 6, 7, 8, 9, 20, 32, 44]
+  }
+  ```
+
+  ##### Name conflict response
+
+  `Status: 409`
+
+  Returned when the requested name only differs from another fleet's name by letter case. Renaming a fleet to a case variant of its own current name (e.g., `ABC` → `abc`) succeeds.
+
+  ```json
+  {
+    "message": "Conflict",
+    "errors": [
+      {
+        "name": "base",
+        "reason": "A fleet named \"Workstations\" already exists. Fleet names must differ by more than letter case."
+      }
+    ]
+  }
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "team": {
+      "name": "Workstations",
+      "id": 1,
+      "user_count": 4,
+      "host_count": 8,
+      "agent_options": {
+        "config": {
+          "options": {
+            "pack_delimiter": "/",
+            "logger_tls_period": 10,
+            "distributed_plugin": "tls",
+            "disable_distributed": false,
+            "logger_tls_endpoint": "/api/v1/osquery/log",
+            "distributed_interval": 10,
+            "distributed_tls_max_attempts": 3
+          },
+          "decorators": {
+            "load": [
+              "SELECT uuid AS host_uuid FROM system_info;",
+              "SELECT hostname AS hostname FROM system_info;"
+            ]
+          }
+        },
+        "overrides": {},
+        "command_line_flags": {}
+      },
+      "webhook_settings": {
+        "failing_policies_webhook": {
+          "enable_failing_policies_webhook": false,
+          "destination_url": "",
+          "policy_ids": null,
+          "host_batch_size": 0
+        },
+        "host_activities_webhook": null
+      }
+    }
+  }
+  ```
+
+  #### webhook_settings
+
+  | Name                              | Type  | Description   |
+  | ---------------------             | ----- | ---------------------------------------------------------------------------------------------- |
+  | failing_policies_webhook          | array | See [`webhook_settings.failing_policies_webhook`](#webhook-settings-failing-policies-webhook2). |
+  | host_status_webhook               | array | See [`webhook_settings.host_status_webhook`](#webhook-settings-host-status-webhook2).           |
+  | host_activities_webhook           | object | See [`webhook_settings.host_activities_webhook`](#webhook-settings-host-activities-webhook).   |
+
+  <br/>
+
+  ##### webhook_settings.failing_policies_webhook
+
+  `webhook_settings.failing_policies_webhook` is an object with the following structure:
+
+  | Name                              | Type    | Description   |
+  | ---------------------             | ------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+  | enable_failing_policies_webhook | boolean | Whether or not the failing policies webhook is enabled.                                                                                                                                                   |
+  | destination_url                 | string  | The URL to deliver the webhook requests to.                                                                                                                                                               |
+  | policy_ids                      | array   | List of policy IDs to enable failing policies webhook.                                                                                                                                                    |
+  | host_batch_size                 | integer | Maximum number of hosts to batch on failing policy webhook requests. The default, `0`, means no batching (all hosts failing a policy are sent on one request).                                              |
+
+  <br/>
+
+  ##### webhook_settings.host_status_webhook
+
+  `webhook_settings.host_status_webhook` is an object with the following structure:
+
+  | Name                              | Type    | Description   |
+  | ---------------------             | ------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+  | enable_host_status_webhook | boolean | Whether or not the host status webhook is enabled. |
+  | destination_url            | string | The URL to deliver the webhook request to. |
+  | host_percentage            | integer | The minimum percentage of hosts that must fail to check in to Fleet in order to trigger the webhook request. |
+  | days_count | integer | body | The minimum number of days that the configured `host_percentage` must fail to check in to Fleet in order to trigger the webhook request. |
+
+  <br/>
+
+  ##### webhook_settings.host_activities_webhook
+
+  `webhook_settings.host_activities_webhook` is an object with the following structure:
+
+  | Name                              | Type    | Description   |
+  | ---------------------             | ------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+  | enable_host_activities_webhook | boolean | Whether or not the host activities webhook is enabled. When enabled, Fleet sends a webhook request every time an activity linked to one of this fleet's hosts is created. The webhook payload has the same format as the global [activities webhook](#webhook-settings-activities-webhook). MDM command results (shown via **Show MDM commands** on the host details page) are not activities and don't trigger this webhook yet. |
+  | destination_url                | string  | The URL to deliver the webhook requests to.                                                                                                                                                               |
+
+  Omitting `host_activities_webhook` from a `webhook_settings` update leaves the stored value unchanged. To turn the webhook off, send the object with `enable_host_activities_webhook: false`.
+
+  <br/>
+
+  ##### Example request body
+
+  ```json
+  {
+    "webhook_settings": {
+      "failing_policies_webhook":{
+        "enable_failing_policies_webhook": true,
+        "destination_url": "https://server.com",
+        "policy_ids": [1, 2, 3],
+        "host_batch_size": 1000
+      },
+      "host_status_webhook": {
+        "enable_host_status_webhook": true,
+        "destination_url": "https://server.com",
+        "host_percentage": 5,
+        "days_count": 7
+      },
+      "host_activities_webhook": {
+        "enable_host_activities_webhook": true,
+        "destination_url": "https://server.com"
+      }
+    }
+  }
+  ```
+
+
+  #### integrations
+
+  | Name            | Type   | Description                                                          |
+  |-----------------|--------|----------------------------------------------------------------------|
+  | jira            | array  | See [`integrations.jira`](#integrations-jira2).                       |
+  | zendesk         | array  | See [`integrations.zendesk`](#integrations-zendesk2).                 |
+  | google_calendar | array  | See [`integrations.google_calendar`](#integrations-google-calendar2). |
+  | conditional_access_enabled | boolean | **Available in Fleet Premium.** Whether to block third party app sign-ins on hosts failing policies. Must have Microsoft Entra or Okta connected and configured in global config. |
+  | certificates_idp_introspection_urls | array | **Available in Fleet Premium.** Allowlist of OAuth 2.0 token introspection URLs that the [Request certificate](#request-certificate) endpoint accepts in `idp_oauth_url`. Each entry must be an absolute `https` URL without embedded credentials and is matched exactly. While empty, requests that include IdP credentials are rejected. When it has entries, `idp_oauth_url`, `idp_token`, and `idp_client_id` are required on every certificate request. |
+  | certificates_idp_client_ids | array | **Available in Fleet Premium.** Optional allowlist of OAuth client IDs that the [Request certificate](#request-certificate) endpoint accepts in `idp_client_id`. When it has entries, `idp_client_id` must match one of them. Requires `certificates_idp_introspection_urls` to have entries. |
+  | certificates_disable_host_end_user_binding | boolean | By default, a [Request certificate](#request-certificate) call authenticated with an [HTTP signature](#example-http-signature) must carry a CSR whose email and UPN match the end user Fleet has recorded for that host (the IdP username from SCIM or end user authentication, compared case-insensitively), and hosts with no recorded end user are rejected. Set to `true` to turn this check off. Requests authenticated with an API token are unaffected. Defaults to `false`. |
+
+  <br/>
+
+  ##### integrations.jira
+
+  `integrations.jira` is an array of objects with the following structure:
+
+  | Name                                                    | Type    | Description                                                                                                                                                                                               |
+  | ------------------------------------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+  | url                             | string  | The URL of the Jira server to use.                                                                                                                                                                        |
+  | project_key                     | string  | The project key of the Jira integration to use. Jira tickets will be created in this project.                                                                                                             |
+  | enable_failing_policies         | boolean | Whether or not that Jira integration is enabled for failing policies. Only one failing policy automation can be enabled at a given time (`enable_failing_policies_webhook` and `enable_failing_policies`).    |
+
+  <br/>
+
+  ##### integrations.zendesk
+
+  `integrations.zendesk` is an array of objects with the following structure:
+
+  | Name                                                    | Type    | Description                                                                                                                                                                                               |
+  | ------------------------------------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+  | url                             | string  | The URL of the Zendesk server to use.                                                                                                                                                                     |
+  | group_id                        | integer | The Zendesk group ID to use. Zendesk tickets will be created in this group.                                                                                                                               |
+  | enable_failing_policies         | boolean | Whether or not that Zendesk integration is enabled for failing policies. Only one failing policy automation can be enabled at a given time (`enable_failing_policies_webhook` and `enable_failing_policies`). |
+
+  <br/>
+
+  ##### integrations.google_calendar
+
+  `integrations.google_calendar` is an array of objects with the following structure:
+
+  | Name                                                    | Type    | Description                                                                                                                                                                                               |
+  | ------------------------------------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+  | enable_calendar_events          | boolean | Whether or not calendar events are enabled for this fleet.                                                                                                                                                  |
+  | webhook_url                     | string | The URL to send a request to during calendar events, to trigger auto-remediation.                |
+
+  ##### Example request body
+
+  ```json
+  {
+    "integrations": {
+      "conditional_access_enabled": true,
+      "jira": [
+        {
+          "enable_software_vulnerabilities": false,
+          "enable_failing_policies": true,
+          "url": "https://jiraserver.com",
+          "username": "some_user",
+          "api_token": "<TOKEN>",
+          "project_key": "jira_project",
+        }
+      ],
+      "zendesk": [],
+      "google_calendar": [
+        {
+          "domain": "https://domain.com",
+          "api_key_json": "<API KEY JSON>"
+        }
+      ]
+    }
+  }
+  ```
+
+  #### mdm
+
+  | Name                              | Type    | Description   |
+  | ---------------------             | ------- | ---------------------------------------------------------------------------------|
+  | windows_require_bitlocker_pin     | boolean | _Deprecated at this level._ Use `windows_settings.require_bitlocker_pin` instead. |
+  | macos_updates                     | object  | See [`mdm.macos_updates`](#mdm-macos-updates2). |
+  | ios_updates                       | object  | See [`mdm.ios_updates`](#mdm-ios-updates2). |
+  | ipados_updates                    | object  | See [`mdm.ipados_updates`](#mdm-ipados-updates2). |
+  | windows_updates                   | object  | See [`mdm.windows_updates`](#mdm-windows-updates2). |
+  | macos_settings                    | object  | See [`mdm.macos_settings`](#mdm-macos-settings2). |
+  | apple_settings                    | object  | See [`mdm.apple_settings`](#mdm-apple-settings2).     |
+  | windows_settings                  | object  | See [`mdm.windows_settings`](#mdm-windows-settings2). |
+  | linux_settings                    | object  | See [`mdm.linux_settings`](#mdm-linux-settings2). |
+  | setup_experience                  | object  | See [`mdm.setup_experience`](#mdm-setup-experience2). |
+
+  <br/>
+
+  ##### mdm.macos_updates
+
+
+  `mdm.macos_updates` is an object with the following structure:
+
+  | Name                              | Type    | Description   |
+  | ---------------------             | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+  | minimum_version                 | string  | Hosts that belong to this fleet and have MDM turned on will be prompted to update when their OS is below this version.                                                                           |
+  | deadline                        | string  | Hosts that belong to this fleet and have MDM turned on will be forced to update their OS after this deadline (7PM local time for hosts already on macOS 14 or above, 20:00 UTC for hosts on earlier macOS versions).                                                                    |
+  | update_new_hosts                          | string  | macOS hosts that automatically enroll (ADE) are updated to [Apple's latest version](https://fleetdm.com/guides/enforce-os-updates) during macOS Setup Assistant. For backwards compatibility, if not specified, and `deadline` and `minimum_version` are set, `update_new_hosts` is set to `true`. Otherwise, `update_new_hosts` defaults to `false`. |
+
+  <br/>
+
+  ##### mdm.ios_updates
+
+  `mdm.ios_updates` is an object with the following structure:
+
+  | Name                              | Type    | Description   |
+  | ---------------------             | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+  | minimum_version                 | string  | Hosts that belong to this fleet will be prompted to update when their OS is below this version.                                                                            |
+  | deadline                        | string  | Hosts that belong to this fleet will be forced to update their OS after this deadline (7PM local time).                                                                    |
+
+
+  <br/>
+
+  ##### mdm.ipados_updates
+
+  `mdm.ipados_updates` is an object with the following structure:
+
+  | Name                              | Type    | Description   |
+  | ---------------------             | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+  | minimum_version                 | string  | Hosts that belong to this fleet will be prompted to update when their OS is below this version.                                                                            |
+  | deadline                        | string  | Hosts that belong to this fleet will be forced to update their OS after this deadline (7PM local time).                                                                    |
+
+
+  <br/>
+
+  ##### mdm.windows_updates
+
+  `mdm.windows_updates` is an object with the following structure:
+
+  | Name                              | Type    | Description   |
+  | ---------------------             | ------- | -----------------------------------------------------------------------------------------------------------------------------     |
+  | deadline_days                     | integer | Hosts that belong to this fleet and have MDM turned on will have this number of days before updates are installed on Windows.     |
+  | grace_period_days                 | integer | Hosts that belong to this fleet and have MDM turned on will have this number of days before Windows restarts to install updates.  |
+
+
+  <br/>
+
+  ##### mdm.macos_settings
+
+  `mdm.macos_settings` is an object with the following structure:
+
+  | Name                              | Type    | Description   |
+  | ---------------------             | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+  | custom_settings                 | array    | Only intended to be used by [Fleet's YAML](https://fleetdm.com/docs/configuration/yaml-files). To add macOS configuration profiles using Fleet's API, use the [Create configuration profile](#create-configuration-profile) endpoint instead.                                                                                                                                      |
+  <br/>
+
+
+  ##### mdm.apple_settings
+
+  `mdm.apple_settings` is an object with the following structure:
+
+  | Name                                   | Type    | Description   |
+  | -------------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+  | custom_settings                        | array   | Only intended to be used by [Fleet's YAML](https://fleetdm.com/docs/configuration/yaml-files). To add macOS configuration profiles using Fleet's API, use the [Create configuration profile](#create-configuration-profile) endpoint instead. |
+  | managed_local_account_settings         | object  | Settings for the managed local account. |
+  | managed_local_account_settings.enabled | boolean | Whether to create the managed local account (default: `false`). |
+  | end_user_local_account_type            | string  | The end user account type. Requires `managed_local_account_settings.enabled` to be `true`. Options: `"admin"`, `"standard"`, `"none"` (default: `"admin"`). |
+  | enable_disk_encryption             | boolean | Hosts that belong to this fleet will have disk encryption enabled if set to true. |
+  | enable_escrow_disk_encryption_key  | boolean | Specifies whether Fleet stores the disk encryption recovery key without prompting users to turn on disk encryption. Set to true when a third-party tool handles enforcement. Supported for macOS and Linux hosts. |
+
+  <br/>
+
+
+  ##### mdm.windows_settings
+
+  `mdm.windows_settings` is an object with the following structure:
+
+  | Name                                    | Type    | Description   |
+  | ---------------------                   | ------- | -------------------------------------------------------------------------------------------------------|
+  | custom_settings                         | array    | Only intended to be used by [Fleet's YAML](https://fleetdm.com/docs/configuration/yaml-files). To add Windows configuration profiles using Fleet's API, use the [Create configuration profile](#create-configuration-profile) endpoint instead.                                                                                                                             |
+  | enable_managed_local_account           | boolean  | Whether to create the managed local account (default: `false`). |
+  | enable_disk_encryption                  | boolean | Hosts that belong to this fleet will have disk encryption enabled if set to true. |
+  | require_bitlocker_pin                   | boolean | End users on Windows hosts that are "Unassigned" will be required to set a BitLocker PIN if set to true. `windows_settings.enable_disk_encryption` must be set to true. When the PIN is set, it's required to unlock Windows host during startup. |
+  <br/>
+
+  ##### mdm.linux_settings
+
+  `mdm.linux_settings` is an object with the following structure:
+
+  | Name                               | Type    | Description   |
+  | ---------------------              | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+  | enable_escrow_disk_encryption_key  | boolean | Specifies whether Fleet stores the disk encryption recovery key without prompting users to turn on disk encryption. Set to true when a third-party tool handles enforcement. Supported for macOS and Linux hosts. |
+
+
+  <br/>
+
+
+  ##### mdm.setup_experience
+
+
+  `mdm.setup_experience` is an object with the following structure:
+
+  | Name                                  | Type    | Description   |
+  | ------------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+  | enable_end_user_authentication        | boolean | If set to true, IdP authentication will be required during automatic MDM enrollment of new macOS hosts. Settings for your IdP provider must also be [configured](https://fleetdm.com/guides/setup-experience#require-idp-authentication).
+  | lock_end_user_info                    | boolean | If set to true, end user can't edit the local account's Account Name and Full Name in macOS Setup Assistant. These fields will be locked to values from your IdP. (Default: `true`) |
+  | enable_managed_local_account          | boolean | _Available in Fleet Premium._ During Setup experience, a managed local account will be created on eligible hosts if set to true. |
+  | end_user_local_account_type          | string  | body  | Specifies the type of local end user account created. (Default: `"admin"`) `enable_managed_local_account` must be true. |
+
+
+  ##### Example request body
+
+  ```json
+  {
+    "mdm": {
+      "macos_updates": {
+        "minimum_version": "12.3.1",
+        "deadline": "2025-04-01",
+        "update_new_hosts": true
+      },
+      "ios_updates": {
+        "minimum_version": "18.3.1",
+        "deadline": "2025-04-01"
+      },
+      "windows_updates": {
+        "deadline_days": 5,
+        "grace_period_days": 1
+      },
+      "apple_settings": {
+        "configuration_profiles": [
+          {
+            "path": "path/to/profile1.mobileconfig",
+            "labels": ["Label 1", "Label 2"]
+          },
+          {
+            "path": "path/to/profile2.json",
+            "labels": ["Label 3", "Label 4"]
+          },
+        ],
+        "enable_disk_encryption": true,
+        "enable_escrow_disk_encryption_key": true,
+        "assets": [
+          {
+            "path": "path/to/assets/asset.json"
+          }
+        ],
+        "managed_local_account_settings": {
+          "enabled": true
+        }
+      },
+      "windows_settings": {
+        "custom_settings": [
+          {
+            "path": "path/to/profile3.xml",
+            "labels": ["Label 1", "Label 2"]
+          }
+        ],
+        "configuration_profiles": [
+          {
+            "path": "path/to/profile3.xml",
+            "labels": ["Label 1", "Label 2"]
+          }
+        ],
+        "enable_disk_encryption": true,
+        "require_bitlocker_pin": true,
+        "enable_managed_local_account": true
+      },
+      "linux_settings": {
+        "enable_escrow_disk_encryption_key": true
+      },
+      "setup_experience": {
+        "enable_end_user_authentication": false
+      }
+    }
+  }
+  ```
+
+  #### host_expiry_settings
+
+  | Name                              | Type    | Description   |
+  | ---------------------             | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+  | host_expiry_enabled                         | boolean | When enabled, allows automatic cleanup of hosts that have not communicated with Fleet in some number of days. When disabled, defaults to the global setting.                                               |
+  | host_expiry_window                          | integer | If a host has not communicated with Fleet in the specified number of days, it will be removed.                                                                                                             |
+
+
+  <br/>
+
+  ##### Example request body
+
+  ```json
+  {
+    "host_expiry_settings": {
+      "host_expiry_enabled": true,
+      "host_expiry_window": 7
+    }
+  }
+  ```
+
+  #### features
+
+  | Name                              | Type    | Description   |
+  | ---------------------             | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+  | enable_software_inventory         | boolean  | Whether to enable software inventory for this fleet. If this key is omitted, the previously-configured value does not change. |
+  | historical_data         | object  | See [features.historical_data](#features-historical-data). |
+
+  ##### features.historical_data
+
+  `features.historical_data` is an object with the following structure:
+
+  | Name              | Type    | Description                                                                                                |
+  | ----------------- | ------- | ---------------------------------------------------------------------------------------------------------- |
+  | uptime            | boolean | Whether to collect host-uptime samples for hosts in this fleet. (Default: `true`)                          |
+  | vulnerabilities   | boolean | Whether to collect CVE samples for hosts in this fleet. (Default: `true`)                                  |
+
+  Sub-keys mirror the global `features.historical_data` shape and default to
+  `true`. A dataset is collected for a host in this fleet only when both the
+  global sub-key AND this fleet's sub-key are `true`. Sub-keys omitted from
+  the PATCH body retain their current stored value.
+
+  ###### Example request body
+
+  ```json
+  {
+    "features": {
+      "historical_data": {
+        "vulnerabilities": false
+      }
+    }
+  }
+  ```
+
+  ###### Example request body
+
+  ```json
+  {
+    "features": {
+      "historical_data": {
+        "vulnerabilities": false
+      }
+    }
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#update-fleet
+examples:
+- name: 409 Name conflict response
+  request:
+    method: PATCH
+    url: '{{baseUrl}}/api/v1/fleet/fleets/:id'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required.** The desired fleet''s ID. Use `0` for "Unassigned" hosts. **Note:** When using
+        `id=0`, only `webhook_settings.failing_policies_webhook`, `webhook_settings.host_activities_webhook`, `integrations.jira`,
+        and `integrations.zendesk` fields are supported in the request body.'
+    body:
+      type: json
+      data: |-
+        {
+          "host_ids": [
+            3,
+            6,
+            7,
+            8,
+            9,
+            20,
+            32,
+            44
+          ]
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 409
+    statusText: Conflict
+    body:
+      type: json
+      data: |-
+        {
+          "message": "Conflict",
+          "errors": [
+            {
+              "name": "base",
+              "reason": "A fleet named \"Workstations\" already exists. Fleet names must differ by more than letter case."
+            }
+          ]
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+- name: 200 Default response
+  request:
+    method: PATCH
+    url: '{{baseUrl}}/api/v1/fleet/fleets/:id'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required.** The desired fleet''s ID. Use `0` for "Unassigned" hosts. **Note:** When using
+        `id=0`, only `webhook_settings.failing_policies_webhook`, `webhook_settings.host_activities_webhook`, `integrations.jira`,
+        and `integrations.zendesk` fields are supported in the request body.'
+    body:
+      type: json
+      data: |-
+        {
+          "host_ids": [
+            3,
+            6,
+            7,
+            8,
+            9,
+            20,
+            32,
+            44
+          ]
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "team": {
+            "name": "Workstations",
+            "id": 1,
+            "user_count": 4,
+            "host_count": 8,
+            "agent_options": {
+              "config": {
+                "options": {
+                  "pack_delimiter": "/",
+                  "logger_tls_period": 10,
+                  "distributed_plugin": "tls",
+                  "disable_distributed": false,
+                  "logger_tls_endpoint": "/api/v1/osquery/log",
+                  "distributed_interval": 10,
+                  "distributed_tls_max_attempts": 3
+                },
+                "decorators": {
+                  "load": [
+                    "SELECT uuid AS host_uuid FROM system_info;",
+                    "SELECT hostname AS hostname FROM system_info;"
+                  ]
+                }
+              },
+              "overrides": {},
+              "command_line_flags": {}
+            },
+            "webhook_settings": {
+              "failing_policies_webhook": {
+                "enable_failing_policies_webhook": false,
+                "destination_url": "",
+                "policy_ids": null,
+                "host_batch_size": 0
+              },
+              "host_activities_webhook": null
+            }
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

@@ -1,0 +1,88 @@
+info:
+  name: Update certificate authority (CA)
+  type: http
+  seq: 3
+http:
+  method: PATCH
+  url: '{{baseUrl}}/api/v1/fleet/certificate_authorities/:id'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required.** The certificate authority (CA) ID in Fleet. You can see your CAs IDs using the [List
+      certificate authorities endpoint](#list-certificate-authorities-cas).'
+  body:
+    type: json
+    data: |-
+      {
+        "digicert": {
+          "certificate_common_name": "$FLEET_VAR_HOST_HARDWARE_SERIAL"
+        }
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  `PATCH /api/v1/fleet/certificate_authorities/:id`
+
+  When editing a CA, specify one object and only its fields that you want to update.
+
+  #### Parameters
+
+  | Name            | Type    | In   | Description                                                 |
+  |---------------- |-------- |------|-------------------------------------------------------------|
+  | id   | integer | path |  **Required.** The certificate authority (CA) ID in Fleet. You can see your CAs IDs using the [List certificate authorities endpoint](#list-certificate-authorities-cas). |
+  | digicert   | object | body | See [digicert](#digicert) |
+  | ndes_scep_proxy   | object | body | Used for both Microsoft NDES and Okta CAs (Okta uses NDES under the hood). See [ndes_scep_proxy](#ndes-scep-proxy) |
+  | custom_scep_proxy   | object | body | See [custom_scep_proxy](#custom-scep-proxy) |
+  | custom_est_proxy   | object | body | See [custom_est_proxy](#custom-est-proxy) |
+  | hydrant   | object | body | See [hydrant](#hydrant) |
+  | smallstep   | object | body | See [smallstep](#smallstep) |
+
+  See [Connect certificate authority](#connect-certificate-authority-ca) above for the structure of each CA object.
+
+  #### Example
+
+  `PATCH /api/v1/fleet/certificate_authorities/1`
+
+  ##### Request body
+
+  ```json
+  {
+    "digicert": {
+      "certificate_common_name": "$FLEET_VAR_HOST_HARDWARE_SERIAL",
+    }
+  }
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#update-certificate-authority-ca
+examples:
+- name: 200 Default response
+  request:
+    method: PATCH
+    url: '{{baseUrl}}/api/v1/fleet/certificate_authorities/:id'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required.** The certificate authority (CA) ID in Fleet. You can see your CAs IDs using the
+        [List certificate authorities endpoint](#list-certificate-authorities-cas).'
+    body:
+      type: json
+      data: |-
+        {
+          "digicert": {
+            "certificate_common_name": "$FLEET_VAR_HOST_HARDWARE_SERIAL"
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 200
+    statusText: OK

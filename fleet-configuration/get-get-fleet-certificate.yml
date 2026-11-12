@@ -1,0 +1,49 @@
+info:
+  name: Get Fleet certificate
+  type: http
+  seq: 1
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/config/certificate'
+  auth: inherit
+docs: |-
+  Returns the Fleet certificate.
+
+  `GET /api/v1/fleet/config/certificate`
+
+  #### Parameters
+
+  None.
+
+  #### Example
+
+  `GET /api/v1/fleet/config/certificate`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "certificate_chain": "<certificate_chain>"
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#get-fleet-certificate
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/config/certificate'
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "certificate_chain": "<certificate_chain>"
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

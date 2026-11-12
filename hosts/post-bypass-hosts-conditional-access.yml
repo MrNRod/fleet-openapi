@@ -1,0 +1,33 @@
+info:
+  name: Bypass host's conditional access
+  type: http
+  seq: 40
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/device/:token/bypass_conditional_access'
+  params:
+  - name: token
+    value: ''
+    type: path
+    description: '**Required.** The host''s [Fleet Desktop token](https://fleetdm.com/guides/fleet-desktop#secure-fleet-desktop).'
+docs: "Grant a blocked host access for a single login. Requires Okta conditional access configured with bypass enabled.\n\
+  \n`POST /api/v1/fleet/device/:token/bypass_conditional_access`\n\n#### Parameters\n\n| Name        | Type   |\
+  \ In   | Description                                                                                         \
+  \                                                                                                            \
+  \                             |\n| ----------- | ------ | ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\
+  \ |\n| token        | string | path | **Required.** The host's [Fleet Desktop token](https://fleetdm.com/guides/fleet-desktop#secure-fleet-desktop).\
+  \ |\n\n\n#### Example \n\n`POST /api/v1/fleet/device/abcdef012456789/bypass_conditional_access`\n\n##### Default\
+  \ response \n\n`Status: 200`\n\nReference: https://fleetdm.com/docs/rest-api/rest-api#bypass-hosts-conditional-access"
+examples:
+- name: 200 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/device/:token/bypass_conditional_access'
+    params:
+    - name: token
+      value: ''
+      type: path
+      description: '**Required.** The host''s [Fleet Desktop token](https://fleetdm.com/guides/fleet-desktop#secure-fleet-desktop).'
+  response:
+    status: 200
+    statusText: OK

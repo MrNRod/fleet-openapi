@@ -1,0 +1,76 @@
+info:
+  name: Batch-resend configuration profile
+  type: http
+  seq: 13
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/configuration_profiles/resend/batch'
+  auth: inherit
+  body:
+    type: json
+    data: |-
+      {
+        "profile_uuid": "f663713f-04ee-40f0-a95a-7af428c351a9",
+        "filters": {
+          "profile_status": "failed"
+        }
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  `POST /api/v1/fleet/configuration_profiles/resend/batch`
+
+  #### Parameters
+
+  | Name          | Type    | In   | Description                                                                            |
+  | ------------- | ------- | ---- | -------------------------------------------------------------------------------------- |
+  | profile_uuid  | integer | body | **Required**. The UUID of the existing configuration profile you'd like to resend.     |
+  | filters       | object  | body | **Required**. See [filters](#filters)                                                  |
+
+  ##### Filters
+
+  | Name                   | Type    | Description   |
+  | -----------------------| ------- | ----------------------------------------------------------------------------------- |
+  | profile_status         | string   | Profile status. Currently, `"failed"` is supported. |
+
+  #### Example
+
+  `POST /api/v1/fleet/configuration_profiles/batch/resend`
+
+  ##### Request body
+
+  ```json
+  {
+    "profile_uuid": "f663713f-04ee-40f0-a95a-7af428c351a9",
+    "filters": {
+      "profile_status": "failed"
+    }
+  }
+  ```
+
+  ##### Default response
+
+  `Status: 202`
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#batch-resend-configuration-profile
+examples:
+- name: 202 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/configuration_profiles/resend/batch'
+    body:
+      type: json
+      data: |-
+        {
+          "profile_uuid": "f663713f-04ee-40f0-a95a-7af428c351a9",
+          "filters": {
+            "profile_status": "failed"
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 202
+    statusText: Accepted

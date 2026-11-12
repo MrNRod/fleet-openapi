@@ -1,0 +1,209 @@
+info:
+  name: List policies
+  type: http
+  seq: 1
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/global/policies'
+  auth: inherit
+  params:
+  - name: page
+    value: ''
+    type: query
+    disabled: true
+    description: Page number of the results to fetch.
+  - name: per_page
+    value: ''
+    type: query
+    disabled: true
+    description: Results per page.
+  - name: order_key
+    value: ''
+    type: query
+    disabled: true
+    description: What to order results by. Allowed fields are `id`, `name`, `team_id`, `created_at`, `updated_at`,
+      `failing_host_count`, and `passing_host_count`.
+  - name: order_direction
+    value: ''
+    type: query
+    disabled: true
+    description: '**Requires `order_key`**. The direction of the order given the order key. Options include `"asc"`
+      and `"desc"`. Default is `"asc"`.'
+  - name: after
+    value: ''
+    type: query
+    disabled: true
+    description: The value to get results after. This needs `order_key` defined, as that's the column that would
+      be used.
+  - name: platform
+    value: ''
+    type: query
+    disabled: true
+    description: Filters policies by targeted platform. Accepts `"darwin"`, `"windows"`, `"linux"`, or `"chrome"`.
+      Policies that target all platforms (empty `platform` field) are always included.
+docs: |-
+  `GET /api/v1/fleet/global/policies`
+
+  #### Parameters
+
+  | Name                    | Type    | In    | Description                                                                                                                                                                                                                                                                                                                                 |
+  | ----------------------- | ------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+  | page                    | integer | query | Page number of the results to fetch.                                                                                                                                                                                                                                                                                                        |
+  | per_page                | integer | query | Results per page. |
+  | order_key               | string  | query | What to order results by. Allowed fields are `id`, `name`, `team_id`, `created_at`, `updated_at`, `failing_host_count`, and `passing_host_count`. |
+  | order_direction         | string  | query | **Requires `order_key`**. The direction of the order given the order key. Options include `"asc"` and `"desc"`. Default is `"asc"`. |
+  | after                   | string  | query | The value to get results after. This needs `order_key` defined, as that's the column that would be used. |
+  | platform                | string  | query | Filters policies by targeted platform. Accepts `"darwin"`, `"windows"`, `"linux"`, or `"chrome"`. Policies that target all platforms (empty `platform` field) are always included. |
+
+  #### Example
+
+  `GET /api/v1/fleet/global/policies`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "policies": [
+      {
+        "id": 1,
+        "name": "Gatekeeper enabled",
+        "query": "SELECT 1 FROM gatekeeper WHERE assessments_enabled = 1;",
+        "description": "Checks if gatekeeper is enabled on macOS devices",
+        "critical": false,
+        "author_id": 42,
+        "author_name": "John",
+        "author_email": "john@example.com",
+        "team_id": null,
+        "resolution": "Resolution steps",
+        "platform": "darwin",
+        "created_at": "2021-12-15T15:23:57Z",
+        "updated_at": "2021-12-15T15:23:57Z",
+        "passing_host_count": 2000,
+        "failing_host_count": 300,
+        "host_count_updated_at": "2023-12-20T15:23:57Z",
+        "labels_include_any": ["Macs on Sonoma"]
+      },
+      {
+        "id": 2,
+        "name": "Windows machines with encrypted hard disks",
+        "query": "SELECT 1 FROM bitlocker_info WHERE protection_status = 1;",
+        "description": "Checks if the hard disk is encrypted on Windows devices",
+        "critical": true,
+        "author_id": 43,
+        "author_name": "Alice",
+        "author_email": "alice@example.com",
+        "team_id": null,
+        "resolution": "Resolution steps",
+        "platform": "windows",
+        "created_at": "2021-12-31T14:52:27Z",
+        "updated_at": "2022-02-10T20:59:35Z",
+        "passing_host_count": 2300,
+        "failing_host_count": 0,
+        "host_count_updated_at": "2023-12-20T15:23:57Z",
+        "labels_exclude_any": ["Compliance exclusions", "Workstations (Canary)"]
+      }
+    ]
+  }
+  ```
+
+  ---
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#list-policies
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/global/policies'
+    params:
+    - name: page
+      value: ''
+      type: query
+      disabled: true
+      description: Page number of the results to fetch.
+    - name: per_page
+      value: ''
+      type: query
+      disabled: true
+      description: Results per page.
+    - name: order_key
+      value: ''
+      type: query
+      disabled: true
+      description: What to order results by. Allowed fields are `id`, `name`, `team_id`, `created_at`, `updated_at`,
+        `failing_host_count`, and `passing_host_count`.
+    - name: order_direction
+      value: ''
+      type: query
+      disabled: true
+      description: '**Requires `order_key`**. The direction of the order given the order key. Options include `"asc"`
+        and `"desc"`. Default is `"asc"`.'
+    - name: after
+      value: ''
+      type: query
+      disabled: true
+      description: The value to get results after. This needs `order_key` defined, as that's the column that would
+        be used.
+    - name: platform
+      value: ''
+      type: query
+      disabled: true
+      description: Filters policies by targeted platform. Accepts `"darwin"`, `"windows"`, `"linux"`, or `"chrome"`.
+        Policies that target all platforms (empty `platform` field) are always included.
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "policies": [
+            {
+              "id": 1,
+              "name": "Gatekeeper enabled",
+              "query": "SELECT 1 FROM gatekeeper WHERE assessments_enabled = 1;",
+              "description": "Checks if gatekeeper is enabled on macOS devices",
+              "critical": false,
+              "author_id": 42,
+              "author_name": "John",
+              "author_email": "john@example.com",
+              "team_id": null,
+              "resolution": "Resolution steps",
+              "platform": "darwin",
+              "created_at": "2021-12-15T15:23:57Z",
+              "updated_at": "2021-12-15T15:23:57Z",
+              "passing_host_count": 2000,
+              "failing_host_count": 300,
+              "host_count_updated_at": "2023-12-20T15:23:57Z",
+              "labels_include_any": [
+                "Macs on Sonoma"
+              ]
+            },
+            {
+              "id": 2,
+              "name": "Windows machines with encrypted hard disks",
+              "query": "SELECT 1 FROM bitlocker_info WHERE protection_status = 1;",
+              "description": "Checks if the hard disk is encrypted on Windows devices",
+              "critical": true,
+              "author_id": 43,
+              "author_name": "Alice",
+              "author_email": "alice@example.com",
+              "team_id": null,
+              "resolution": "Resolution steps",
+              "platform": "windows",
+              "created_at": "2021-12-31T14:52:27Z",
+              "updated_at": "2022-02-10T20:59:35Z",
+              "passing_host_count": 2300,
+              "failing_host_count": 0,
+              "host_count_updated_at": "2023-12-20T15:23:57Z",
+              "labels_exclude_any": [
+                "Compliance exclusions",
+                "Workstations (Canary)"
+              ]
+            }
+          ]
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

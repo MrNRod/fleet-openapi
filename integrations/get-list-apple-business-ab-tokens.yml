@@ -1,0 +1,185 @@
+info:
+  name: List Apple Business (AB) tokens
+  type: http
+  seq: 2
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/ab_tokens'
+  auth: inherit
+docs: |-
+  _Available in Fleet Premium_
+
+  `GET /api/v1/fleet/ab_tokens`
+
+  #### Parameters
+
+  None.
+
+  #### Example
+
+  `GET /api/v1/fleet/ab_tokens`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "ab_tokens": [
+      {
+        "id": 1,
+        "apple_id": "apple@example.com",
+        "org_name": "Fleet Device Management Inc.",
+        "mdm_server_url": "https://example.com/mdm/apple/mdm",
+        "mdm_server_uuid": "8b8a8f1e-3c2d-4e5f-9a6b-7c8d9e0f1a2b",
+        "renew_date": "2023-11-29T00:00:00Z",
+        "default": true,
+        "terms_expired": false,
+        "macos_fleet": {
+          "name": "💻 Workstations",
+          "fleet_id": 1
+        },
+        "ios_fleet": {
+          "name": "📱🏢 Company-owned iPhones",
+          "fleet_id": 2
+        },
+        "ipados_fleet": {
+          "name": "🔳🏢 Company-owned iPads",
+          "fleet_id": 3
+        }
+      }
+    ],
+    "abm_tokens": [
+      {
+        "id": 1,
+        "apple_id": "apple@example.com",
+        "org_name": "Fleet Device Management Inc.",
+        "mdm_server_url": "https://example.com/mdm/apple/mdm",
+        "mdm_server_uuid": "8b8a8f1e-3c2d-4e5f-9a6b-7c8d9e0f1a2b",
+        "renew_date": "2023-11-29T00:00:00Z",
+        "default": true,
+        "terms_expired": false,
+        "token_invalid": false,
+        "macos_team": {
+          "name": "💻 Workstations",
+          "id": 1
+        },
+        "macos_fleet": {
+          "name": "💻 Workstations",
+          "id": 1
+        },
+        "ios_team": {
+          "name": "📱🏢 Company-owned iPhones",
+          "id": 2
+        },
+        "ios_fleet": {
+          "name": "📱🏢 Company-owned iPhones",
+          "id": 2
+        },
+        "ipados_team": {
+          "name": "🔳🏢 Company-owned iPads",
+          "id": 3
+        },
+        "ipados_fleet": {
+          "name": "🔳🏢 Company-owned iPads",
+          "id": 3
+        },
+        "byod_team": {
+          "name": "📱 BYOD iPhones",
+          "id": 4
+        },
+        "byod_fleet": {
+          "name": "📱 BYOD iPhones",
+          "id": 4
+        }
+      }
+    ]
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#list-apple-business-ab-tokens
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/ab_tokens'
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "ab_tokens": [
+            {
+              "id": 1,
+              "apple_id": "apple@example.com",
+              "org_name": "Fleet Device Management Inc.",
+              "mdm_server_url": "https://example.com/mdm/apple/mdm",
+              "mdm_server_uuid": "8b8a8f1e-3c2d-4e5f-9a6b-7c8d9e0f1a2b",
+              "renew_date": "2023-11-29T00:00:00Z",
+              "default": true,
+              "terms_expired": false,
+              "macos_fleet": {
+                "name": "💻 Workstations",
+                "fleet_id": 1
+              },
+              "ios_fleet": {
+                "name": "📱🏢 Company-owned iPhones",
+                "fleet_id": 2
+              },
+              "ipados_fleet": {
+                "name": "🔳🏢 Company-owned iPads",
+                "fleet_id": 3
+              }
+            }
+          ],
+          "abm_tokens": [
+            {
+              "id": 1,
+              "apple_id": "apple@example.com",
+              "org_name": "Fleet Device Management Inc.",
+              "mdm_server_url": "https://example.com/mdm/apple/mdm",
+              "mdm_server_uuid": "8b8a8f1e-3c2d-4e5f-9a6b-7c8d9e0f1a2b",
+              "renew_date": "2023-11-29T00:00:00Z",
+              "default": true,
+              "terms_expired": false,
+              "token_invalid": false,
+              "macos_team": {
+                "name": "💻 Workstations",
+                "id": 1
+              },
+              "macos_fleet": {
+                "name": "💻 Workstations",
+                "id": 1
+              },
+              "ios_team": {
+                "name": "📱🏢 Company-owned iPhones",
+                "id": 2
+              },
+              "ios_fleet": {
+                "name": "📱🏢 Company-owned iPhones",
+                "id": 2
+              },
+              "ipados_team": {
+                "name": "🔳🏢 Company-owned iPads",
+                "id": 3
+              },
+              "ipados_fleet": {
+                "name": "🔳🏢 Company-owned iPads",
+                "id": 3
+              },
+              "byod_team": {
+                "name": "📱 BYOD iPhones",
+                "id": 4
+              },
+              "byod_fleet": {
+                "name": "📱 BYOD iPhones",
+                "id": 4
+              }
+            }
+          ]
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

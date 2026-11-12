@@ -1,0 +1,69 @@
+info:
+  name: Get Fleet default MDM setup enrollment profile
+  type: http
+  seq: 3
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/enrollment_profiles/automatic/default'
+  auth: inherit
+docs: |-
+  _Available in Fleet Premium_
+
+  Gets the Fleet default MDM setup enrollment profile. This is the profile Fleet registers with Apple for devices in fleets that do not have a custom MDM setup enrollment profile uploaded.
+
+  `GET /api/v1/fleet/enrollment_profiles/automatic/default`
+
+  The default profile is a single profile per Fleet instance. It is shared across all fleets and all Apple Business Manager (ABM) tokens and cannot be scoped by `fleet_id`.
+
+  If the default profile has not yet been stored (for example, on a new Fleet instance that has not completed its first automatic enrollment registration), Fleet returns the in-code defaults that will be registered on first use, and `updated_at` is `null`.
+
+  #### Parameters
+
+  None.
+
+  #### Example
+
+  `GET /api/v1/fleet/enrollment_profiles/automatic/default`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "updated_at": "2026-04-04T00:00:00Z",
+    "enrollment_profile": {
+      "profile_name": "Fleet default enrollment profile",
+      "is_supervised": true,
+      "is_mdm_removable": false,
+      "skip_setup_items": []
+    }
+  }
+  ```
+
+  > NOTE: The `ConfigurationWebURL` and `URL` values are automatically populated by Fleet at registration time and are not included in this response.
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#get-fleet-default-mdm-setup-enrollment-profile
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/enrollment_profiles/automatic/default'
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "updated_at": "2026-04-04T00:00:00Z",
+          "enrollment_profile": {
+            "profile_name": "Fleet default enrollment profile",
+            "is_supervised": true,
+            "is_mdm_removable": false,
+            "skip_setup_items": []
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

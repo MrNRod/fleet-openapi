@@ -1,0 +1,50 @@
+info:
+  name: Delete SCIM group
+  type: http
+  seq: 12
+http:
+  method: DELETE
+  url: '{{baseUrl}}/api/v1/fleet/scim/Groups/:id'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required**. The group''s ID (format: `group-<number>`).'
+docs: |-
+  _Available in Fleet Premium_
+
+  `DELETE /api/v1/fleet/scim/Groups/:id`
+
+  #### Parameters
+
+  | Name | Type   | In   | Description                                              |
+  | ---- | ------ | ---- | -------------------------------------------------------- |
+  | id   | string | path | **Required**. The group's ID (format: `group-<number>`). |
+
+  #### Example
+
+  `DELETE /api/v1/fleet/scim/Groups/group-1`
+
+  ##### Default response
+
+  `Status: 204`
+
+  No content.
+
+  ---
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#delete-scim-group
+examples:
+- name: 204 Default response
+  request:
+    method: DELETE
+    url: '{{baseUrl}}/api/v1/fleet/scim/Groups/:id'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required**. The group''s ID (format: `group-<number>`).'
+  response:
+    status: 204
+    statusText: No Content

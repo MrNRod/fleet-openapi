@@ -1,0 +1,85 @@
+info:
+  name: Adjust trace sampling
+  type: http
+  seq: 5
+http:
+  method: PATCH
+  url: '{{baseUrl}}/debug/trace_sampler'
+  auth: inherit
+  body:
+    type: json
+    data: |-
+      {
+        "force_full": true
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  Updates one or more [trace sampling](https://fleetdm.com/docs/deploy/reference-architectures#sampling) settings at runtime, without restarting the server. Only the fields included in the request body are changed. Each Fleet server polls for changes about once a minute, so an update applies across all servers within roughly a minute. Requires a global admin.
+
+  `PATCH /debug/trace_sampler`
+
+  #### Parameters
+
+  | Name              | Type    | In   | Description                                                                                                          |
+  | ----------------- | ------- | ---- | -------------------------------------------------------------------------------------------------------------------- |
+  | high_volume_ratio | float   | body | Sample rate for high-volume agent routes, between 0 and 1 (inclusive).                                               |
+  | standard_ratio    | float   | body | Sample rate for standard admin/read routes, between 0 and 1 (inclusive).                                             |
+  | force_full        | boolean | body | When `true`, sample every route at 100% (except never-sampled infrastructure paths), ignoring the ratios above.      |
+
+  At least one field is required. Ratios outside the `[0, 1]` range are rejected.
+
+  #### Example
+
+  `PATCH /debug/trace_sampler`
+
+  ##### Request body
+
+  ```json
+  {
+    "force_full": true
+  }
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "high_volume_ratio": 0.001,
+    "standard_ratio": 0.02,
+    "force_full": true
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#adjust-trace-sampling
+examples:
+- name: 200 Default response
+  request:
+    method: PATCH
+    url: '{{baseUrl}}/debug/trace_sampler'
+    body:
+      type: json
+      data: |-
+        {
+          "force_full": true
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "high_volume_ratio": 0.001,
+          "standard_ratio": 0.02,
+          "force_full": true
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

@@ -1,0 +1,6 @@
+info:
+  name: Scripts
+  type: folder
+  seq: 17
+request:
+  auth: inherit

@@ -1,0 +1,80 @@
+info:
+  name: Run MDM command
+  type: http
+  seq: 1
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/commands/run'
+  auth: inherit
+  body:
+    type: json
+    data: |-
+      {
+        "command": "",
+        "host_uuids": []
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  This endpoint tells Fleet to run a custom MDM command on the targeted macOS, iOS, iPadOS, Windows, or Android hosts the next time they come online.
+
+  The MDM command payloads must be base64-encoded.
+
+  This endpoint accepts a maximum request body size of 2MiB.
+
+  `POST /api/v1/fleet/commands/run`
+
+  #### Parameters
+
+  | Name                      | Type   | In    | Description                                                               |
+  | ------------------------- | ------ | ----- | ------------------------------------------------------------------------- |
+  | command                   | string | json  | A Base64 encoded MDM command. For Apple hosts, this is an XML plist as described in [Apple's documentation](https://developer.apple.com/documentation/devicemanagement/commands_and_queries). For Windows hosts, this is SyncML XML as described in [Windows's documentation](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-mdm/0353f3d6-dbe2-42b6-b8d5-50db9333bba4). For Android hosts, this is the JSON body of the [AMAPI issueCommand request](https://developers.google.com/android/management/reference/rest/v1/enterprises.devices/issueCommand). All payloads must be Base64 encoded. Supported formats are standard and raw (unpadded). |
+  | host_uuids                | array  | json  | An array of host UUIDs enrolled in Fleet on which the command should run. |
+
+  Note that the Apple `EraseDevice` and `DeviceLock` commands and the Android `LOCK` and `RESET_PASSWORD` commands are _available in Fleet Premium_ only.
+
+  #### Example
+
+  `POST /api/v1/fleet/commands/run`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "command_uuid": "a2064cef-0000-1234-afb9-283e3c1d487e",
+    "request_type": "ProfileList"
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#run-mdm-command
+examples:
+- name: 200 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/commands/run'
+    body:
+      type: json
+      data: |-
+        {
+          "command": "",
+          "host_uuids": []
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "command_uuid": "a2064cef-0000-1234-afb9-283e3c1d487e",
+          "request_type": "ProfileList"
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

@@ -1,0 +1,65 @@
+info:
+  name: Delete report by name
+  type: http
+  seq: 8
+http:
+  method: DELETE
+  url: '{{baseUrl}}/api/v1/fleet/reports/:name'
+  auth: inherit
+  params:
+  - name: name
+    value: ''
+    type: path
+    description: '**Required.** The name of the report.'
+  body:
+    type: json
+    data: |-
+      {
+        "fleet_id": 0
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  Deletes the report specified by name.
+
+  `DELETE /api/v1/fleet/reports/:name`
+
+  #### Parameters
+
+  | Name | Type       | In   | Description                          |
+  | ---- | ---------- | ---- | ------------------------------------ |
+  | name | string     | path | **Required.** The name of the report. |
+  | fleet_id | integer | body | _Available in Fleet Premium_. The ID of the report's fleet. If omitted, Fleet will search among only global reports. |
+
+  #### Example
+
+  `DELETE /api/v1/fleet/reports/foo`
+
+  ##### Default response
+
+  `Status: 200`
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#delete-report-by-name
+examples:
+- name: 200 Default response
+  request:
+    method: DELETE
+    url: '{{baseUrl}}/api/v1/fleet/reports/:name'
+    params:
+    - name: name
+      value: ''
+      type: path
+      description: '**Required.** The name of the report.'
+    body:
+      type: json
+      data: |-
+        {
+          "fleet_id": 0
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 200
+    statusText: OK

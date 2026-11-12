@@ -1,0 +1,50 @@
+info:
+  name: Delete custom MDM setup enrollment profile
+  type: http
+  seq: 4
+http:
+  method: DELETE
+  url: '{{baseUrl}}/api/v1/fleet/enrollment_profiles/automatic'
+  auth: inherit
+  params:
+  - name: fleet_id
+    value: ''
+    type: query
+    disabled: true
+    description: The fleet ID for which to delete the custom enrollment profile, or "Unassigned" if omitted.
+docs: |-
+  _Available in Fleet Premium_
+
+  Deletes the custom MDM setup enrollment profile assigned to a fleet or "Unassigned".
+
+  `DELETE /api/v1/fleet/enrollment_profiles/automatic`
+
+  #### Parameters
+
+  | Name                      | Type    | In    | Description                                                                           |
+  | ------------------------- | ------  | ----- | -------------------------------------------------------------------------             |
+  | fleet_id                   | integer | query | The fleet ID for which to delete the custom enrollment profile, or "Unassigned" if omitted. |
+
+  #### Example
+
+  `DELETE /api/v1/fleet/enrollment_profiles/automatic?fleet_id=123`
+
+  ##### Default response
+
+  `Status: 204`
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#delete-custom-mdm-setup-enrollment-profile
+examples:
+- name: 204 Default response
+  request:
+    method: DELETE
+    url: '{{baseUrl}}/api/v1/fleet/enrollment_profiles/automatic'
+    params:
+    - name: fleet_id
+      value: ''
+      type: query
+      disabled: true
+      description: The fleet ID for which to delete the custom enrollment profile, or "Unassigned" if omitted.
+  response:
+    status: 204
+    statusText: No Content

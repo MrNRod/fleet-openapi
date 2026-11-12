@@ -1,0 +1,142 @@
+info:
+  name: Update SCIM user
+  type: http
+  seq: 5
+http:
+  method: PATCH
+  url: '{{baseUrl}}/api/v1/fleet/scim/Users/:id'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required**. The user''s ID.'
+  body:
+    type: json
+    data: |-
+      {
+        "schemas": [
+          "urn:ietf:params:scim:api:messages:2.0:PatchOp"
+        ],
+        "Operations": [
+          {
+            "op": "replace",
+            "path": "active",
+            "value": false
+          }
+        ]
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  _Available in Fleet Premium_
+
+  Partially updates a user using SCIM patch operations. Supports `add`, `replace`, and `remove` operations on `userName`, `externalId`, `active`, `name.givenName`, `name.familyName`, `emails`, and `urn:ietf:params:scim:schemas:extension:enterprise:2.0:User:department`.
+
+  `PATCH /api/v1/fleet/scim/Users/:id`
+
+  #### Parameters
+
+  | Name       | Type   | In   | Description                                                            |
+  | ---------- | ------ | ---- | ---------------------------------------------------------------------- |
+  | id         | string | path | **Required**. The user's ID.                                           |
+  | schemas    | array  | body | **Required**. Must include `"urn:ietf:params:scim:api:messages:2.0:PatchOp"`. |
+  | Operations | array  | body | **Required**. List of patch operations. Each has `op`, optional `path`, and `value`. |
+
+  #### Example
+
+  `PATCH /api/v1/fleet/scim/Users/1`
+
+  ##### Request body
+
+  ```json
+  {
+    "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
+    "Operations": [
+      {
+        "op": "replace",
+        "path": "active",
+        "value": false
+      }
+    ]
+  }
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
+    "id": "1",
+    "userName": "user@example.com",
+    "name": {
+      "givenName": "Jane",
+      "familyName": "Doe"
+    },
+    "active": false,
+    "groups": [],
+    "meta": {
+      "resourceType": "User"
+    }
+  }
+  ```
+
+  ---
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#update-scim-user
+examples:
+- name: 200 Default response
+  request:
+    method: PATCH
+    url: '{{baseUrl}}/api/v1/fleet/scim/Users/:id'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required**. The user''s ID.'
+    body:
+      type: json
+      data: |-
+        {
+          "schemas": [
+            "urn:ietf:params:scim:api:messages:2.0:PatchOp"
+          ],
+          "Operations": [
+            {
+              "op": "replace",
+              "path": "active",
+              "value": false
+            }
+          ]
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "schemas": [
+            "urn:ietf:params:scim:schemas:core:2.0:User"
+          ],
+          "id": "1",
+          "userName": "user@example.com",
+          "name": {
+            "givenName": "Jane",
+            "familyName": "Doe"
+          },
+          "active": false,
+          "groups": [],
+          "meta": {
+            "resourceType": "User"
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

@@ -1,0 +1,100 @@
+info:
+  name: Add Fleet-maintained app
+  type: http
+  seq: 17
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/software/fleet_maintained_apps'
+  auth: inherit
+  body:
+    type: json
+    data: |-
+      {
+        "fleet_maintained_app_id": 3,
+        "fleet_id": 2,
+        "automatic_install": true
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  _Available in Fleet Premium._
+
+  Add Fleet-maintained app so it's available for install.
+
+  `POST /api/v1/fleet/software/fleet_maintained_apps`
+
+  #### Parameters
+
+  | Name | Type | In | Description |
+  | ---- | ---- | -- | ----------- |
+  | fleet_maintained_app_id   | integer | body | **Required.** The ID of Fleet-maintained app. |
+  | fleet_id       | integer | body | **Required**. The fleet ID. Adds Fleet-maintained app to the specified fleet.  |
+  | install_script  | string | body | Command that Fleet runs to install software. If not specified Fleet runs default install command for each Fleet-maintained app. |
+  | pre_install_query  | string | body | Query that is pre-install condition. If the query doesn't return any result, Fleet won't proceed to install. |
+  | post_install_script | string | body | The contents of the script to run after install. If the specified script fails (exit code non-zero) software install will be marked as failed and rolled back. |
+  | self_service | boolean | body | Self-service software is optional and can be installed by the end user. |
+  | labels_include_all        | array     | body | Target hosts that have all labels, specified by label name, in the array. |
+  | labels_include_any        | array     | form | Target hosts that have any label, specified by label name, in the array. |
+  | labels_exclude_any | array | form | Target hosts that don't have any label, specified by label name, in the array. |
+  | automatic_install | boolean | form | Create a policy that triggers a software install only on hosts missing the software ("Force install"). This policy doesn't check the installed version. |
+
+  Only one of `labels_include_all`, `labels_include_any` or `labels_exclude_any` can be specified. If none are specified, all hosts are targeted.
+
+  Add the `X-Fleet-Scripts-Encoded: base64` header line to parse `install_script`, `uninstall_script`, `post_install_script`, and `pre_install_query` fields as bas64-encoded rather than as-is.
+
+  To keep this app patched to the latest version, create a [patch policy](#create-fleet-level-policy) with `patch_software_title_id` set to the `software_title_id` returned below. `automatic_install` and a patch policy can both be added for the same app.
+
+  #### Example
+
+  `POST /api/v1/fleet/software/fleet_maintained_apps`
+
+  ##### Request body
+
+  ```json
+  {
+    "fleet_maintained_app_id": 3,
+    "fleet_id": 2,
+    "automatic_install": true
+  }
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "software_title_id": 234
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#add-fleet-maintained-app
+examples:
+- name: 200 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/software/fleet_maintained_apps'
+    body:
+      type: json
+      data: |-
+        {
+          "fleet_maintained_app_id": 3,
+          "fleet_id": 2,
+          "automatic_install": true
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "software_title_id": 234
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

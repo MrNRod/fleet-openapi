@@ -1,0 +1,187 @@
+info:
+  name: List vulnerabilities
+  type: http
+  seq: 1
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/vulnerabilities'
+  auth: inherit
+  params:
+  - name: fleet_id
+    value: ''
+    type: query
+    disabled: true
+    description: _Available in Fleet Premium_. Filters only include vulnerabilities affecting the specified fleet.
+      Use `0` to filter by "Unassigned" hosts.
+  - name: page
+    value: ''
+    type: query
+    disabled: true
+    description: Page number of the results to fetch.
+  - name: per_page
+    value: ''
+    type: query
+    disabled: true
+    description: Results per page.
+  - name: order_key
+    value: ''
+    type: query
+    disabled: true
+    description: 'What to order results by. Allowed fields are: `cve`, `cvss_score`, `epss_probability`, `cve_published`,
+      `created_at`, and `host_count`. Default is `created_at` (descending).'
+  - name: order_direction
+    value: ''
+    type: query
+    disabled: true
+    description: '**Requires `order_key`**. The direction of the order given the order key. Options include `"asc"`
+      and `"desc"`. Default is `"asc"`.'
+  - name: query
+    value: ''
+    type: query
+    disabled: true
+    description: Search query keywords. Searchable fields include `cve`.
+  - name: exploit
+    value: ''
+    type: query
+    disabled: true
+    description: '_Available in Fleet Premium_. If `true`, filters to only include vulnerabilities that have been
+      actively exploited in the wild (`cisa_known_exploit: true`). Otherwise, includes vulnerabilities with any
+      `cisa_known_exploit` value.'
+  - name: after
+    value: ''
+    type: query
+    disabled: true
+    description: The value to get results after. This needs `order_key` defined, as that's the column that would
+      be used.
+docs: |-
+  Retrieves a list of all CVEs affecting software and/or OS versions.
+
+  `GET /api/v1/fleet/vulnerabilities`
+
+  #### Parameters
+
+  | Name                | Type     | In    | Description                                                                                                                          |
+  | ---      | ---      | ---   | ---                                                                                                                                  |
+  | fleet_id             | integer | query | _Available in Fleet Premium_. Filters only include vulnerabilities affecting the specified fleet. Use `0` to filter by "Unassigned" hosts.  |
+  | page                    | integer | query | Page number of the results to fetch.                                                                                                                                       |
+  | per_page                | integer | query | Results per page.                                                                                                                                                          |
+  | order_key               | string  | query | What to order results by. Allowed fields are: `cve`, `cvss_score`, `epss_probability`, `cve_published`, `created_at`, and `host_count`. Default is `created_at` (descending).      |
+  | order_direction | string | query | **Requires `order_key`**. The direction of the order given the order key. Options include `"asc"` and `"desc"`. Default is `"asc"`. |
+  | query | string | query | Search query keywords. Searchable fields include `cve`. |
+  | exploit | boolean | query | _Available in Fleet Premium_. If `true`, filters to only include vulnerabilities that have been actively exploited in the wild (`cisa_known_exploit: true`). Otherwise, includes vulnerabilities with any `cisa_known_exploit` value.  |
+  | after | string | query | The value to get results after. This needs `order_key` defined, as that's the column that would be used. |
+
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "vulnerabilities": [
+      {
+        "cve": "CVE-2022-30190",
+        "created_at": "2022-06-01T00:15:00Z",
+        "hosts_count": 1234,
+        "hosts_count_updated_at": "2023-12-20T15:23:57Z",
+        "details_link": "https://nvd.nist.gov/vuln/detail/CVE-2022-30190",
+        "cvss_score": 7.8,// Available in Fleet Premium
+        "epss_probability": 0.9729,// Available in Fleet Premium
+        "cisa_known_exploit": false,// Available in Fleet Premium
+        "cve_published": "2022-06-01T00:15:00Z",// Available in Fleet Premium
+        "cve_description": "Microsoft Windows Support Diagnostic Tool (MSDT) Remote Code Execution Vulnerability." // Available in Fleet Premium
+      }
+    ],
+    "count": 123,
+    "counts_updated_at": "2024-02-02T16:40:37Z",
+    "meta": {
+      "has_next_results": false,
+      "has_previous_results": false
+    }
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#list-vulnerabilities
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/vulnerabilities'
+    params:
+    - name: fleet_id
+      value: ''
+      type: query
+      disabled: true
+      description: _Available in Fleet Premium_. Filters only include vulnerabilities affecting the specified fleet.
+        Use `0` to filter by "Unassigned" hosts.
+    - name: page
+      value: ''
+      type: query
+      disabled: true
+      description: Page number of the results to fetch.
+    - name: per_page
+      value: ''
+      type: query
+      disabled: true
+      description: Results per page.
+    - name: order_key
+      value: ''
+      type: query
+      disabled: true
+      description: 'What to order results by. Allowed fields are: `cve`, `cvss_score`, `epss_probability`, `cve_published`,
+        `created_at`, and `host_count`. Default is `created_at` (descending).'
+    - name: order_direction
+      value: ''
+      type: query
+      disabled: true
+      description: '**Requires `order_key`**. The direction of the order given the order key. Options include `"asc"`
+        and `"desc"`. Default is `"asc"`.'
+    - name: query
+      value: ''
+      type: query
+      disabled: true
+      description: Search query keywords. Searchable fields include `cve`.
+    - name: exploit
+      value: ''
+      type: query
+      disabled: true
+      description: '_Available in Fleet Premium_. If `true`, filters to only include vulnerabilities that have been
+        actively exploited in the wild (`cisa_known_exploit: true`). Otherwise, includes vulnerabilities with any
+        `cisa_known_exploit` value.'
+    - name: after
+      value: ''
+      type: query
+      disabled: true
+      description: The value to get results after. This needs `order_key` defined, as that's the column that would
+        be used.
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "vulnerabilities": [
+            {
+              "cve": "CVE-2022-30190",
+              "created_at": "2022-06-01T00:15:00Z",
+              "hosts_count": 1234,
+              "hosts_count_updated_at": "2023-12-20T15:23:57Z",
+              "details_link": "https://nvd.nist.gov/vuln/detail/CVE-2022-30190",
+              "cvss_score": 7.8,
+              "epss_probability": 0.9729,
+              "cisa_known_exploit": false,
+              "cve_published": "2022-06-01T00:15:00Z",
+              "cve_description": "Microsoft Windows Support Diagnostic Tool (MSDT) Remote Code Execution Vulnerability."
+            }
+          ],
+          "count": 123,
+          "counts_updated_at": "2024-02-02T16:40:37Z",
+          "meta": {
+            "has_next_results": false,
+            "has_previous_results": false
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

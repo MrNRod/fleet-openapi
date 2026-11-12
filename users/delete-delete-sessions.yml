@@ -1,0 +1,46 @@
+info:
+  name: Delete sessions
+  type: http
+  seq: 9
+http:
+  method: DELETE
+  url: '{{baseUrl}}/api/v1/fleet/users/:id/sessions'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required**. The ID of the desired user.'
+docs: |-
+  Deletes the selected user's sessions in Fleet. Also deletes the user's API token.
+
+  `DELETE /api/v1/fleet/users/:id/sessions`
+
+  #### Parameters
+
+  | Name | Type    | In   | Description                               |
+  | ---- | ------- | ---- | ----------------------------------------- |
+  | id   | integer | path | **Required**. The ID of the desired user. |
+
+  #### Example
+
+  `DELETE /api/v1/fleet/users/1/sessions`
+
+  ##### Default response
+
+  `Status: 200`
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#delete-sessions
+examples:
+- name: 200 Default response
+  request:
+    method: DELETE
+    url: '{{baseUrl}}/api/v1/fleet/users/:id/sessions'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required**. The ID of the desired user.'
+  response:
+    status: 200
+    statusText: OK

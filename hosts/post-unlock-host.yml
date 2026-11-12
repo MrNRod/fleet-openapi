@@ -1,0 +1,71 @@
+info:
+  name: Unlock host
+  type: http
+  seq: 30
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/hosts/:id/unlock'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required**. ID of the host to be unlocked.'
+docs: |-
+  _Available in Fleet Premium_
+
+  Sends a command to unlock the specified iOS, iPadOS, Windows, or Linux host, or retrieves the unlock PIN for a macOS host.
+
+  For iOS and iPadOS, this disables Lost Mode.
+
+  `POST /api/v1/fleet/hosts/:id/unlock`
+
+  #### Parameters
+
+  | Name       | Type              | In   | Description                                                                   |
+  | ---------- | ----------------- | ---- | ----------------------------------------------------------------------------- |
+  | id | integer | path | **Required**. ID of the host to be unlocked. |
+
+  #### Example
+
+  `POST /api/v1/fleet/hosts/:id/unlock`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "host_id": 8,
+    "device_status": "locked",
+    "pending_action": "unlock"
+  }
+  ```
+
+  > To verify the host successfully unlocked, you can use the [Get host](https://fleetdm.com/docs/rest-api/rest-api#get-host) endpoint to retrieve the host's `mdm.device_status`. macOS hosts require entering `unlock_pin` to unlock.
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#unlock-host
+examples:
+- name: 200 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/hosts/:id/unlock'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required**. ID of the host to be unlocked.'
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "host_id": 8,
+          "device_status": "locked",
+          "pending_action": "unlock"
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

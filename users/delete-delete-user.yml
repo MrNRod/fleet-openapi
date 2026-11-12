@@ -1,0 +1,46 @@
+info:
+  name: Delete user
+  type: http
+  seq: 6
+http:
+  method: DELETE
+  url: '{{baseUrl}}/api/v1/fleet/users/:id'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required**. The user''s id.'
+docs: |-
+  Delete the specified user from Fleet.
+
+  `DELETE /api/v1/fleet/users/:id`
+
+  #### Parameters
+
+  | Name | Type    | In   | Description                  |
+  | ---- | ------- | ---- | ---------------------------- |
+  | id   | integer | path | **Required**. The user's id. |
+
+  #### Example
+
+  `DELETE /api/v1/fleet/users/3`
+
+  ##### Default response
+
+  `Status: 200`
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#delete-user
+examples:
+- name: 200 Default response
+  request:
+    method: DELETE
+    url: '{{baseUrl}}/api/v1/fleet/users/:id'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required**. The user''s id.'
+  response:
+    status: 200
+    statusText: OK

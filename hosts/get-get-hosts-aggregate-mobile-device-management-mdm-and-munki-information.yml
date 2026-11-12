@@ -1,0 +1,183 @@
+info:
+  name: Get hosts' aggregate mobile device management (MDM) and Munki information
+  type: http
+  seq: 20
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/macadmins'
+  auth: inherit
+  params:
+  - name: fleet_id
+    value: ''
+    type: query
+    disabled: true
+    description: _Available in Fleet Premium_. Filters the aggregate host information to only include hosts in the
+      specified fleet.
+docs: |-
+  Currently supported only on macOS.
+
+  Retrieves MDM enrollment status and Munki versions, aggregated across all hosts.
+
+  `GET /api/v1/fleet/macadmins`
+
+  #### Parameters
+
+  | Name    | Type    | In    | Description                                                                                                                                                                                                                                                                                                                        |
+  | ------- | ------- | ----- | ---------------------------------------------------------------------------------------------------------------- |
+  | fleet_id | integer | query | _Available in Fleet Premium_. Filters the aggregate host information to only include hosts in the specified fleet. |
+
+  A `fleet_id` of `0` returns the statistics for hosts that are "Unassigned". A `null` or missing `fleet_id` returns statistics for all hosts on all fleets.
+
+  #### Example
+
+  `GET /api/v1/fleet/macadmins`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "macadmins": {
+      "counts_updated_at": "2021-03-21T12:32:44Z",
+      "munki_versions": [
+        {
+          "version": "5.5",
+          "hosts_count": 8360
+        },
+        {
+          "version": "5.4",
+          "hosts_count": 1700
+        },
+        {
+          "version": "5.3",
+          "hosts_count": 400
+        },
+        {
+          "version": "5.2.3",
+          "hosts_count": 112
+        },
+        {
+          "version": "5.2.2",
+          "hosts_count": 50
+        }
+      ],
+      "munki_issues": [
+        {
+          "id": 1,
+          "name": "Could not retrieve managed install primary manifest",
+          "type": "error",
+          "hosts_count": 2851
+        },
+        {
+          "id": 2,
+          "name": "Could not process item Figma for optional install. No pkginfo found in catalogs: release",
+          "type": "warning",
+          "hosts_count": 1983
+        }
+      ],
+      "mobile_device_management_enrollment_status": {
+        "enrolled_manual_hosts_count": 124,
+        "enrolled_automated_hosts_count": 124,
+        "unenrolled_hosts_count": 112
+      },
+      "mobile_device_management_solution": [
+        {
+          "id": 1,
+          "name": "SimpleMDM",
+          "hosts_count": 8360,
+          "server_url": "https://a.simplemdm.com/mdm"
+        },
+        {
+          "id": 2,
+          "name": "Intune",
+          "hosts_count": 1700,
+          "server_url": "https://enrollment.manage.microsoft.com"
+        }
+      ]
+    }
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#get-hosts-aggregate-mobile-device-management-mdm-and-munki-information
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/macadmins'
+    params:
+    - name: fleet_id
+      value: ''
+      type: query
+      disabled: true
+      description: _Available in Fleet Premium_. Filters the aggregate host information to only include hosts in
+        the specified fleet.
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "macadmins": {
+            "counts_updated_at": "2021-03-21T12:32:44Z",
+            "munki_versions": [
+              {
+                "version": "5.5",
+                "hosts_count": 8360
+              },
+              {
+                "version": "5.4",
+                "hosts_count": 1700
+              },
+              {
+                "version": "5.3",
+                "hosts_count": 400
+              },
+              {
+                "version": "5.2.3",
+                "hosts_count": 112
+              },
+              {
+                "version": "5.2.2",
+                "hosts_count": 50
+              }
+            ],
+            "munki_issues": [
+              {
+                "id": 1,
+                "name": "Could not retrieve managed install primary manifest",
+                "type": "error",
+                "hosts_count": 2851
+              },
+              {
+                "id": 2,
+                "name": "Could not process item Figma for optional install. No pkginfo found in catalogs: release",
+                "type": "warning",
+                "hosts_count": 1983
+              }
+            ],
+            "mobile_device_management_enrollment_status": {
+              "enrolled_manual_hosts_count": 124,
+              "enrolled_automated_hosts_count": 124,
+              "unenrolled_hosts_count": 112
+            },
+            "mobile_device_management_solution": [
+              {
+                "id": 1,
+                "name": "SimpleMDM",
+                "hosts_count": 8360,
+                "server_url": "https://a.simplemdm.com/mdm"
+              },
+              {
+                "id": 2,
+                "name": "Intune",
+                "hosts_count": 1700,
+                "server_url": "https://enrollment.manage.microsoft.com"
+              }
+            ]
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
