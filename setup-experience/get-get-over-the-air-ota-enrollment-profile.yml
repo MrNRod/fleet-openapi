@@ -1,0 +1,100 @@
+info:
+  name: Get Over-the-Air (OTA) enrollment profile
+  type: http
+  seq: 5
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/enrollment_profiles/ota'
+  auth: inherit
+  params:
+  - name: enroll_secret
+    value: ''
+    type: query
+    disabled: true
+    description: '**Required**. The enroll secret of the fleet this host will be assigned to.'
+docs: |-
+  `GET /api/v1/fleet/enrollment_profiles/ota`
+
+  The returned value is a signed `.mobileconfig` OTA enrollment profile (see [Apple enrollment profile docs](https://developer.apple.com/library/archive/documentation/NetworkingInternet/Conceptual/iPhoneOTAConfiguration/OTASecurity/OTASecurity.html)). Install this profile on macOS, iOS, or iPadOS hosts to enroll them to a specific fleet in Fleet and turn on MDM features.
+
+  If the fleet has [Require IdP authentication](https://fleetdm.com/guides/setup-experience#require-idp-authentication) enabled, the OTA enrollment profile won't work. Use the [manual enrollment profile](#get-manual-enrollment-profile) instead.
+
+  To enroll macOS hosts, turn on MDM features, and add [human-device mapping](https://fleetdm.com/guides/foreign-vitals-map-idp-users-to-hosts), use the [manual enrollment profile](#get-manual-enrollment-profile) instead.
+
+  If the `only_allow_apple_business_enrollment` setting is enabled, this endpoint returns a `403` error with the message: "Manual enrollment is not available. Only devices assigned through Apple Business can enroll. Please contact your IT administrator."
+
+  #### Parameters
+
+  | Name              | Type    | In    | Description                                                                      |
+  |-------------------|---------|-------|----------------------------------------------------------------------------------|
+  | enroll_secret     | string  | query | **Required**. The enroll secret of the fleet this host will be assigned to.       |
+
+  #### Example
+
+  `GET /api/v1/fleet/enrollment_profiles/ota?enroll_secret=foobar`
+
+  ##### Default response
+
+  `Status: 200`
+
+  > **Note:** To confirm success, it is important for clients to match content length with the response header (this is done automatically by most clients, including the browser) rather than relying solely on the response status code returned by this endpoint.
+
+  ##### Example response headers
+
+  ```http
+  Content-Length: 542
+  Content-Type: application/x-apple-aspen-config; charset=utf-8
+  Content-Disposition: attachment;filename="fleet-mdm-enrollment-profile.mobileconfig"
+  X-Content-Type-Options: nosniff
+  ```
+
+  ###### Example response body
+
+  ```xml
+  <?xml version="1.0" encoding="UTF-8"?>
+  <!DOCTYPE plist PUBLIC "-//Apple Inc//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+  <plist version="1.0">
+    <dict>
+      <key>PayloadContent</key>
+      <dict>
+        <key>URL</key>
+        <string>https://foo.example.com/api/fleet/ota_enrollment?enroll_secret=foobar</string>
+        <key>DeviceAttributes</key>
+        <array>
+          <string>UDID</string>
+          <string>VERSION</string>
+          <string>PRODUCT</string>
+          <string>SERIAL</string>
+        </array>
+      </dict>
+      <key>PayloadOrganization</key>
+      <string>Acme Inc.</string>
+      <key>PayloadDisplayName</key>
+      <string>Acme Inc. enrollment</string>
+      <key>PayloadVersion</key>
+      <integer>1</integer>
+      <key>PayloadUUID</key>
+      <string>fdb376e5-b5bb-4d8c-829e-e90865f990c9</string>
+      <key>PayloadIdentifier</key>
+      <string>com.fleetdm.fleet.mdm.apple.ota</string>
+      <key>PayloadType</key>
+      <string>Profile Service</string>
+    </dict>
+  </plist>
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#get-over-the-air-ota-enrollment-profile
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/enrollment_profiles/ota'
+    params:
+    - name: enroll_secret
+      value: ''
+      type: query
+      disabled: true
+      description: '**Required**. The enroll secret of the fleet this host will be assigned to.'
+  response:
+    status: 200
+    statusText: OK

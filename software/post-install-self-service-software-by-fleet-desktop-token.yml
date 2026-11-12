@@ -1,0 +1,54 @@
+info:
+  name: Install self-service software by Fleet Desktop token
+  type: http
+  seq: 22
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/device/:token/software/install/:software_title_id'
+  params:
+  - name: token
+    value: ''
+    type: path
+    description: '**Required**. The host''s [Fleet Desktop token](https://fleetdm.com/guides/fleet-desktop#secure-fleet-desktop).'
+  - name: software_title_id
+    value: ''
+    type: path
+    description: '**Required**. The software title''s ID.'
+docs: |-
+  Install self-service software on a macOS, Windows, or Linux host. The software must have a `self_service` flag `true` to be installed.
+
+  `POST /api/v1/fleet/device/:token/software/install/:software_title_id`
+
+  #### Parameters
+
+  | Name  | Type   | In   | Description                        |
+  | ----- | ------ | ---- | ---------------------------------- |
+  | token | string | path | **Required**. The host's [Fleet Desktop token](https://fleetdm.com/guides/fleet-desktop#secure-fleet-desktop). |
+  | software_title_id | string | path | **Required**. The software title's ID. |
+
+  #### Example
+
+  `POST /api/v1/fleet/device/22aada07-dc73-41f2-8452-c0987543fd29/software/install/123`
+
+  ##### Default response
+
+  `Status: 202`
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#install-self-service-software-by-fleet-desktop-token
+examples:
+- name: 202 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/device/:token/software/install/:software_title_id'
+    params:
+    - name: token
+      value: ''
+      type: path
+      description: '**Required**. The host''s [Fleet Desktop token](https://fleetdm.com/guides/fleet-desktop#secure-fleet-desktop).'
+    - name: software_title_id
+      value: ''
+      type: path
+      description: '**Required**. The software title''s ID.'
+  response:
+    status: 202
+    statusText: Accepted

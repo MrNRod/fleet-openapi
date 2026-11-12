@@ -1,0 +1,186 @@
+info:
+  name: Update app store app
+  type: http
+  seq: 14
+http:
+  method: PATCH
+  url: '{{baseUrl}}/api/v1/fleet/software/titles/:title_id/app_store_app'
+  auth: inherit
+  params:
+  - name: title_id
+    value: ''
+    type: path
+  body:
+    type: json
+    data: |-
+      {
+        "fleet_id": 2,
+        "self_service": true,
+        "categories": [
+          "Browser"
+        ],
+        "labels_include_any": [
+          "Product",
+          "Marketing"
+        ]
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  _Available in Fleet Premium._
+
+  Modify an Apple App Store (VPP) or a Google Play app's options.
+
+
+  `PATCH /api/v1/fleet/software/titles/:title_id/app_store_app`
+
+  #### Parameters
+
+  | Name | Type | In | Description |
+  | ---- | ---- | -- | ----------- |
+  | fleet_id       | integer | body | **Required**. The fleet ID. Edits Apple App Store or Android Play store app from the specified fleet.  |
+  | display_name    | string  | body | Optional override for the default `name`. |
+  | self_service | boolean | body | **Required if platform is Android**. Currently supported for macOS and Android apps. Specifies whether the app shows up in self-service and is available for install by the end user. For macOS shows up on **Fleet Desktop > My device** page, and for Android in **Play Store** app in end user's work profile.  |
+  | categories | array | body | Zero or more [self-service category](#list-self-service-categories) names defined on the fleet, used to group self-service software on your end users' **Fleet Desktop > My device** page. Each value must match a category that exists on the fleet. Software with no categories will still be shown under **All**. |
+  | auto_update_enabled | boolean | body | Whether to enable automatic updates for iOS/iPadOS App Store (VPP) apps. |
+  | auto_update_window_start | string | body | Update window start time (local time of the device) when automatic updates will take place for iOS/iPadOS App Store (VPP) apps, formatted as HH:MM. Required if `auto_update_enabled` is `true`. |
+  | auto_update_window_end | string | body | Update window end time (local time of the device) when automatic updates will take place for iOS/iPadOS App Store (VPP) apps, formatted as HH:MM. Required if `auto_update_enabled` is `true`. |
+  | labels_include_all        | array     | body | Target hosts that have all labels, specified by label name, in the array. |
+  | labels_include_any        | array     | body | Target hosts that have any label, specified by label name, in the array. |
+  | labels_exclude_any | array | body | Target hosts that don't have any label, specified by label name, in the array. |
+  | configuration | object | body | The app's managed configuration. For iOS and iPadOS apps it is in XML format, and for Android Play Store apps it is in JSON format. Currently only supported for iOS, iPadOS, and Android. |
+
+  Only one of `labels_include_all`, `labels_include_any` or `labels_exclude_any` can be specified. If none are specified, all hosts are targeted.
+
+  `configuration` only supports `managedConfiguration`, `workProfileWidgets`, and `credentialProviderPolicy` from [Android application policy](https://developers.google.com/android/management/reference/rest/v1/enterprises.policies#ApplicationPolicy). Configuration keys vary by app. Refer to the app vendor's documentation for available managed configuration options. For example, see [Zoom's Android managed configuration](https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0064790) or [GlobalProtect's Android configuration](https://docs.paloaltonetworks.com/globalprotect/10-1/globalprotect-admin/mobile-endpoint-management/manage-the-globalprotect-app-using-other-third-party-mdms/configure-the-globalprotect-app-for-android).
+
+  #### Example
+
+  `PATCH /api/v1/fleet/software/titles/3467/app_store_app`
+
+  ##### Request body
+
+  ```json
+  {
+    "fleet_id": 2,
+    "self_service": true,
+    "categories": ["Browser"],
+    "labels_include_any": [
+      "Product",
+      "Marketing"
+    ]
+  }
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "app_store_app": {
+      "name": "Logic Pro",
+      "display_name": "",
+      "icon_url": null,
+      "app_store_id": 1091189122,
+      "categories": ["Browser"],
+      "latest_version": "2.04",
+      "self_service": true,
+      "labels_include_any": [
+        {
+          "name": "Product",
+          "id": 12
+        },
+        {
+          "name": "Marketing",
+          "id": 17
+        }
+      ],
+      "automatic_install_policies": [
+        {
+          "id": 345,
+          "name": "[Install software] Logic Pro",
+          "type": "dynamic"
+        }
+      ],
+      "status": {
+        "installed": 3,
+        "pending": 1,
+        "failed": 2
+      }
+    }
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#update-app-store-app
+examples:
+- name: 200 Default response
+  request:
+    method: PATCH
+    url: '{{baseUrl}}/api/v1/fleet/software/titles/:title_id/app_store_app'
+    params:
+    - name: title_id
+      value: ''
+      type: path
+    body:
+      type: json
+      data: |-
+        {
+          "fleet_id": 2,
+          "self_service": true,
+          "categories": [
+            "Browser"
+          ],
+          "labels_include_any": [
+            "Product",
+            "Marketing"
+          ]
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "app_store_app": {
+            "name": "Logic Pro",
+            "display_name": "",
+            "icon_url": null,
+            "app_store_id": 1091189122,
+            "categories": [
+              "Browser"
+            ],
+            "latest_version": "2.04",
+            "self_service": true,
+            "labels_include_any": [
+              {
+                "name": "Product",
+                "id": 12
+              },
+              {
+                "name": "Marketing",
+                "id": 17
+              }
+            ],
+            "automatic_install_policies": [
+              {
+                "id": 345,
+                "name": "[Install software] Logic Pro",
+                "type": "dynamic"
+              }
+            ],
+            "status": {
+              "installed": 3,
+              "pending": 1,
+              "failed": 2
+            }
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

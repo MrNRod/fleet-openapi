@@ -1,0 +1,128 @@
+info:
+  name: Create SCIM group
+  type: http
+  seq: 8
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/scim/Groups'
+  auth: inherit
+  body:
+    type: json
+    data: |-
+      {
+        "schemas": [
+          "urn:ietf:params:scim:schemas:core:2.0:Group"
+        ],
+        "displayName": "Engineering",
+        "members": [
+          {
+            "value": "1"
+          }
+        ]
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  _Available in Fleet Premium_
+
+  `POST /api/v1/fleet/scim/Groups`
+
+  #### Parameters
+
+  | Name        | Type   | In   | Description                                                                                |
+  | ----------- | ------ | ---- | ------------------------------------------------------------------------------------------ |
+  | schemas     | array  | body | **Required**. Must include `"urn:ietf:params:scim:schemas:core:2.0:Group"`.                |
+  | displayName | string | body | **Required**. Human-readable group name. Must be unique.                                   |
+  | externalId  | string | body | Optional. External identifier from the IdP.                                                 |
+  | members     | array  | body | Optional. List of member objects with a `value` field containing a SCIM user ID.           |
+
+  #### Example
+
+  `POST /api/v1/fleet/scim/Groups`
+
+  ##### Request body
+
+  ```json
+  {
+    "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
+    "displayName": "Engineering",
+    "members": [
+      {
+        "value": "1"
+      }
+    ]
+  }
+  ```
+
+  ##### Default response
+
+  `Status: 201`
+
+  ```json
+  {
+    "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
+    "id": "group-1",
+    "displayName": "Engineering",
+    "members": [
+      {
+        "value": "1",
+        "type": "User"
+      }
+    ],
+    "meta": {
+      "resourceType": "Group"
+    }
+  }
+  ```
+
+  ---
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#create-scim-group
+examples:
+- name: 201 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/scim/Groups'
+    body:
+      type: json
+      data: |-
+        {
+          "schemas": [
+            "urn:ietf:params:scim:schemas:core:2.0:Group"
+          ],
+          "displayName": "Engineering",
+          "members": [
+            {
+              "value": "1"
+            }
+          ]
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 201
+    statusText: Created
+    body:
+      type: json
+      data: |-
+        {
+          "schemas": [
+            "urn:ietf:params:scim:schemas:core:2.0:Group"
+          ],
+          "id": "group-1",
+          "displayName": "Engineering",
+          "members": [
+            {
+              "value": "1",
+              "type": "User"
+            }
+          ],
+          "meta": {
+            "resourceType": "Group"
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

@@ -1,0 +1,74 @@
+info:
+  name: Create setup experience script
+  type: http
+  seq: 19
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/setup_experience/script'
+  auth: inherit
+  body:
+    type: multipart-form
+    data:
+    - name: fleet_id
+      value: ''
+      description: _Available in Fleet Premium_. The ID of the fleet to add the script to. If not specified, a script
+        will be added for "Unassigned" hosts.
+      disabled: true
+      type: text
+    - name: script
+      value: []
+      description: The contents of the script to run during setup.
+      disabled: true
+      type: file
+docs: |-
+  _Available in Fleet Premium_
+
+  Add a script that will automatically run during macOS setup.
+
+  > You need to send a request of type `multipart/form-data`.
+
+  `POST /api/v1/fleet/setup_experience/script`
+
+  | Name  | Type   | In    | Description                              |
+  | ----- | ------ | ----- | ---------------------------------------- |
+  | fleet_id | integer | body | _Available in Fleet Premium_. The ID of the fleet to add the script to. If not specified, a script will be added for "Unassigned" hosts. |
+  | script | file | body | The contents of the script to run during setup. |
+
+  #### Example
+
+  `POST /api/v1/fleet/setup_experience/script`
+
+  ##### Request body
+
+  ```http
+  fleet_id="1"
+  script="myscript.sh"
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#create-setup-experience-script
+examples:
+- name: 200 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/setup_experience/script'
+    body:
+      type: multipart-form
+      data:
+      - name: fleet_id
+        value: ''
+        description: _Available in Fleet Premium_. The ID of the fleet to add the script to. If not specified, a
+          script will be added for "Unassigned" hosts.
+        disabled: true
+        type: text
+      - name: script
+        value: []
+        description: The contents of the script to run during setup.
+        disabled: true
+        type: file
+  response:
+    status: 200
+    statusText: OK

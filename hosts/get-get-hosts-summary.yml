@@ -1,0 +1,315 @@
+info:
+  name: Get hosts summary
+  type: http
+  seq: 3
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/host_summary'
+  auth: inherit
+  params:
+  - name: fleet_id
+    value: ''
+    type: query
+    disabled: true
+    description: _Available in Fleet Premium_. The ID of the fleet whose host counts should be included. Defaults
+      to all fleets.
+  - name: platform
+    value: ''
+    type: query
+    disabled: true
+    description: Platform to filter by when counting. Defaults to all platforms.
+  - name: low_disk_space
+    value: ''
+    type: query
+    disabled: true
+    description: _Available in Fleet Premium_. Returns the count of hosts with less GB of disk space available than
+      this value. Must be a number between 1-100.
+docs: |-
+  Returns the count of all hosts organized by status. `online_count` includes all hosts currently enrolled in Fleet. `offline_count` includes all hosts that haven't checked into Fleet recently. `mia_count` includes all hosts that haven't been seen by Fleet in more than 30 days. `new_count` includes the hosts that have been enrolled to Fleet in the last 24 hours.
+
+  For iOS, iPadOS, and Android hosts, which don't run osquery, `online`/`offline` is derived from the most recent of `nano_enrollments.last_seen_at` (Apple, active enrollments only) or `host_seen_times.seen_time`, falling back to `detail_updated_at` when neither is present — within a ~1-hour window, instead of the per-host osquery check-in interval used by other platforms.
+
+  `GET /api/v1/fleet/host_summary`
+
+  #### Parameters
+
+  | Name            | Type    | In    | Description                                                                     |
+  | --------------- | ------- | ----  | ------------------------------------------------------------------------------- |
+  | fleet_id         | integer | query | _Available in Fleet Premium_. The ID of the fleet whose host counts should be included. Defaults to all fleets. |
+  | platform        | string  | query | Platform to filter by when counting. Defaults to all platforms.                 |
+  | low_disk_space  | integer | query | _Available in Fleet Premium_. Returns the count of hosts with less GB of disk space available than this value. Must be a number between 1-100. |
+
+  #### Example
+
+  `GET /api/v1/fleet/host_summary?fleet_id=1&low_disk_space=32`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "team_id": 1,
+    "fleet_id": 1,
+    "totals_hosts_count": 2408,
+    "online_count": 2267,
+    "offline_count": 141,
+    "mia_count": 0,
+    "missing_30_days_count": 0,
+    "new_count": 0,
+    "all_linux_count": 1204,
+    "low_disk_space_count": 12,
+    "dep_assign_error_count": 7,
+    "builtin_labels": [
+      {
+        "id": 6,
+        "name": "All Hosts",
+        "description": "All hosts which have enrolled in Fleet",
+        "label_type": "builtin"
+      },
+      {
+        "id": 7,
+        "name": "macOS",
+        "description": "All macOS hosts",
+        "label_type": "builtin"
+      },
+      {
+        "id": 8,
+        "name": "Ubuntu Linux",
+        "description": "All Ubuntu hosts",
+        "label_type": "builtin"
+      },
+      {
+        "id": 9,
+        "name": "CentOS Linux",
+        "description": "All CentOS hosts",
+        "label_type": "builtin"
+      },
+      {
+        "id": 10,
+        "name": "MS Windows",
+        "description": "All Windows hosts",
+        "label_type": "builtin"
+      },
+      {
+        "id": 11,
+        "name": "Red Hat Linux",
+        "description": "All Red Hat Enterprise Linux hosts",
+        "label_type": "builtin"
+      },
+      {
+        "id": 12,
+        "name": "All Linux",
+        "description": "All Linux distributions",
+        "label_type": "builtin"
+      },
+      {
+        "id": 13,
+        "name": "iOS",
+        "description": "All iOS hosts",
+        "label_type": "builtin"
+      },
+      {
+        "id": 14,
+        "name": "iPadOS",
+        "description": "All iPadOS hosts",
+        "label_type": "builtin"
+      },
+      {
+        "id": 15,
+        "name": "Fedora Linux",
+        "description": "All Fedora hosts",
+        "label_type": "builtin"
+      },
+      {
+        "id": 16,
+        "name": "Android",
+        "description": "All Android hosts",
+        "label_type": "builtin"
+      }
+    ],
+    "platforms": [
+      {
+        "platform": "chrome",
+        "hosts_count": 1234
+      },
+      {
+        "platform": "darwin",
+        "hosts_count": 1234
+      },
+      {
+        "platform": "ios",
+        "hosts_count": 1234
+      },
+      {
+        "platform": "ipados",
+        "hosts_count": 1234
+      },
+      {
+        "platform": "rhel",
+        "hosts_count": 1234
+      },
+      {
+        "platform": "ubuntu",
+        "hosts_count": 12044
+      },
+      {
+        "platform": "windows",
+        "hosts_count": 12044
+      },
+      {
+        "platform": "Android",
+        "hosts_count": 200
+      }
+    ]
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#get-hosts-summary
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/host_summary'
+    params:
+    - name: fleet_id
+      value: ''
+      type: query
+      disabled: true
+      description: _Available in Fleet Premium_. The ID of the fleet whose host counts should be included. Defaults
+        to all fleets.
+    - name: platform
+      value: ''
+      type: query
+      disabled: true
+      description: Platform to filter by when counting. Defaults to all platforms.
+    - name: low_disk_space
+      value: ''
+      type: query
+      disabled: true
+      description: _Available in Fleet Premium_. Returns the count of hosts with less GB of disk space available
+        than this value. Must be a number between 1-100.
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "team_id": 1,
+          "fleet_id": 1,
+          "totals_hosts_count": 2408,
+          "online_count": 2267,
+          "offline_count": 141,
+          "mia_count": 0,
+          "missing_30_days_count": 0,
+          "new_count": 0,
+          "all_linux_count": 1204,
+          "low_disk_space_count": 12,
+          "dep_assign_error_count": 7,
+          "builtin_labels": [
+            {
+              "id": 6,
+              "name": "All Hosts",
+              "description": "All hosts which have enrolled in Fleet",
+              "label_type": "builtin"
+            },
+            {
+              "id": 7,
+              "name": "macOS",
+              "description": "All macOS hosts",
+              "label_type": "builtin"
+            },
+            {
+              "id": 8,
+              "name": "Ubuntu Linux",
+              "description": "All Ubuntu hosts",
+              "label_type": "builtin"
+            },
+            {
+              "id": 9,
+              "name": "CentOS Linux",
+              "description": "All CentOS hosts",
+              "label_type": "builtin"
+            },
+            {
+              "id": 10,
+              "name": "MS Windows",
+              "description": "All Windows hosts",
+              "label_type": "builtin"
+            },
+            {
+              "id": 11,
+              "name": "Red Hat Linux",
+              "description": "All Red Hat Enterprise Linux hosts",
+              "label_type": "builtin"
+            },
+            {
+              "id": 12,
+              "name": "All Linux",
+              "description": "All Linux distributions",
+              "label_type": "builtin"
+            },
+            {
+              "id": 13,
+              "name": "iOS",
+              "description": "All iOS hosts",
+              "label_type": "builtin"
+            },
+            {
+              "id": 14,
+              "name": "iPadOS",
+              "description": "All iPadOS hosts",
+              "label_type": "builtin"
+            },
+            {
+              "id": 15,
+              "name": "Fedora Linux",
+              "description": "All Fedora hosts",
+              "label_type": "builtin"
+            },
+            {
+              "id": 16,
+              "name": "Android",
+              "description": "All Android hosts",
+              "label_type": "builtin"
+            }
+          ],
+          "platforms": [
+            {
+              "platform": "chrome",
+              "hosts_count": 1234
+            },
+            {
+              "platform": "darwin",
+              "hosts_count": 1234
+            },
+            {
+              "platform": "ios",
+              "hosts_count": 1234
+            },
+            {
+              "platform": "ipados",
+              "hosts_count": 1234
+            },
+            {
+              "platform": "rhel",
+              "hosts_count": 1234
+            },
+            {
+              "platform": "ubuntu",
+              "hosts_count": 12044
+            },
+            {
+              "platform": "windows",
+              "hosts_count": 12044
+            },
+            {
+              "platform": "Android",
+              "hosts_count": 200
+            }
+          ]
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

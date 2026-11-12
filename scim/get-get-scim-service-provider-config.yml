@@ -1,0 +1,95 @@
+info:
+  name: Get SCIM service provider config
+  type: http
+  seq: 14
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/scim/ServiceProviderConfig'
+  auth: inherit
+docs: |-
+  _Available in Fleet Premium_
+
+  Returns Fleet's SCIM service provider configuration, including supported features.
+
+  `GET /api/v1/fleet/scim/ServiceProviderConfig`
+
+  #### Parameters
+
+  None.
+
+  #### Example
+
+  `GET /api/v1/fleet/scim/ServiceProviderConfig`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "schemas": ["urn:ietf:params:scim:schemas:core:2.0:ServiceProviderConfig"],
+    "documentationUri": "https://fleetdm.com/docs/get-started/why-fleet",
+    "patch": {
+      "supported": true
+    },
+    "filter": {
+      "supported": true,
+      "maxResults": 100
+    },
+    "bulk": {
+      "supported": false
+    },
+    "changePassword": {
+      "supported": false
+    },
+    "sort": {
+      "supported": false
+    },
+    "etag": {
+      "supported": false
+    }
+  }
+  ```
+
+  ---
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#get-scim-service-provider-config
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/scim/ServiceProviderConfig'
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "schemas": [
+            "urn:ietf:params:scim:schemas:core:2.0:ServiceProviderConfig"
+          ],
+          "documentationUri": "https://fleetdm.com/docs/get-started/why-fleet",
+          "patch": {
+            "supported": true
+          },
+          "filter": {
+            "supported": true,
+            "maxResults": 100
+          },
+          "bulk": {
+            "supported": false
+          },
+          "changePassword": {
+            "supported": false
+          },
+          "sort": {
+            "supported": false
+          },
+          "etag": {
+            "supported": false
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

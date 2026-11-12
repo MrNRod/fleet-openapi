@@ -1,0 +1,115 @@
+info:
+  name: List certificate authorities (CAs)
+  type: http
+  seq: 4
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/certificate_authorities'
+  auth: inherit
+docs: |-
+  `GET /api/v1/fleet/certificate_authorities`
+
+  #### Example
+
+  `GET /api/v1/fleet/certificate_authorities`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "certificate_authorities": [
+      {
+        "id": 3,
+        "name": "DIGICERT_PROD",
+        "type": "digicert"
+      },
+      {
+        "id": 2,
+        "name": "DIGICERT_STAGE",
+        "type": "digicert"
+      },
+      {
+        "id": 5,
+        "name": "HYDRANT_WIFI_STAGE",
+        "type": "hydrant"
+      },
+      {
+        "id": 1,
+        "name": "NDES_VPN",
+        "type": "ndes_scep_proxy"
+      },
+      {
+        "id": 4,
+        "name": "SCEP_CERTIFICATE_PROD",
+        "type": "custom_scep_proxy"
+      },
+      {
+        "id": 5,
+        "name": "SECTIGO_WIFI",
+        "type": "custom_est_proxy"
+      },
+      {
+        "id": 6,
+        "name": "SMALLSTEP_WIFI",
+        "type": "smallstep"
+      }
+    ]
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#list-certificate-authorities-cas
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/certificate_authorities'
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "certificate_authorities": [
+            {
+              "id": 3,
+              "name": "DIGICERT_PROD",
+              "type": "digicert"
+            },
+            {
+              "id": 2,
+              "name": "DIGICERT_STAGE",
+              "type": "digicert"
+            },
+            {
+              "id": 5,
+              "name": "HYDRANT_WIFI_STAGE",
+              "type": "hydrant"
+            },
+            {
+              "id": 1,
+              "name": "NDES_VPN",
+              "type": "ndes_scep_proxy"
+            },
+            {
+              "id": 4,
+              "name": "SCEP_CERTIFICATE_PROD",
+              "type": "custom_scep_proxy"
+            },
+            {
+              "id": 5,
+              "name": "SECTIGO_WIFI",
+              "type": "custom_est_proxy"
+            },
+            {
+              "id": 6,
+              "name": "SMALLSTEP_WIFI",
+              "type": "smallstep"
+            }
+          ]
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

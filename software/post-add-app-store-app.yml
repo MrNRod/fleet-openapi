@@ -1,0 +1,151 @@
+info:
+  name: Add app store app
+  type: http
+  seq: 13
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/software/app_store_apps'
+  auth: inherit
+  body:
+    type: json
+    data: |-
+      {
+        "app_store_id": "497799835",
+        "categories": [
+          "Productivity"
+        ],
+        "fleet_id": 2,
+        "platform": "ipados",
+        "self_service": true
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  _Available in Fleet Premium._
+
+  Add Apple App Store or Google Play store app. Apple apps must be added in Apple Business (AB) before adding them to Fleet.
+
+  `POST /api/v1/fleet/software/app_store_apps`
+
+  #### Parameters
+
+  | Name | Type | In | Description |
+  | ---- | ---- | -- | ----------- |
+  | app_store_id   | string | body | **Required.** The ID of the Apple App Store app or Google Play app. |
+  | fleet_id       | integer | body | **Required**. The fleet ID. Adds app from the store to the specified fleet.  |
+  | platform | string | body | The platform of the app (`darwin`, `ios`, `ipados`, or `android`). Default is `darwin`. |
+  | self_service | boolean | body | **Required if platform is Android**. Currently supported for macOS and Android apps. Specifies whether the app shows up in self-service and is available for install by the end user. For macOS shows up on **Fleet Desktop > My device** page, for Android in **Play Store** app in end user's work profile, and for iOS/iPadOS in [self-service web](https://fleetdm.com/learn-more-about/deploy-self-service-to-ios) app.  |
+  | automatic_install | boolean | body | macOS only. If `true`, creates a policy that triggers an install only on hosts missing the app ("Force install"). Default is `false`. |
+  | labels_include_all        | array     | body | Target hosts that have all labels, specified by label name, in the array. |
+  | labels_include_any        | array     | body | Target hosts that have any label, specified by label name, in the array. |
+  | labels_exclude_any | array | form | Target hosts that don't have any label, specified by label name, in the array. |
+  | configuration | object | form | The app's managed configuration. For iOS and iPadOS apps it is in XML format, and for Android Play Store apps it is in JSON format. Currently only supported for iOS, iPadOS, and Android. |
+
+  Only one of `labels_include_all`, `labels_include_any` or `labels_exclude_any` can be specified. If none are specified, all hosts are targeted.
+
+
+  #### Example
+
+  `POST /api/v1/fleet/software/app_store_apps`
+
+  ##### Request body
+
+  ```json
+  {
+    "app_store_id": "497799835",
+    "categories": ["Productivity"],
+    "fleet_id": 2,
+    "platform": "ipados",
+    "self_service": true
+  }
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "software_title_id": 123,
+    "name": "Xcode"
+  }
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "software_title_id": 456,
+    "name": "Slack"
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#add-app-store-app
+examples:
+- name: 200 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/software/app_store_apps'
+    body:
+      type: json
+      data: |-
+        {
+          "app_store_id": "497799835",
+          "categories": [
+            "Productivity"
+          ],
+          "fleet_id": 2,
+          "platform": "ipados",
+          "self_service": true
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "software_title_id": 123,
+          "name": "Xcode"
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+- name: 200 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/software/app_store_apps'
+    body:
+      type: json
+      data: |-
+        {
+          "app_store_id": "497799835",
+          "categories": [
+            "Productivity"
+          ],
+          "fleet_id": 2,
+          "platform": "ipados",
+          "self_service": true
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "software_title_id": 456,
+          "name": "Slack"
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

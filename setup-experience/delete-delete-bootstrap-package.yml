@@ -1,0 +1,51 @@
+info:
+  name: Delete bootstrap package
+  type: http
+  seq: 9
+http:
+  method: DELETE
+  url: '{{baseUrl}}/api/v1/fleet/bootstrap/:fleet_id'
+  auth: inherit
+  params:
+  - name: fleet_id
+    value: ''
+    type: path
+    description: '**Required** The fleet ID for the package. Zero (0) can be specified to get information about
+      the bootstrap package for "Unassigned" hosts.'
+docs: |-
+  _Available in Fleet Premium_
+
+  Delete a fleet's bootstrap package.
+
+  `DELETE /api/v1/fleet/bootstrap/:fleet_id`
+
+  #### Parameters
+
+  | Name    | Type   | In  | Description                                                                                                                                               |
+  | ------- | ------ | --- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+  | fleet_id | string | url | **Required** The fleet ID for the package. Zero (0) can be specified to get information about the bootstrap package for "Unassigned" hosts. |
+
+
+  #### Example
+
+  `DELETE /api/v1/fleet/bootstrap/1`
+
+  ##### Default response
+
+  `Status: 200`
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#delete-bootstrap-package
+examples:
+- name: 200 Default response
+  request:
+    method: DELETE
+    url: '{{baseUrl}}/api/v1/fleet/bootstrap/:fleet_id'
+    params:
+    - name: fleet_id
+      value: ''
+      type: path
+      description: '**Required** The fleet ID for the package. Zero (0) can be specified to get information about
+        the bootstrap package for "Unassigned" hosts.'
+  response:
+    status: 200
+    statusText: OK

@@ -1,0 +1,211 @@
+info:
+  name: Run live report (ad hoc)
+  type: http
+  seq: 12
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/queries/run'
+  auth: inherit
+  body:
+    type: json
+    data: |-
+      {
+        "query": "SELECT instance_id FROM system_info",
+        "selected": {
+          "hosts": [
+            171
+          ]
+        }
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  Runs the specified report as a live report on the specified hosts or group of hosts. This starts a new active report, represented in the response as the `campaign` object.
+
+  After you initiate the report, [get results via WebSocket](#retrieve-live-report-results-standard-websocket-api).
+
+  > **Warning:** If you're building an automation that runs many live reports, use `query_id` with an existing saved report or, if you're using `query`, rate-limit your requests. Passing `query` instead of `query_id` creates a new active report on every request. If your client doesn't finish streaming results and close the connection, Fleet doesn't clean up the active report right away: it can stay open for up to 24 hours (or up to a minute if you never connect to retrieve results at all) before Fleet expires it automatically. Each open active report holds a Redis-backed results channel, so creating many of them without closing them adds load that can slow down or interrupt Fleet. A fix is [coming soon](https://github.com/fleetdm/fleet/issues/52000).
+  >
+  > **To close the connection:** once you're [retrieving results over the WebSocket connection](#retrieve-live-report-results-standard-websocket-api), call `socket.close()` as soon as you receive a message with `"status": "finished"`, as shown in the example script in that section.
+
+  `POST /api/v1/fleet/queries/run`
+
+  #### Parameters
+
+  | Name     | Type    | In   | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+  | -------- | ------- | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+  | query    | string  | body | The SQL if using a custom query.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+  | query_id | integer | body | The saved query (if any) that will be run. Required if running query as an observer. The `observer_can_run` property on the query effects which targets are included.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+  | selected | object  | body | **Required.** The object includes lists of selected host IDs (`selected.hosts`), label IDs (`selected.labels`), and fleet IDs (`selected.fleets`). When provided, builtin label IDs, custom label IDs and fleet IDs become `AND` filters. Within each selector, selecting two or more fleets, two or more builtin labels, or two or more custom labels, behave as `OR` filters. There's one special case for the builtin label "All hosts", if such label is selected, then all other label and fleet selectors are ignored (and all hosts will be selected). If a host ID is explicitly included in `selected.hosts`, then it is assured that the query will be selected to run on it (no matter the contents of `selected.labels` and `selected.fleets`). Use `0` fleet ID to filter by hosts assigned to "Unassigned". See examples below. |
+
+  One of `query` and `query_id` must be specified.
+
+  #### Example with one host targeted by ID
+
+  `POST /api/v1/fleet/queries/run`
+
+  ##### Request body
+
+  ```json
+  {
+    "query": "SELECT instance_id FROM system_info",
+    "selected": {
+      "hosts": [171]
+    }
+  }
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "campaign": {
+      "created_at": "0001-01-01T00:00:00Z",
+      "updated_at": "0001-01-01T00:00:00Z",
+      "Metrics": {
+        "TotalHosts": 1,
+        "OnlineHosts": 0,
+        "OfflineHosts": 1,
+        "MissingInActionHosts": 0,
+        "NewHosts": 1
+      },
+      "id": 1,
+      "query_id": 3,
+      "status": 0,
+      "user_id": 1
+    }
+  }
+  ```
+
+  #### Example with multiple hosts targeted by label ID
+
+  `POST /api/v1/fleet/queries/run`
+
+  ##### Request body
+
+  ```json
+  {
+    "query": "SELECT instance_id FROM system_info;",
+    "selected": {
+      "labels": [7]
+    }
+  }
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "campaign": {
+      "created_at": "0001-01-01T00:00:00Z",
+      "updated_at": "0001-01-01T00:00:00Z",
+      "Metrics": {
+        "TotalHosts": 102,
+        "OnlineHosts": 0,
+        "OfflineHosts": 24,
+        "MissingInActionHosts": 0,
+        "NewHosts": 0
+      },
+      "id": 2,
+      "query_id": 3,
+      "status": 0,
+      "user_id": 1
+    }
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#run-live-report-ad-hoc
+examples:
+- name: 200 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/queries/run'
+    body:
+      type: json
+      data: |-
+        {
+          "query": "SELECT instance_id FROM system_info",
+          "selected": {
+            "hosts": [
+              171
+            ]
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "campaign": {
+            "created_at": "0001-01-01T00:00:00Z",
+            "updated_at": "0001-01-01T00:00:00Z",
+            "Metrics": {
+              "TotalHosts": 1,
+              "OnlineHosts": 0,
+              "OfflineHosts": 1,
+              "MissingInActionHosts": 0,
+              "NewHosts": 1
+            },
+            "id": 1,
+            "query_id": 3,
+            "status": 0,
+            "user_id": 1
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+- name: 200 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/queries/run'
+    body:
+      type: json
+      data: |-
+        {
+          "query": "SELECT instance_id FROM system_info",
+          "selected": {
+            "hosts": [
+              171
+            ]
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "campaign": {
+            "created_at": "0001-01-01T00:00:00Z",
+            "updated_at": "0001-01-01T00:00:00Z",
+            "Metrics": {
+              "TotalHosts": 102,
+              "OnlineHosts": 0,
+              "OfflineHosts": 24,
+              "MissingInActionHosts": 0,
+              "NewHosts": 0
+            },
+            "id": 2,
+            "query_id": 3,
+            "status": 0,
+            "user_id": 1
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

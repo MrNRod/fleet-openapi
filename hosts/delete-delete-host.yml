@@ -1,0 +1,46 @@
+info:
+  name: Delete host
+  type: http
+  seq: 7
+http:
+  method: DELETE
+  url: '{{baseUrl}}/api/v1/fleet/hosts/:id'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required**. The host''s id.'
+docs: |-
+  Deletes the specified host from Fleet. Note that a deleted host will fail authentication with the previous node key, and in most osquery configurations will attempt to re-enroll automatically. If the host still has a valid enroll secret, it will re-enroll successfully.
+
+  `DELETE /api/v1/fleet/hosts/:id`
+
+  #### Parameters
+
+  | Name | Type    | In   | Description                  |
+  | ---- | ------- | ---- | ---------------------------- |
+  | id   | integer | path | **Required**. The host's id. |
+
+  #### Example
+
+  `DELETE /api/v1/fleet/hosts/121`
+
+  ##### Default response
+
+  `Status: 200`
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#delete-host
+examples:
+- name: 200 Default response
+  request:
+    method: DELETE
+    url: '{{baseUrl}}/api/v1/fleet/hosts/:id'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required**. The host''s id.'
+  response:
+    status: 200
+    statusText: OK

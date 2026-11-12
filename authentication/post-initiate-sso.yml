@@ -1,0 +1,117 @@
+info:
+  name: Initiate SSO
+  type: http
+  seq: 9
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/sso'
+  body:
+    type: json
+    data: |-
+      {
+        "relay_url": "/hosts/manage"
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  `POST /api/v1/fleet/sso`
+
+  A successful response contains an HTTP cookie `__Host-FLEETSSOSESSIONID` that needs to be sent on the `POST /api/v1/fleet/sso/callback` request (this HTTP cookie is used to identify the SSO login session).
+
+  #### Parameters
+
+  | Name      | Type   | In   | Description                                                                 |
+  | --------- | ------ | ---- | --------------------------------------------------------------------------- |
+  | relay_url | string | body | **Required**. The relative url to be navigated to after successful sign in. |
+
+  #### Example
+
+  `POST /api/v1/fleet/sso`
+
+  ##### Request body
+
+  ```json
+  {
+    "relay_url": "/hosts/manage"
+  }
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  Example response cookie in the HTTP `Set-Cookie` header:
+  ```
+  Set-Cookie: __Host-FLEETSSOSESSIONID=slI727JZ+j0FvyBRLyD/gri1rxtwpaZT; Path=/; Max-Age=300; HttpOnly; Secure
+  ```
+
+  ##### Unknown error
+
+  `Status: 500`
+
+  ```json
+  {
+    "message": "Unknown Error",
+    "errors": [
+      {
+        "name": "base",
+        "reason": "InitiateSSO getting metadata: Get \"https://idp.example.org/idp-meta.xml\": dial tcp: lookup idp.example.org on [2001:558:feed::1]:53: no such host"
+      }
+    ]
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#initiate-sso
+examples:
+- name: 200 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/sso'
+    body:
+      type: json
+      data: |-
+        {
+          "relay_url": "/hosts/manage"
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: text
+      data: 'Set-Cookie: __Host-FLEETSSOSESSIONID=slI727JZ+j0FvyBRLyD/gri1rxtwpaZT; Path=/; Max-Age=300; HttpOnly;
+        Secure'
+- name: 500 Unknown error
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/sso'
+    body:
+      type: json
+      data: |-
+        {
+          "relay_url": "/hosts/manage"
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 500
+    statusText: Internal Server Error
+    body:
+      type: json
+      data: |-
+        {
+          "message": "Unknown Error",
+          "errors": [
+            {
+              "name": "base",
+              "reason": "InitiateSSO getting metadata: Get \"https://idp.example.org/idp-meta.xml\": dial tcp: lookup idp.example.org on [2001:558:feed::1]:53: no such host"
+            }
+          ]
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

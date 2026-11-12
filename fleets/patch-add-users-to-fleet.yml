@@ -1,0 +1,412 @@
+info:
+  name: Add users to fleet
+  type: http
+  seq: 5
+http:
+  method: PATCH
+  url: '{{baseUrl}}/api/v1/fleet/fleets/:id/users'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required.** The desired fleet''s ID.'
+  body:
+    type: json
+    data: |-
+      {
+        "users": [
+          {
+            "id": 1,
+            "role": "admin"
+          },
+          {
+            "id": 17,
+            "role": "observer"
+          }
+        ]
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  _Available in Fleet Premium_
+
+  `PATCH /api/v1/fleet/fleets/:id/users`
+
+  This also applies to `DELETE /api/v1/fleet/fleets/:id/users` (remove users from fleet), which returns the same fleet object shape.
+
+  `mdm.apple_settings.configuration_profiles`, `mdm.windows_settings.configuration_profiles`, `scripts`, and `mdm.setup_experience` only include the configuration profiles, scripts, and setup experience settings applied using [Fleet's YAML](https://fleetdm.com/docs/configuration/yaml-files). To list profiles, scripts, or setup experience settings added in the UI or API, use the [List configuration profiles](https://fleetdm.com/docs/rest-api/rest-api#list-custom-os-settings-configuration-profiles), [List scripts](https://fleetdm.com/docs/rest-api/rest-api#list-scripts), or GET endpoints from [Setup experience](https://fleetdm.com/docs/rest-api/rest-api#setup-experience) instead.
+
+  #### Parameters
+
+  | Name             | Type    | In   | Description                                  |
+  |------------------|---------|------|----------------------------------------------|
+  | id               | integer | path | **Required.** The desired fleet's ID.         |
+  | users            | string  | body | Array of users to add.                       |
+  | &nbsp;&nbsp;id   | integer | body | The id of the user.                          |
+  | &nbsp;&nbsp;role | string  | body | The fleet role that the user will be granted. Options are: "admin", "maintainer", "observer", "observer_plus", and "gitops". |
+
+  #### Example
+
+  `PATCH /api/v1/fleet/fleets/1/users`
+
+  ##### Request body
+
+  ```json
+  {
+    "users": [
+      {
+        "id": 1,
+        "role": "admin"
+      },
+      {
+        "id": 17,
+        "role": "observer"
+      }
+    ]
+  }
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "team": {
+      "name": "Workstations",
+      "id": 1,
+      "user_count": 2,
+      "host_count": 0,
+      "agent_options": {
+        "config": {
+          "options": {
+            "pack_delimiter": "/",
+            "logger_tls_period": 10,
+            "distributed_plugin": "tls",
+            "disable_distributed": false,
+            "logger_tls_endpoint": "/api/v1/osquery/log",
+            "distributed_interval": 10,
+            "distributed_tls_max_attempts": 3
+          },
+          "decorators": {
+            "load": [
+              "SELECT uuid AS host_uuid FROM system_info;",
+              "SELECT hostname AS hostname FROM system_info;"
+            ]
+          }
+        },
+        "overrides": {},
+        "command_line_flags": {}
+      },
+      "webhook_settings": {
+        "failing_policies_webhook": {
+          "enable_failing_policies_webhook": false,
+          "destination_url": "",
+          "policy_ids": null,
+          "host_batch_size": 0
+        }
+      },
+      "mdm": {
+        "macos_updates": {
+          "minimum_version": "12.3.1",
+          "deadline": "2022-01-01",
+          "update_new_hosts": true
+        },
+        "windows_updates": {
+          "deadline_days": 5,
+          "grace_period_days": 1
+        },
+        "macos_settings": {
+          "custom_settings": [
+            {
+             "path": "path/to/profile1.mobileconfig",
+             "labels": ["Label 1", "Label 2"]
+            }
+          ]
+        },
+        "apple_settings": {
+          "configuration_profiles": [
+            {
+             "path": "path/to/profile1.mobileconfig",
+             "labels": ["Label 1", "Label 2"]
+            },
+            {
+             "path": "path/to/declaration.json",
+             "labels": ["Label 1", "Label 2"]
+            },
+            {
+             "path": "path/to/assets/asset.json"
+            }
+          ],
+          "enable_disk_encryption": true,
+          "enable_escrow_disk_encryption_key": true,
+          "assets": [
+            {
+              "path": "path/to/assets/asset.json"
+            }
+          ],
+          "managed_local_account_settings": {
+            "enabled": true
+          }
+        },
+        "windows_settings": {
+          "custom_settings": [
+            {
+             "path": "path/to/profile2.xml",
+             "labels": ["Label 3", "Label 4"]
+            }
+          ],
+          "configuration_profiles": [
+            {
+             "path": "path/to/profile2.xml",
+             "labels": ["Label 3", "Label 4"]
+            }
+          ],
+          "enable_disk_encryption": true,
+          "require_bitlocker_pin": false,
+          "enable_managed_local_account": true
+        },
+        "linux_settings": {
+          "enable_escrow_disk_encryption_key": true
+        },
+        "macos_setup": {
+          "bootstrap_package": "",
+          "enable_end_user_authentication": false,
+          "macos_setup_assistant": "path/to/config.json"
+        },
+        "setup_experience": {
+          "bootstrap_package": "",
+          "enable_end_user_authentication": false,
+          "apple_setup_assistant": "path/to/config.json"
+        }
+      },
+      "users": [
+        {
+          "created_at": "0001-01-01T00:00:00Z",
+          "updated_at": "0001-01-01T00:00:00Z",
+          "id": 1,
+          "name": "Example User1",
+          "email": "user1@example.com",
+          "force_password_reset": false,
+          "gravatar_url": "",
+          "sso_enabled": false,
+          "global_role": null,
+          "api_only": false,
+          "teams": null,
+          "role": "admin"
+        },
+        {
+          "created_at": "0001-01-01T00:00:00Z",
+          "updated_at": "0001-01-01T00:00:00Z",
+          "id": 17,
+          "name": "Example User2",
+          "email": "user2@example.com",
+          "force_password_reset": false,
+          "gravatar_url": "",
+          "sso_enabled": false,
+          "global_role": null,
+          "api_only": false,
+          "teams": null,
+          "role": "observer"
+        }
+      ]
+    }
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#add-users-to-fleet
+examples:
+- name: 200 Default response
+  request:
+    method: PATCH
+    url: '{{baseUrl}}/api/v1/fleet/fleets/:id/users'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required.** The desired fleet''s ID.'
+    body:
+      type: json
+      data: |-
+        {
+          "users": [
+            {
+              "id": 1,
+              "role": "admin"
+            },
+            {
+              "id": 17,
+              "role": "observer"
+            }
+          ]
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "team": {
+            "name": "Workstations",
+            "id": 1,
+            "user_count": 2,
+            "host_count": 0,
+            "agent_options": {
+              "config": {
+                "options": {
+                  "pack_delimiter": "/",
+                  "logger_tls_period": 10,
+                  "distributed_plugin": "tls",
+                  "disable_distributed": false,
+                  "logger_tls_endpoint": "/api/v1/osquery/log",
+                  "distributed_interval": 10,
+                  "distributed_tls_max_attempts": 3
+                },
+                "decorators": {
+                  "load": [
+                    "SELECT uuid AS host_uuid FROM system_info;",
+                    "SELECT hostname AS hostname FROM system_info;"
+                  ]
+                }
+              },
+              "overrides": {},
+              "command_line_flags": {}
+            },
+            "webhook_settings": {
+              "failing_policies_webhook": {
+                "enable_failing_policies_webhook": false,
+                "destination_url": "",
+                "policy_ids": null,
+                "host_batch_size": 0
+              }
+            },
+            "mdm": {
+              "macos_updates": {
+                "minimum_version": "12.3.1",
+                "deadline": "2022-01-01",
+                "update_new_hosts": true
+              },
+              "windows_updates": {
+                "deadline_days": 5,
+                "grace_period_days": 1
+              },
+              "macos_settings": {
+                "custom_settings": [
+                  {
+                    "path": "path/to/profile1.mobileconfig",
+                    "labels": [
+                      "Label 1",
+                      "Label 2"
+                    ]
+                  }
+                ]
+              },
+              "apple_settings": {
+                "configuration_profiles": [
+                  {
+                    "path": "path/to/profile1.mobileconfig",
+                    "labels": [
+                      "Label 1",
+                      "Label 2"
+                    ]
+                  },
+                  {
+                    "path": "path/to/declaration.json",
+                    "labels": [
+                      "Label 1",
+                      "Label 2"
+                    ]
+                  },
+                  {
+                    "path": "path/to/assets/asset.json"
+                  }
+                ],
+                "enable_disk_encryption": true,
+                "enable_escrow_disk_encryption_key": true,
+                "assets": [
+                  {
+                    "path": "path/to/assets/asset.json"
+                  }
+                ],
+                "managed_local_account_settings": {
+                  "enabled": true
+                }
+              },
+              "windows_settings": {
+                "custom_settings": [
+                  {
+                    "path": "path/to/profile2.xml",
+                    "labels": [
+                      "Label 3",
+                      "Label 4"
+                    ]
+                  }
+                ],
+                "configuration_profiles": [
+                  {
+                    "path": "path/to/profile2.xml",
+                    "labels": [
+                      "Label 3",
+                      "Label 4"
+                    ]
+                  }
+                ],
+                "enable_disk_encryption": true,
+                "require_bitlocker_pin": false,
+                "enable_managed_local_account": true
+              },
+              "linux_settings": {
+                "enable_escrow_disk_encryption_key": true
+              },
+              "macos_setup": {
+                "bootstrap_package": "",
+                "enable_end_user_authentication": false,
+                "macos_setup_assistant": "path/to/config.json"
+              },
+              "setup_experience": {
+                "bootstrap_package": "",
+                "enable_end_user_authentication": false,
+                "apple_setup_assistant": "path/to/config.json"
+              }
+            },
+            "users": [
+              {
+                "created_at": "0001-01-01T00:00:00Z",
+                "updated_at": "0001-01-01T00:00:00Z",
+                "id": 1,
+                "name": "Example User1",
+                "email": "user1@example.com",
+                "force_password_reset": false,
+                "gravatar_url": "",
+                "sso_enabled": false,
+                "global_role": null,
+                "api_only": false,
+                "teams": null,
+                "role": "admin"
+              },
+              {
+                "created_at": "0001-01-01T00:00:00Z",
+                "updated_at": "0001-01-01T00:00:00Z",
+                "id": 17,
+                "name": "Example User2",
+                "email": "user2@example.com",
+                "force_password_reset": false,
+                "gravatar_url": "",
+                "sso_enabled": false,
+                "global_role": null,
+                "api_only": false,
+                "teams": null,
+                "role": "observer"
+              }
+            ]
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

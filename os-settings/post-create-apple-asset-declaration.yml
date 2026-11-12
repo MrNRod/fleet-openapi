@@ -1,0 +1,115 @@
+info:
+  name: Create Apple asset declaration
+  type: http
+  seq: 8
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/assets'
+  auth: inherit
+  body:
+    type: multipart-form
+    data:
+    - name: asset
+      value: []
+      description: '**Required.** The JSON asset declaration. The "Type" must be a valid Apple asset declaration
+        type (e.g., "com.apple.asset.data"), and an "Identifier" must be defined. See [Apple''s documentation](https://developer.apple.com/documentation/devicemanagement)
+        for type-specific payload requirements.'
+      disabled: false
+      type: file
+    - name: fleet_id
+      value: ''
+      description: _Available in Fleet Premium_. The fleet ID for the asset. If specified, the asset is available
+        to only the configuration profile(s) that are assigned to the specified fleet. If not specified, the profile
+        is applied to only hosts that are "Unassigned".
+      disabled: true
+      type: text
+docs: |-
+  Add an Apple asset declaration to reference in a configuration profile.
+
+  > You need to send a request of type `multipart/form-data`.
+
+  > This endpoint accepts a maximum request body size of 1.5MiB.
+
+  `POST /api/v1/fleet/assets`
+
+  #### Parameters
+
+  | Name                      | Type     | In   | Description                                                                                                   |
+  | ------------------------- | -------- | ---- | ------------------------------------------------------------------------------------------------------------- |
+  | asset                   | file     | body | **Required.** The JSON asset declaration. The "Type" must be a valid Apple asset declaration type (e.g., "com.apple.asset.data"), and an "Identifier" must be defined. See [Apple's documentation](https://developer.apple.com/documentation/devicemanagement) for type-specific payload requirements. |
+  | fleet_id                   | string   | body | _Available in Fleet Premium_. The fleet ID for the asset. If specified, the asset is available to only the configuration profile(s) that are assigned to the specified fleet. If not specified, the profile is applied to only hosts that are "Unassigned". |
+
+  #### Example
+
+  `POST /api/v1/fleet/assets`
+
+  ##### Request body
+
+  ```
+  fleet_id="1"
+  asset="my-asset.json"
+  ```
+
+  ##### Example asset file (my-asset.json)
+  ```
+  {
+      "Type": "com.apple.asset.data",
+      "Identifier": "EB13EE2B-5D63-4EBA-810F-5B81D07F5017",
+      "ServerToken": "E180CA9A-F089-4FA3-BBDF-94CC159C4AE8",
+      "Payload": {
+          "Reference": {
+              "DataURL": "https://example.com/asset-data/data/test.txt",
+              "ContentType": "text/plain"
+          },
+          "Authentication": {
+              "Type": "MDM"
+          }
+      }
+  }
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "asset_uuid": "954ec5ea-a334-4825-87b3-937e7e381f24"
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#create-apple-asset-declaration
+examples:
+- name: 200 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/assets'
+    body:
+      type: multipart-form
+      data:
+      - name: asset
+        value: []
+        description: '**Required.** The JSON asset declaration. The "Type" must be a valid Apple asset declaration
+          type (e.g., "com.apple.asset.data"), and an "Identifier" must be defined. See [Apple''s documentation](https://developer.apple.com/documentation/devicemanagement)
+          for type-specific payload requirements.'
+        disabled: false
+        type: file
+      - name: fleet_id
+        value: ''
+        description: _Available in Fleet Premium_. The fleet ID for the asset. If specified, the asset is available
+          to only the configuration profile(s) that are assigned to the specified fleet. If not specified, the profile
+          is applied to only hosts that are "Unassigned".
+        disabled: true
+        type: text
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "asset_uuid": "954ec5ea-a334-4825-87b3-937e7e381f24"
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

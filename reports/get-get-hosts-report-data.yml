@@ -1,0 +1,138 @@
+info:
+  name: Get host's report data
+  type: http
+  seq: 5
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/hosts/:id/reports/:report_id'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required**. The ID of the desired host.'
+  - name: report_id
+    value: ''
+    type: path
+    description: '**Required**. The ID of the desired report.'
+docs: |-
+  Returns a specific report's data for a single host.
+
+  `GET /api/v1/fleet/hosts/:id/reports/:report_id`
+
+  #### Parameters
+
+  | Name      | Type    | In    | Description                                |
+  | --------- | ------- | ----- | ------------------------------------------ |
+  | id        | integer | path  | **Required**. The ID of the desired host.          |
+  | report_id  | integer | path  | **Required**. The ID of the desired report.         |
+
+  #### Example
+
+  `GET /api/v1/fleet/hosts/123/reports/31`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "query_id": 31,
+    "report_id": 31,
+    "host_id": 1,
+    "host_name": "foo",
+    "last_fetched": "2021-01-19T17:08:31Z",
+    "report_clipped": false,
+    "results": [
+      {
+        "columns": {
+          "model": "USB 2.0 Hub",
+          "vendor": "VIA Labs, Inc."
+        }
+      },
+      {
+        "columns": {
+          "model": "USB Keyboard",
+          "vendor": "VIA Labs, Inc."
+        }
+      },
+      {
+        "columns": {
+          "model": "USB Receiver",
+          "vendor": "Logitech"
+        }
+      }
+    ]
+  }
+  ```
+
+  `last_fetched` is when Fleet last received the host's results. If the host's results haven't changed, Fleet updates `last_fetched` about once an hour, so it can trail the host's most recent run by up to an hour.
+
+  If a report has no results stored for the specified host, then `results` will be an empty array:
+
+  ```json
+  {
+    "query_id": 31,
+    "report_id": 31,
+    "host_id": 1,
+    "host_name": "foo",
+    "last_fetched": "2021-01-19T17:08:31Z",
+    "report_clipped": false,
+    "results": []
+  }
+  ```
+
+  > Scheduled reports do not return errors, so only non-error results are included in the report. If you suspect a report may be running into errors, you can use the [live report](#run-live-report) endpoint to get diagnostics.
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#get-hosts-report-data
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/hosts/:id/reports/:report_id'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required**. The ID of the desired host.'
+    - name: report_id
+      value: ''
+      type: path
+      description: '**Required**. The ID of the desired report.'
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "query_id": 31,
+          "report_id": 31,
+          "host_id": 1,
+          "host_name": "foo",
+          "last_fetched": "2021-01-19T17:08:31Z",
+          "report_clipped": false,
+          "results": [
+            {
+              "columns": {
+                "model": "USB 2.0 Hub",
+                "vendor": "VIA Labs, Inc."
+              }
+            },
+            {
+              "columns": {
+                "model": "USB Keyboard",
+                "vendor": "VIA Labs, Inc."
+              }
+            },
+            {
+              "columns": {
+                "model": "USB Receiver",
+                "vendor": "Logitech"
+              }
+            }
+          ]
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

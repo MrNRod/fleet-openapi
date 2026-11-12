@@ -1,0 +1,50 @@
+info:
+  name: Resend host name template
+  type: http
+  seq: 17
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/hosts/:id/name_template/resend'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required.** The ID of the host to resend to.'
+docs: |-
+  _Available in Fleet Premium_
+
+  Resends the host name template MDM command to a host whose host name status is "failed" or "verified". The host's status returns to "pending" (shown as "Enforcing" in the UI) until the device applies the name again.
+
+  `POST /api/v1/fleet/hosts/:id/name_template/resend`
+
+  #### Parameters
+
+  | Name | Type    | In   | Description                                            |
+  | ---- | ------- | ---- | ------------------------------------------------------ |
+  | id   | integer | path | **Required.** The ID of the host to resend to.         |
+
+  #### Example
+
+  `POST /api/v1/fleet/hosts/42/name_template/resend`
+
+  ##### Default response
+
+  `Status: 202`
+
+  If the host has no host name template enforced, the response is `404`. If the host name status is "pending" or "verifying", the response is `409`.
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#resend-host-name-template
+examples:
+- name: 202 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/hosts/:id/name_template/resend'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required.** The ID of the host to resend to.'
+  response:
+    status: 202
+    statusText: Accepted

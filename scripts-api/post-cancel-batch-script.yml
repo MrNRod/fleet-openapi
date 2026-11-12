@@ -1,0 +1,36 @@
+info:
+  name: Cancel batch script
+  type: http
+  seq: 7
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/scripts/batch/:batch_execution_id/cancel'
+  auth: inherit
+  params:
+  - name: batch_execution_id
+    value: ''
+    type: path
+docs: |-
+  `POST /api/v1/fleet/scripts/batch/:batch_execution_id/cancel`
+
+  #### Example
+
+  `POST /api/v1/fleet/scripts/batch/abc-def/cancel`
+
+  ##### Default response
+
+  `Status: 200`
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#cancel-batch-script
+examples:
+- name: 200 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/scripts/batch/:batch_execution_id/cancel'
+    params:
+    - name: batch_execution_id
+      value: ''
+      type: path
+  response:
+    status: 200
+    statusText: OK

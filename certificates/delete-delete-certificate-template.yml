@@ -1,0 +1,48 @@
+info:
+  name: Delete certificate template
+  type: http
+  seq: 9
+http:
+  method: DELETE
+  url: '{{baseUrl}}/api/v1/fleet/certificates/:id'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required.** The certificate ID in Fleet. You can see your certificate IDs using the [List certificate
+      templates endpoint](#list-certificate-templates).'
+docs: |-
+  Deletes the certificate template added to Fleet. When a certificate template is deleted from Fleet, the certificate will be uninstalled from the hosts.
+
+  `DELETE /api/v1/fleet/certificates/:id`
+
+  #### Parameters
+
+  | Name            | Type    | In   | Description                                                 |
+  |---------------- |-------- |------|-------------------------------------------------------------|
+  | id   | integer  | path    | **Required.** The certificate ID in Fleet. You can see your certificate IDs using the [List certificate templates endpoint](#list-certificate-templates). |
+
+  #### Example
+
+  `DELETE /api/v1/fleet/certificates/1`
+
+  ##### Default response
+
+  `Status: 204`
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#delete-certificate-template
+examples:
+- name: 204 Default response
+  request:
+    method: DELETE
+    url: '{{baseUrl}}/api/v1/fleet/certificates/:id'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required.** The certificate ID in Fleet. You can see your certificate IDs using the [List
+        certificate templates endpoint](#list-certificate-templates).'
+  response:
+    status: 204
+    statusText: No Content

@@ -1,0 +1,140 @@
+info:
+  name: Update label
+  type: http
+  seq: 2
+http:
+  method: PATCH
+  url: '{{baseUrl}}/api/v1/fleet/labels/:id'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required**. The label''s id.'
+  body:
+    type: json
+    data: |-
+      {
+        "hosts": [
+          "ABC1234",
+          "XYZ5678"
+        ]
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  Updates the specified label. Note: Label queries, platforms, and fleets are immutable. To change these, you must delete the label and create a new label.
+
+  `PATCH /api/v1/fleet/labels/:id`
+
+  #### Parameters
+
+  | Name        | Type    | In   | Description                   |
+  | ----------- | ------- | ---- | ----------------------------- |
+  | id          | integer | path | **Required**. The label's id. |
+  | name        | string  | body | The label's name.             |
+  | description | string  | body | The label's description.      |
+  | hosts       | array   | body | If updating a manual label: the list of host identifiers (`hardware_serial` or `uuid`). The label will apply to any host with a matching identifier. The provided list fully replaces the previous list.  Only one of either `hosts` or `host_ids` can be included in the request.  |
+  | host_ids    | array   | body | If updating a manual label: the list of Fleet host IDs the label will apply to. The provided list fully replaces the previous list. Only one of either `hosts` or `host_ids` can be included in the request.
+
+  `hosts` and `host_ids` can only be used to update a manual label. Including either one when updating a dynamic label returns an error, even if the list is empty.
+
+  The `hostname` host identifier is deprecated. Please use `host_ids`, `hardware_serial`, or `uuid` instead.
+
+  #### Example
+
+  `PATCH /api/v1/fleet/labels/21`
+
+  ##### Request body
+
+  ```json
+  {
+    "hosts": ["ABC1234", "XYZ5678"]
+  }
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "label": {
+      "created_at": "0001-01-01T00:00:00Z",
+      "updated_at": "0001-01-01T00:00:00Z",
+      "id": 21,
+      "name": "My label",
+      "description": "Some hosts that I want to manually group together",
+      "query": "",
+      "platform": "",
+      "label_type": "regular",
+      "label_membership_type": "manual",
+      "display_text": "My label",
+      "count": 2,
+      "host_ids": [42, 43],
+      "author_id": 1,
+      "team_id": null,
+      "fleet_id": null,
+      "team_name": null,
+      "fleet_name": null
+    }
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#update-label
+examples:
+- name: 200 Default response
+  request:
+    method: PATCH
+    url: '{{baseUrl}}/api/v1/fleet/labels/:id'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required**. The label''s id.'
+    body:
+      type: json
+      data: |-
+        {
+          "hosts": [
+            "ABC1234",
+            "XYZ5678"
+          ]
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "label": {
+            "created_at": "0001-01-01T00:00:00Z",
+            "updated_at": "0001-01-01T00:00:00Z",
+            "id": 21,
+            "name": "My label",
+            "description": "Some hosts that I want to manually group together",
+            "query": "",
+            "platform": "",
+            "label_type": "regular",
+            "label_membership_type": "manual",
+            "display_text": "My label",
+            "count": 2,
+            "host_ids": [
+              42,
+              43
+            ],
+            "author_id": 1,
+            "team_id": null,
+            "fleet_id": null,
+            "team_name": null,
+            "fleet_name": null
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

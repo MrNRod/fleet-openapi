@@ -1,0 +1,77 @@
+info:
+  name: Add labels to host
+  type: http
+  seq: 36
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/hosts/:id/labels'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+  body:
+    type: json
+    data: |-
+      {
+        "labels": [
+          "label1",
+          "label2"
+        ]
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  Adds manual labels to a host.
+
+  `POST /api/v1/fleet/hosts/:id/labels`
+
+  #### Parameters
+
+  | Name   | Type    | In   | Description                  |
+  | ------ | ------- | ---- | ---------------------------- |
+  | labels | array   | body | The list of label names to add to the host. |
+
+
+  #### Example
+
+  `POST /api/v1/fleet/hosts/12/labels`
+
+  ##### Request body
+
+  ```json
+  {
+    "labels": ["label1", "label2"]
+  }
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#add-labels-to-host
+examples:
+- name: 200 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/hosts/:id/labels'
+    params:
+    - name: id
+      value: ''
+      type: path
+    body:
+      type: json
+      data: |-
+        {
+          "labels": [
+            "label1",
+            "label2"
+          ]
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 200
+    statusText: OK

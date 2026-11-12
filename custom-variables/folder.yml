@@ -1,0 +1,6 @@
+info:
+  name: Custom variables
+  type: folder
+  seq: 27
+request:
+  auth: inherit

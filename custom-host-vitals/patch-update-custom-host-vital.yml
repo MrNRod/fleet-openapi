@@ -1,0 +1,121 @@
+info:
+  name: Update custom host vital
+  type: http
+  seq: 3
+http:
+  method: PATCH
+  url: '{{baseUrl}}/api/v1/fleet/custom_host_vitals/:id'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required.** The custom host vital''s ID.'
+  body:
+    type: json
+    data: |-
+      {
+        "name": "Asset tag number"
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  Renames a custom host vital. The vital's ID, its `$FLEET_HOST_VITAL_<id>` variable, and any host values already set for it, are unaffected.
+
+  `PATCH /api/v1/fleet/custom_host_vitals/:id`
+
+  #### Parameters
+
+  | Name | Type    | In   | Description                            |
+  |:---- |:------- |:---- |:----------------------------------------|
+  | id   | integer | path | **Required.** The custom host vital's ID. |
+  | name | string  | body | **Required.** The vital's new name. |
+
+  Fails with a `409` if another custom host vital already has this name.
+
+  #### Example
+
+  `PATCH /api/v1/fleet/custom_host_vitals/1`
+
+  ##### Request body
+
+  ```json
+  {
+    "name": "Asset tag number"
+  }
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "custom_host_vital": {
+      "id": 1,
+      "name": "Asset tag number",
+      "created_at": "2026-06-04T15:22:36Z",
+      "updated_at": "2026-06-05T09:03:11Z"
+    }
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#update-custom-host-vital
+examples:
+- name: 409 Parameters
+  request:
+    method: PATCH
+    url: '{{baseUrl}}/api/v1/fleet/custom_host_vitals/:id'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required.** The custom host vital''s ID.'
+    body:
+      type: json
+      data: |-
+        {
+          "name": "Asset tag number"
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 409
+    statusText: Conflict
+- name: 200 Default response
+  request:
+    method: PATCH
+    url: '{{baseUrl}}/api/v1/fleet/custom_host_vitals/:id'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required.** The custom host vital''s ID.'
+    body:
+      type: json
+      data: |-
+        {
+          "name": "Asset tag number"
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "custom_host_vital": {
+            "id": 1,
+            "name": "Asset tag number",
+            "created_at": "2026-06-04T15:22:36Z",
+            "updated_at": "2026-06-05T09:03:11Z"
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

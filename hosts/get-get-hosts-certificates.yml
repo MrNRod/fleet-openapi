@@ -1,0 +1,186 @@
+info:
+  name: Get host's certificates
+  type: http
+  seq: 27
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/hosts/:id/certificates'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required**. The host''s id.'
+  - name: page
+    value: ''
+    type: query
+    disabled: true
+    description: Page number of the results to fetch.
+  - name: per_page
+    value: ''
+    type: query
+    disabled: true
+    description: Results per page.
+  - name: order_key
+    value: ''
+    type: query
+    disabled: true
+    description: What to order results by. Options include `common_name` and `not_valid_after`. Default is `common_name`
+  - name: order_direction
+    value: ''
+    type: query
+    disabled: true
+    description: '**Requires `order_key`**. The direction of the order given the order key. Options include `"asc"`
+      and `"desc"`. Default is `"asc"`.'
+  - name: after
+    value: ''
+    type: query
+    disabled: true
+    description: The value to get results after. This needs `order_key` defined, as that's the column that would
+      be used.
+docs: |-
+  Available for macOS, iOS, iPadOS, and Windows hosts only. Requires Fleet's MDM to be [enabled and configured](https://fleetdm.com/docs/using-fleet/mdm-setup).
+
+  Retrieves the certificates installed on a host.
+
+  For macOS hosts, certificates from MDM-delivered profiles containing an ACME payload are retrieved via the MDM `CertificateList` command on each profile install and re-install (not on a recurring cadence). Hardware-bound ACME certificates that aren't visible to osquery first appear in the response after the host installs or re-installs the delivering profile.
+
+  `GET /api/v1/fleet/hosts/:id/certificates`
+
+  #### Parameters
+
+  | Name | Type    | In   | Description                  |
+  | ---- | ------- | ---- | ---------------------------- |
+  | id   | integer | path | **Required**. The host's id. |
+  | page | integer | query | Page number of the results to fetch.|
+  | per_page | integer | query | Results per page.|
+  | order_key | string | query | What to order results by. Options include `common_name` and `not_valid_after`. Default is `common_name` |
+  | order_direction | string | query | **Requires `order_key`**. The direction of the order given the order key. Options include `"asc"` and `"desc"`. Default is `"asc"`. |
+  | after | string | query | The value to get results after. This needs `order_key` defined, as that's the column that would be used. |
+
+  #### Example
+
+  `GET /api/v1/fleet/hosts/8/certificates`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "certificates": [
+      {
+        "id": 3,
+        "not_valid_after": "2021-08-19T02:02:17Z",
+        "not_valid_before": "2021-08-19T02:02:17Z",
+        "certificate_authority": true,
+        "common_name": "FleetDM",
+        "key_algorithm": "rsaEncryption",
+        "key_strength": 2048,
+        "key_usage": "CRL Sign, Key Cert Sign",
+        "serial": 1,
+        "signing_algorithm": "sha256WithRSAEncryption",
+        "subject": {
+          "country": "US",
+          "organization": "Fleet Device Management Inc.",
+          "organizational_unit": "Fleet Device Management Inc.",
+          "common_name": "FleetDM"
+        },
+        "issuer": {
+          "country": "US",
+          "organization": "Fleet Device Management Inc.",
+          "organizational_unit": "Fleet Device Management Inc.",
+          "common_name": "FleetDM"
+        },
+        "source": "system",
+        "username": ""
+      }
+    ],
+    "meta": {
+      "has_next_results": false,
+      "has_previous_results": false
+    }
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#get-hosts-certificates
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/hosts/:id/certificates'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required**. The host''s id.'
+    - name: page
+      value: ''
+      type: query
+      disabled: true
+      description: Page number of the results to fetch.
+    - name: per_page
+      value: ''
+      type: query
+      disabled: true
+      description: Results per page.
+    - name: order_key
+      value: ''
+      type: query
+      disabled: true
+      description: What to order results by. Options include `common_name` and `not_valid_after`. Default is `common_name`
+    - name: order_direction
+      value: ''
+      type: query
+      disabled: true
+      description: '**Requires `order_key`**. The direction of the order given the order key. Options include `"asc"`
+        and `"desc"`. Default is `"asc"`.'
+    - name: after
+      value: ''
+      type: query
+      disabled: true
+      description: The value to get results after. This needs `order_key` defined, as that's the column that would
+        be used.
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "certificates": [
+            {
+              "id": 3,
+              "not_valid_after": "2021-08-19T02:02:17Z",
+              "not_valid_before": "2021-08-19T02:02:17Z",
+              "certificate_authority": true,
+              "common_name": "FleetDM",
+              "key_algorithm": "rsaEncryption",
+              "key_strength": 2048,
+              "key_usage": "CRL Sign, Key Cert Sign",
+              "serial": 1,
+              "signing_algorithm": "sha256WithRSAEncryption",
+              "subject": {
+                "country": "US",
+                "organization": "Fleet Device Management Inc.",
+                "organizational_unit": "Fleet Device Management Inc.",
+                "common_name": "FleetDM"
+              },
+              "issuer": {
+                "country": "US",
+                "organization": "Fleet Device Management Inc.",
+                "organizational_unit": "Fleet Device Management Inc.",
+                "common_name": "FleetDM"
+              },
+              "source": "system",
+              "username": ""
+            }
+          ],
+          "meta": {
+            "has_next_results": false,
+            "has_previous_results": false
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

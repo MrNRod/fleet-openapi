@@ -1,0 +1,135 @@
+info:
+  name: Add label
+  type: http
+  seq: 1
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/labels'
+  auth: inherit
+  body:
+    type: json
+    data: |-
+      {
+        "name": "macOS hosts (x86_64)",
+        "description": "Filters macOS hosts with x86_64 architecture",
+        "query": "SELECT 1 FROM os_version WHERE platform = 'darwin' AND instr(arch, 'x86_64')",
+        "platform": "darwin"
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  Add a dynamic or manual label.
+
+  `POST /api/v1/fleet/labels`
+
+  #### Parameters
+
+  | Name        | Type   | In   | Description                                                                                                                                                                                                                                  |
+  | ----------- | ------ | ---- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+  | name        | string | body | **Required**. The label's name.                                                                                                                                                                                                              |
+  | description | string | body | The label's description.                                                                                                                                                                                                                     |
+  | query       | string | body | The query in SQL syntax used to filter the hosts. Only one of either `query` (to create a dynamic label) or `hosts` (to create a manual label) can be included in the request.  |
+  | criteria    | object | body | Criteria for adding hosts to a host vitals label. See [`criteria`](#criteria) for details. |
+  | hosts       | array | body | The list of host identifiers (`hardware_serial` or `uuid`). The label will apply to any host with a matching identifier. Only one of either `query` (to create a dynamic label), `hosts` (to create a manual label), or `host_ids` (to create a manual label)  can be included in the request. |
+  | host_ids    | array | body | The list of Fleet host IDs the label will apply to.  Only one of either `query` (to create a dynamic label) or `hosts`/`host_ids` (to create a manual label)  can be included in the request. |
+  | platform    | string | body | The specific platform for the label to target. Provides an additional filter. Choices for platform are `"darwin"`, `"windows"`, `"linux"`, `"ubuntu"`, and `"centos"`. All platforms are included by default and this option is represented by an empty string. |
+
+  If `query`, `criteria`, and `hosts` aren't specified, a manual label with no hosts will be created.
+
+  The `hostname` host identifier is deprecated. Please use `host_ids`, `hardware_serial`, or `uuid` instead.
+
+  #### criteria
+
+  | Name                  | Type   | Description                                                                                                                                                                                                                                  |
+  | --------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+  | vital                 | string | The type of host vital to use when creating a host vital label. Can be `"end_user_idp_group"`, `"end_user_idp_department"`, or `"custom_host_vital"`. |
+  | custom_host_vital_id  | integer | The ID of the [custom host vital](https://fleetdm.com/guides/custom-host-vitals) to match on. Required when `vital` is `"custom_host_vital"`. |
+  | value                 | string | Hosts with vital data matching this value will be added to the label. |
+
+
+  #### Example
+
+  `POST /api/v1/fleet/labels`
+
+  ##### Request body
+
+  ```json
+  {
+    "name": "macOS hosts (x86_64)",
+    "description": "Filters macOS hosts with x86_64 architecture",
+    "query": "SELECT 1 FROM os_version WHERE platform = 'darwin' AND instr(arch, 'x86_64')",
+    "platform": "darwin"
+  }
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "label": {
+      "created_at": "0001-01-01T00:00:00Z",
+      "updated_at": "0001-01-01T00:00:00Z",
+      "id": 42,
+      "name": "macOS hosts (x86_64)",
+      "description": "Filters macOS hosts with x86_64 architecture",
+      "query": "SELECT 1 FROM os_version WHERE platform = 'darwin' AND instr(arch, 'x86_64')",
+      "label_type": "regular",
+      "label_membership_type": "dynamic",
+      "display_text": "macOS hosts (x86_64)",
+      "count": 0,
+      "host_ids": null,
+      "author_id": 1,
+      "team_id": null,
+      "fleet_id": null
+    }
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#add-label
+examples:
+- name: 200 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/labels'
+    body:
+      type: json
+      data: |-
+        {
+          "name": "macOS hosts (x86_64)",
+          "description": "Filters macOS hosts with x86_64 architecture",
+          "query": "SELECT 1 FROM os_version WHERE platform = 'darwin' AND instr(arch, 'x86_64')",
+          "platform": "darwin"
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "label": {
+            "created_at": "0001-01-01T00:00:00Z",
+            "updated_at": "0001-01-01T00:00:00Z",
+            "id": 42,
+            "name": "macOS hosts (x86_64)",
+            "description": "Filters macOS hosts with x86_64 architecture",
+            "query": "SELECT 1 FROM os_version WHERE platform = 'darwin' AND instr(arch, 'x86_64')",
+            "label_type": "regular",
+            "label_membership_type": "dynamic",
+            "display_text": "macOS hosts (x86_64)",
+            "count": 0,
+            "host_ids": null,
+            "author_id": 1,
+            "team_id": null,
+            "fleet_id": null
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

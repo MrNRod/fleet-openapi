@@ -1,0 +1,76 @@
+info:
+  name: Get policies count
+  type: http
+  seq: 3
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/policies/count'
+  auth: inherit
+  params:
+  - name: query
+    value: ''
+    type: query
+    disabled: true
+    description: Search query keywords. Searchable fields include `name`.
+  - name: platform
+    value: ''
+    type: query
+    disabled: true
+    description: Filters policies by targeted platform. Accepts `"darwin"`, `"windows"`, `"linux"`, or `"chrome"`.
+      Policies that target all platforms (empty `platform` field) are always included.
+docs: |-
+  `GET /api/v1/fleet/policies/count`
+
+
+  #### Parameters
+  | Name               | Type    | In   | Description                                                                                                   |
+  | ------------------ | ------- | ---- | ------------------------------------------------------------------------------------------------------------- |
+  | query                 | string | query | Search query keywords. Searchable fields include `name`.  |
+  | platform           | string | query | Filters policies by targeted platform. Accepts `"darwin"`, `"windows"`, `"linux"`, or `"chrome"`. Policies that target all platforms (empty `platform` field) are always included. |
+
+  #### Example
+
+  `GET /api/v1/fleet/policies/count`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "count": 43
+  }
+  ```
+
+  ---
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#get-policies-count
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/policies/count'
+    params:
+    - name: query
+      value: ''
+      type: query
+      disabled: true
+      description: Search query keywords. Searchable fields include `name`.
+    - name: platform
+      value: ''
+      type: query
+      disabled: true
+      description: Filters policies by targeted platform. Accepts `"darwin"`, `"windows"`, `"linux"`, or `"chrome"`.
+        Policies that target all platforms (empty `platform` field) are always included.
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "count": 43
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

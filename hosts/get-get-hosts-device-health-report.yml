@@ -1,0 +1,110 @@
+info:
+  name: Get host's device health report
+  type: http
+  seq: 15
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/hosts/:id/health'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required**. The host''s `id`.'
+docs: |-
+  Retrieves information about a single host's device health.
+
+  This report includes a subset of host vitals, and simplified policy and vulnerable software information. Data is cached to preserve performance. To get all up-to-date information about a host, use the ["Get host"](#get-host) endpoint.
+
+
+  `GET /api/v1/fleet/hosts/:id/health`
+
+  #### Parameters
+
+  | Name       | Type              | In   | Description                                                                   |
+  | ---------- | ----------------- | ---- | ----------------------------------------------------------------------------- |
+  | id         | integer           | path | **Required**. The host's `id`.                                                |
+
+  #### Example
+
+  `GET /api/v1/fleet/hosts/1/health`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "host_id": 1,
+    "health": {
+      "updated_at": "2023-09-16T18:52:19Z",
+      "os_version": "CentOS Linux 8.3.2011",
+      "disk_encryption_enabled": true,
+      "failing_policies_count": 1,
+      "failing_critical_policies_count": 1, // Fleet Premium only
+      "failing_policies": [
+        {
+          "id": 123,
+          "name": "Google Chrome is up to date",
+          "critical": true, // Fleet Premium only
+          "resolution": "Follow the Update Google Chrome instructions here: https://support.google.com/chrome/answer/95414?sjid=6534253818042437614-NA"
+        }
+      ],
+      "vulnerable_software": [
+        {
+          "id": 321,
+          "name": "Firefox.app",
+          "version": "116.0.3"
+        }
+      ]
+    }
+  }
+  ```
+
+  > Note: `disk_encryption_enabled` is omitted when Fleet doesn't know the host's disk encryption status, such as when the host hasn't reported it yet. It's also omitted for Linux hosts that report their root volume as unencrypted, because Fleet can't confirm that a Linux host's disk is unencrypted.
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#get-hosts-device-health-report
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/hosts/:id/health'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required**. The host''s `id`.'
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "host_id": 1,
+          "health": {
+            "updated_at": "2023-09-16T18:52:19Z",
+            "os_version": "CentOS Linux 8.3.2011",
+            "disk_encryption_enabled": true,
+            "failing_policies_count": 1,
+            "failing_critical_policies_count": 1,
+            "failing_policies": [
+              {
+                "id": 123,
+                "name": "Google Chrome is up to date",
+                "critical": true,
+                "resolution": "Follow the Update Google Chrome instructions here: https://support.google.com/chrome/answer/95414?sjid=6534253818042437614-NA"
+              }
+            ],
+            "vulnerable_software": [
+              {
+                "id": 321,
+                "name": "Firefox.app",
+                "version": "116.0.3"
+              }
+            ]
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

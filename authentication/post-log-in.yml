@@ -1,0 +1,251 @@
+info:
+  name: Log in
+  type: http
+  seq: 1
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/login'
+  body:
+    type: json
+    data: |-
+      {
+        "email": "janedoe@example.com",
+        "password": "VArCjNW7CfsxGp67"
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  Authenticates the user with the specified credentials. Use the token returned from this endpoint to authenticate further API requests.
+
+  `POST /api/v1/fleet/login`
+
+  > Logging in via the API is not supported for SSO and MFA users. The API token can instead be retrieved from the "My account" page in the UI (/profile). On this page, choose "Get API token".
+
+  #### Parameters
+
+  | Name     | Type   | In   | Description                                   |
+  | -------- | ------ | ---- | --------------------------------------------- |
+  | email    | string | body | **Required**. The user's email.               |
+  | password | string | body | **Required**. The user's plain text password. |
+
+  #### Example
+
+  `POST /api/v1/fleet/login`
+
+  ##### Request body
+
+  ```json
+  {
+    "email": "janedoe@example.com",
+    "password": "VArCjNW7CfsxGp67"
+  }
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "user": {
+      "created_at": "2020-11-13T22:57:12Z",
+      "updated_at": "2020-11-13T22:57:12Z",
+      "id": 1,
+      "name": "Jane Doe",
+      "email": "janedoe@example.com",
+      "enabled": true,
+      "force_password_reset": false,
+      "gravatar_url": "",
+      "sso_enabled": false,
+      "mfa_enabled": false,
+      "global_role": "admin",
+      "teams": [],
+      "fleets": []
+    },
+    "token": "{your token}"
+  }
+  ```
+
+  ##### Authentication failed
+
+  `Status: 401 Unauthorized`
+
+  ```json
+  {
+    "message": "Authentication failed",
+    "errors": [
+      {
+        "name": "base",
+        "reason": "Authentication failed"
+      }
+    ],
+    "uuid": "1272014b-902b-4b36-bcdb-75fde5eac1fc"
+  }
+  ```
+
+  ##### MFA Required
+
+  `Status: 202 Accepted`
+
+  ```json
+  {
+    "message": "We sent an email to you. Please click the magic link in the email to sign in.",
+  }
+  ```
+
+  ##### Too many requests / Rate limiting
+
+  `Status: 429 Too Many Requests`
+  `Header: retry-after: N`
+
+  > This response includes a header `retry-after` that indicates how many more seconds you are blocked before you can try again.
+
+  ```json
+  {
+    "message": "limit exceeded, retry after: Ns",
+    "errors": [
+      {
+        "name": "base",
+        "reason": "limit exceeded, retry after: Ns"
+      }
+    ]
+  }
+  ```
+
+  ---
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#log-in
+examples:
+- name: 200 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/login'
+    body:
+      type: json
+      data: |-
+        {
+          "email": "janedoe@example.com",
+          "password": "VArCjNW7CfsxGp67"
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "user": {
+            "created_at": "2020-11-13T22:57:12Z",
+            "updated_at": "2020-11-13T22:57:12Z",
+            "id": 1,
+            "name": "Jane Doe",
+            "email": "janedoe@example.com",
+            "enabled": true,
+            "force_password_reset": false,
+            "gravatar_url": "",
+            "sso_enabled": false,
+            "mfa_enabled": false,
+            "global_role": "admin",
+            "teams": [],
+            "fleets": []
+          },
+          "token": "{your token}"
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+- name: 401 Authentication failed
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/login'
+    body:
+      type: json
+      data: |-
+        {
+          "email": "janedoe@example.com",
+          "password": "VArCjNW7CfsxGp67"
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 401
+    statusText: Unauthorized
+    body:
+      type: json
+      data: |-
+        {
+          "message": "Authentication failed",
+          "errors": [
+            {
+              "name": "base",
+              "reason": "Authentication failed"
+            }
+          ],
+          "uuid": "1272014b-902b-4b36-bcdb-75fde5eac1fc"
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+- name: 202 MFA Required
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/login'
+    body:
+      type: json
+      data: |-
+        {
+          "email": "janedoe@example.com",
+          "password": "VArCjNW7CfsxGp67"
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 202
+    statusText: Accepted
+    body:
+      type: json
+      data: |-
+        {
+          "message": "We sent an email to you. Please click the magic link in the email to sign in."
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+- name: 429 Too many requests / Rate limiting
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/login'
+    body:
+      type: json
+      data: |-
+        {
+          "email": "janedoe@example.com",
+          "password": "VArCjNW7CfsxGp67"
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 429
+    statusText: Too Many Requests
+    body:
+      type: json
+      data: |-
+        {
+          "message": "limit exceeded, retry after: Ns",
+          "errors": [
+            {
+              "name": "base",
+              "reason": "limit exceeded, retry after: Ns"
+            }
+          ]
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

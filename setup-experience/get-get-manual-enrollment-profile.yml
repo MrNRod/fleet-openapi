@@ -1,0 +1,52 @@
+info:
+  name: Get manual enrollment profile
+  type: http
+  seq: 6
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/enrollment_profiles/manual'
+  auth: inherit
+docs: |-
+  Retrieves an unsigned manual enrollment profile for macOS hosts. Install this profile on macOS hosts to turn on MDM features manually.
+
+  To add [human-device mapping](https://fleetdm.com/guides/foreign-vitals-map-idp-users-to-hosts), [add the end user's email to the enrollment profile](https://fleetdm.com/guides/config-less-fleetd-agent-deployment#using-human-device-mapping).
+
+  If the `only_allow_apple_business_enrollment` setting is enabled, this endpoint returns a `400` error with the message: "Manual enrollment is not available because only Apple Business enrollment is allowed for this organization."
+
+  > **Warning:** Do not change or modify this profile. Apple requires values in this profile to remain unchanged. Any values changed block Fleet's ability to renew this profile and result in Fleet losing its ability to manage a device.
+
+  `GET /api/v1/fleet/enrollment_profiles/manual`
+
+  ##### Example
+
+  `GET /api/v1/fleet/enrollment_profiles/manual`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```xml
+  <?xml version="1.0" encoding="UTF-8"?>
+  <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+  <plist version="1.0">
+  <!-- ... -->
+  </plist>
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#get-manual-enrollment-profile
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/enrollment_profiles/manual'
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: text
+      data: |-
+        <?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+        <plist version="1.0">
+        <!-- ... -->
+        </plist>

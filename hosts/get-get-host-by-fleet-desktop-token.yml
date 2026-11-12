@@ -1,0 +1,485 @@
+info:
+  name: Get host by Fleet Desktop token
+  type: http
+  seq: 6
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/device/:token'
+  params:
+  - name: token
+    value: ''
+    type: path
+    description: The host's [Fleet Desktop token](https://fleetdm.com/guides/fleet-desktop#secure-fleet-desktop).
+      For macOS, Windows, and Linux, this is a random UUID that rotates hourly. For iOS and iPadOS, this is the
+      host's hardware UUID.
+  - name: exclude_software
+    value: ''
+    type: query
+    disabled: true
+    description: If `true`, the response will not include a list of installed software for the host.
+docs: |-
+  Returns a subset of information about the host specified by `token`. To get all information about a host, use the ["Get host"](#get-host) endpoint.
+
+  `GET /api/v1/fleet/device/:token`
+
+  > If you're hitting this endpoint often (e.g. every hour) for a large number of hosts (e.g. 1k+) the best practice is to set the `exclude_software` to `true` to prevent overloading the Fleet server.
+
+  This is the API route used by the **My device** page in Fleet Desktop to display information about the host to the end user.
+
+  On a Windows host whose fleet requires a BitLocker startup PIN, `mdm.os_settings.disk_encryption` carries two extra fields, and only on this endpoint:
+
+  - `fleetd_can_set_pin`: whether the host's fleetd is new enough to be handed a PIN. When it's `false`, the end user has to create the PIN through Windows' **Manage BitLocker** instead.
+  - `pin_request`: the end user's most recent BitLocker PIN submission, as `{"status": "pending" | "delivered" | "set" | "failed", "error": ""}`. `error` carries the agent's reason when the status is `failed`. The field is absent when there's no submission.
+
+  This endpoint doesn't require API token authentication. Authentication on macOS, Windows, and Linux is enforced by generating a [random UUID that rotates hourly](https://fleetdm.com/guides/fleet-desktop#secure-fleet-desktop). For iOS/iPadOS, this is the host's hardware UUID.
+
+  For iOS/iPadOS hosts, Fleet omits identifying details from the response: `uuid`, `hardware_serial`, `primary_mac`, `hostname`, `computer_name`, `display_name`, `display_text`, `team_name`, `labels`, and MDM profile data all come back empty, and the `license` object's `organization` and `device_count` are stripped.
+
+
+  ##### Parameters
+
+  | Name  | Type   | In   | Description                        |
+  | ----- | ------ | ---- | ---------------------------------- |
+  | token | string | path | The host's [Fleet Desktop token](https://fleetdm.com/guides/fleet-desktop#secure-fleet-desktop). For macOS, Windows, and Linux, this is a random UUID that rotates hourly. For iOS and iPadOS, this is the host's hardware UUID. |
+  | exclude_software | boolean | query | If `true`, the response will not include a list of installed software for the host.     |
+
+  ##### Example
+
+  `GET /api/v1/fleet/device/abcdef012456789`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "host": {
+      "created_at": "2021-08-19T02:02:22Z",
+      "updated_at": "2021-08-19T21:14:58Z",
+      "id": 1,
+      "detail_updated_at": "2021-08-19T21:07:53Z",
+      "label_updated_at": "2021-08-19T21:07:53Z",
+      "last_enrolled_at": "2021-08-19T02:02:22Z",
+      "last_mdm_checked_in_at": "2023-02-26T22:33:12Z",
+      "last_mdm_enrolled_at": "2023-02-26T22:33:12Z",
+      "mdm_enrollment_hardware_attested": false,
+      "seen_time": "2021-08-19T21:14:58Z",
+      "refetch_requested": false,
+      "hostname": "Annas-MacBook-Pro.local",
+      "uuid": "309a4b7d-0000-0000-8e7f-26ae0815ede8",
+      "platform": "darwin",
+      "osquery_version": "5.15.0",
+      "os_version": "macOS 15.2",
+      "os_update_minimum_version": "15.1",
+      "os_update_deadline": "2025-07-01",
+      "build": "24C101",
+      "platform_like": "darwin",
+      "code_name": "",
+      "uptime": 210671000000000,
+      "memory": 16788398080,
+      "cpu_type": "arm64e",
+      "cpu_subtype": "ARM64E",
+      "cpu_brand": "Apple M1",
+      "cpu_physical_cores": 8,
+      "cpu_logical_cores": 8,
+      "hardware_vendor": "Apple Inc.",
+      "hardware_model": "MacBookPro17,1",
+      "hardware_marketing_name": "MacBook Pro (13-inch, M1, 2020)",
+      "hardware_version": "",
+      "hardware_serial": "",
+      "computer_name": "Anna's MacBook Pro",
+      "timezone": null,
+      "display_name": "Anna's MacBook Pro",
+      "public_ip": "123.45.678.910",
+      "primary_ip": "192.12.345.678",
+      "primary_mac": "36:34:a5:6b:7b:5c",
+      "distributed_interval": 10,
+      "config_tls_refresh": 10,
+      "logger_tls_period": 10,
+      "team_id": null,
+      "fleet_id": null,
+      "pack_stats": null,
+      "team_name": null,
+      "fleet_name": null,
+      "additional": {},
+      "gigs_disk_space_available": 174.98,
+      "percent_disk_space_available": 71,
+      "gigs_total_disk_space": 246,
+      "disk_encryption_enabled": true,
+      "dep_assigned_to_fleet": false,
+      "status": "online",
+      "display_text": "Annas-MacBook-Pro.local",
+      "self_service": true,
+      "org_logo_url_dark_mode": "https://example.com/logo.png",
+      "org_logo_url_light_mode": "https://example.com/logo-light.png",
+      "org_logo_url": "https://example.com/logo.png",
+      "org_logo_url_light_background": "https://example.com/logo-light.png",
+      "conditional_access_bypassed": false,
+      "license": {
+        "tier": "free",
+        "expiration": "2031-01-01T00:00:00Z"
+      },
+      "global_config": {
+        "mdm": {
+          "enabled_and_configured": false,
+          "only_allow_apple_business_enrollment": false
+        }
+      },
+      "batteries": [
+        {
+          "cycle_count": 999,
+          "health": "Good"
+        }
+      ],
+      "users": [
+        {
+          "uid": 0,
+          "username": "root",
+          "type": "",
+          "groupname": "root",
+          "shell": "/bin/sh"
+        },
+        {
+          "uid": 1,
+          "username": "annachao",
+          "type": "",
+          "groupname": "staff",
+          "shell": "/bin/zsh"
+        }
+      ],
+      "labels": [
+        {
+          "created_at": "2021-08-19T02:02:17Z",
+          "updated_at": "2021-08-19T02:02:17Z",
+          "id": 6,
+          "name": "All Hosts",
+          "description": "All hosts which have enrolled in Fleet",
+          "query": "SELECT 1;",
+          "platform": "",
+          "label_type": "builtin",
+          "label_membership_type": "dynamic"
+        },
+        {
+          "created_at": "2021-08-19T02:02:17Z",
+          "updated_at": "2021-08-19T02:02:17Z",
+          "id": 9,
+          "name": "macOS",
+          "description": "All macOS hosts",
+          "query": "select 1 from os_version where platform = 'darwin';",
+          "platform": "",
+          "label_type": "builtin",
+          "label_membership_type": "dynamic"
+        },
+        {
+          "created_at": "2021-08-19T02:02:17Z",
+          "updated_at": "2021-08-19T02:02:17Z",
+          "id": 12,
+          "name": "Hosts with Chrome installed",
+          "description": "",
+          "query": "SELECT * FROM apps WHERE name LIKE \"%Chrome%\"",
+          "platform": "",
+          "label_type": "regular",
+          "label_membership_type": "dynamic"
+        }
+      ],
+      "software": [
+        {
+          "id": 321,
+          "name": "SomeApp.app",
+          "version": "1.0",
+          "source": "apps",
+          "browser": "",
+          "extension_for": "",
+          "bundle_identifier": "com.some.app",
+          "last_opened_at": "2021-08-18T21:14:00Z",
+          "generated_cpe": "",
+          "vulnerabilities": null
+        }
+      ],
+      "packs": [],
+      "mdm": {
+        "encryption_key_available": true,
+        "enrollment_status": "On (manual)",
+        "is_personal_enrollment": false,
+        "name": "Fleet",
+        "connected_to_fleet": true,
+        "server_url": "https://acme.com/mdm/apple/mdm",
+        "bootstrap_token_escrowed": true,
+        "macos_settings": {
+          "disk_encryption": "verified",
+          "action_required": null
+        },
+        "apple_settings": {
+          "disk_encryption": "verified",
+          "action_required": null
+        },
+        "macos_setup": {
+          "bootstrap_package_status": "installed",
+          "detail": "",
+          "bootstrap_package_name": "test.pkg"
+        },
+        "setup_experience": {
+          "bootstrap_package_status": "installed",
+          "detail": "",
+          "bootstrap_package_name": "test.pkg"
+        },
+        "os_settings": {
+          "disk_encryption": {
+            "status": "verified",
+            "detail": "",
+            "action_required": null,
+            "fleetd_can_set_pin": true,
+            "pin_request": {
+              "status": "set",
+              "error": ""
+            }
+          }
+        },
+        "profiles": [
+          {
+            "profile_uuid": "954ec5ea-a334-4825-87b3-937e7e381f24",
+            "name": "profile1",
+            "status": "verifying",
+            "operation_type": "install",
+            "scope": "device",
+            "managed_local_account": "",
+            "detail": ""
+          }
+        ]
+      }
+    }
+  }
+  ```
+
+  `browser` and `extension_for` fields are included when set and when empty. `extension_for` will show the browser or Visual Studio Code fork associated with the extension, allowing for differentiation between e.g. an extension installed on Visual Studio Code and one installed on Cursor. `browser` is deprecated, and only shows this information for browser plugins.
+
+  `release` is included when set. For `rpm_packages`, it's the package release (for example, `1.212.el6`). For `go_binaries`, it's the version of the Go toolchain the binary was built with (for example, `go1.26.1`). Fleet uses it to detect Go standard library vulnerabilities, so the same binary version built with two toolchains is listed as two versions. `generated_cpe` is empty for Go binaries. Their vulnerabilities come from the [Go vulnerability database](https://vuln.go.dev) instead of NVD.
+
+  > `global_config.mdm.enabled_and_configured` only represents Apple MDM, and will return false if Apple MDM is not configured even if other platforms have MDM enabled and configured.
+
+  > Note: Android hosts can't be reached through this endpoint. They don't run Fleet Desktop, so they never get a token, and certificate authentication is limited to iOS and iPadOS. To read an Android host's vitals, use ["Get host"](#get-host) or ["Get host by identifier"](#get-host-by-identifier).
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#get-host-by-fleet-desktop-token
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/device/:token'
+    params:
+    - name: token
+      value: ''
+      type: path
+      description: The host's [Fleet Desktop token](https://fleetdm.com/guides/fleet-desktop#secure-fleet-desktop).
+        For macOS, Windows, and Linux, this is a random UUID that rotates hourly. For iOS and iPadOS, this is the
+        host's hardware UUID.
+    - name: exclude_software
+      value: ''
+      type: query
+      disabled: true
+      description: If `true`, the response will not include a list of installed software for the host.
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "host": {
+            "created_at": "2021-08-19T02:02:22Z",
+            "updated_at": "2021-08-19T21:14:58Z",
+            "id": 1,
+            "detail_updated_at": "2021-08-19T21:07:53Z",
+            "label_updated_at": "2021-08-19T21:07:53Z",
+            "last_enrolled_at": "2021-08-19T02:02:22Z",
+            "last_mdm_checked_in_at": "2023-02-26T22:33:12Z",
+            "last_mdm_enrolled_at": "2023-02-26T22:33:12Z",
+            "mdm_enrollment_hardware_attested": false,
+            "seen_time": "2021-08-19T21:14:58Z",
+            "refetch_requested": false,
+            "hostname": "Annas-MacBook-Pro.local",
+            "uuid": "309a4b7d-0000-0000-8e7f-26ae0815ede8",
+            "platform": "darwin",
+            "osquery_version": "5.15.0",
+            "os_version": "macOS 15.2",
+            "os_update_minimum_version": "15.1",
+            "os_update_deadline": "2025-07-01",
+            "build": "24C101",
+            "platform_like": "darwin",
+            "code_name": "",
+            "uptime": 210671000000000,
+            "memory": 16788398080,
+            "cpu_type": "arm64e",
+            "cpu_subtype": "ARM64E",
+            "cpu_brand": "Apple M1",
+            "cpu_physical_cores": 8,
+            "cpu_logical_cores": 8,
+            "hardware_vendor": "Apple Inc.",
+            "hardware_model": "MacBookPro17,1",
+            "hardware_marketing_name": "MacBook Pro (13-inch, M1, 2020)",
+            "hardware_version": "",
+            "hardware_serial": "",
+            "computer_name": "Anna's MacBook Pro",
+            "timezone": null,
+            "display_name": "Anna's MacBook Pro",
+            "public_ip": "123.45.678.910",
+            "primary_ip": "192.12.345.678",
+            "primary_mac": "36:34:a5:6b:7b:5c",
+            "distributed_interval": 10,
+            "config_tls_refresh": 10,
+            "logger_tls_period": 10,
+            "team_id": null,
+            "fleet_id": null,
+            "pack_stats": null,
+            "team_name": null,
+            "fleet_name": null,
+            "additional": {},
+            "gigs_disk_space_available": 174.98,
+            "percent_disk_space_available": 71,
+            "gigs_total_disk_space": 246,
+            "disk_encryption_enabled": true,
+            "dep_assigned_to_fleet": false,
+            "status": "online",
+            "display_text": "Annas-MacBook-Pro.local",
+            "self_service": true,
+            "org_logo_url_dark_mode": "https://example.com/logo.png",
+            "org_logo_url_light_mode": "https://example.com/logo-light.png",
+            "org_logo_url": "https://example.com/logo.png",
+            "org_logo_url_light_background": "https://example.com/logo-light.png",
+            "conditional_access_bypassed": false,
+            "license": {
+              "tier": "free",
+              "expiration": "2031-01-01T00:00:00Z"
+            },
+            "global_config": {
+              "mdm": {
+                "enabled_and_configured": false,
+                "only_allow_apple_business_enrollment": false
+              }
+            },
+            "batteries": [
+              {
+                "cycle_count": 999,
+                "health": "Good"
+              }
+            ],
+            "users": [
+              {
+                "uid": 0,
+                "username": "root",
+                "type": "",
+                "groupname": "root",
+                "shell": "/bin/sh"
+              },
+              {
+                "uid": 1,
+                "username": "annachao",
+                "type": "",
+                "groupname": "staff",
+                "shell": "/bin/zsh"
+              }
+            ],
+            "labels": [
+              {
+                "created_at": "2021-08-19T02:02:17Z",
+                "updated_at": "2021-08-19T02:02:17Z",
+                "id": 6,
+                "name": "All Hosts",
+                "description": "All hosts which have enrolled in Fleet",
+                "query": "SELECT 1;",
+                "platform": "",
+                "label_type": "builtin",
+                "label_membership_type": "dynamic"
+              },
+              {
+                "created_at": "2021-08-19T02:02:17Z",
+                "updated_at": "2021-08-19T02:02:17Z",
+                "id": 9,
+                "name": "macOS",
+                "description": "All macOS hosts",
+                "query": "select 1 from os_version where platform = 'darwin';",
+                "platform": "",
+                "label_type": "builtin",
+                "label_membership_type": "dynamic"
+              },
+              {
+                "created_at": "2021-08-19T02:02:17Z",
+                "updated_at": "2021-08-19T02:02:17Z",
+                "id": 12,
+                "name": "Hosts with Chrome installed",
+                "description": "",
+                "query": "SELECT * FROM apps WHERE name LIKE \"%Chrome%\"",
+                "platform": "",
+                "label_type": "regular",
+                "label_membership_type": "dynamic"
+              }
+            ],
+            "software": [
+              {
+                "id": 321,
+                "name": "SomeApp.app",
+                "version": "1.0",
+                "source": "apps",
+                "browser": "",
+                "extension_for": "",
+                "bundle_identifier": "com.some.app",
+                "last_opened_at": "2021-08-18T21:14:00Z",
+                "generated_cpe": "",
+                "vulnerabilities": null
+              }
+            ],
+            "packs": [],
+            "mdm": {
+              "encryption_key_available": true,
+              "enrollment_status": "On (manual)",
+              "is_personal_enrollment": false,
+              "name": "Fleet",
+              "connected_to_fleet": true,
+              "server_url": "https://acme.com/mdm/apple/mdm",
+              "bootstrap_token_escrowed": true,
+              "macos_settings": {
+                "disk_encryption": "verified",
+                "action_required": null
+              },
+              "apple_settings": {
+                "disk_encryption": "verified",
+                "action_required": null
+              },
+              "macos_setup": {
+                "bootstrap_package_status": "installed",
+                "detail": "",
+                "bootstrap_package_name": "test.pkg"
+              },
+              "setup_experience": {
+                "bootstrap_package_status": "installed",
+                "detail": "",
+                "bootstrap_package_name": "test.pkg"
+              },
+              "os_settings": {
+                "disk_encryption": {
+                  "status": "verified",
+                  "detail": "",
+                  "action_required": null,
+                  "fleetd_can_set_pin": true,
+                  "pin_request": {
+                    "status": "set",
+                    "error": ""
+                  }
+                }
+              },
+              "profiles": [
+                {
+                  "profile_uuid": "954ec5ea-a334-4825-87b3-937e7e381f24",
+                  "name": "profile1",
+                  "status": "verifying",
+                  "operation_type": "install",
+                  "scope": "device",
+                  "managed_local_account": "",
+                  "detail": ""
+                }
+              ]
+            }
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

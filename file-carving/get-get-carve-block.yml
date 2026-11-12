@@ -1,0 +1,71 @@
+info:
+  name: Get carve block
+  type: http
+  seq: 3
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/carves/:id/block/:block_id'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required.** The desired carve''s ID.'
+  - name: block_id
+    value: ''
+    type: path
+    description: '**Required.** The desired carve block''s ID.'
+docs: |-
+  Retrieves the specified carve block. This endpoint retrieves the data that was carved.
+
+  `GET /api/v1/fleet/carves/:id/block/:block_id`
+
+  #### Parameters
+
+  | Name     | Type    | In   | Description                                 |
+  | -------- | ------- | ---- | ------------------------------------------- |
+  | id       | integer | path | **Required.** The desired carve's ID.       |
+  | block_id | integer | path | **Required.** The desired carve block's ID. |
+
+  #### Example
+
+  `GET /api/v1/fleet/carves/1/block/0`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+      "data": "aG9zdHMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA..."
+  }
+  ```
+  ---
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#get-carve-block
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/carves/:id/block/:block_id'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required.** The desired carve''s ID.'
+    - name: block_id
+      value: ''
+      type: path
+      description: '**Required.** The desired carve block''s ID.'
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "data": "aG9zdHMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA..."
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

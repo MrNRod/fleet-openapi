@@ -1,0 +1,85 @@
+info:
+  name: Get software install result
+  type: http
+  seq: 23
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/software/install/:install_uuid/results'
+  auth: inherit
+  params:
+  - name: install_uuid
+    value: ''
+    type: path
+    description: '**Required**. The software installation UUID.'
+docs: |-
+  _Available in Fleet Premium._
+
+  `GET /api/v1/fleet/software/install/:install_uuid/results`
+
+  Get the results of a Fleet-maintained app or custom package install. To get uninstall results, use the [List activities](#list-activities) and [Get script result](#get-script-result) API endpoints.
+
+  To get the results of an Apple App Store app install, use the [List MDM commands](#list-mdm-commands) and [Get MDM command results](#get-mdm-command-results) API endpoints. Fleet uses an MDM command to install Apple App Store apps.
+
+  | Name            | Type    | In   | Description                                      |
+  | ----            | ------- | ---- | --------------------------------------------     |
+  | install_uuid | string | path | **Required**. The software installation UUID.|
+
+  When an install attempt was skipped because a patch policy has `patch_when_closed` or `notify_before_patching` enabled, and the app was open, `status` will be `failed_install`, and `pre_install_query_output` will be `"The app was open\nInstall stopped"` or `"The app was open\nInstall stopped\nFleet notifies the end user 1 hour before the patch is forced."`. In this case, Fleet will try again on the next policy run.
+
+  #### Example
+
+  `GET /api/v1/fleet/software/install/b15ce221-e22e-4c6a-afe7-5b3400a017da/results`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "results": {
+      "install_uuid": "b15ce221-e22e-4c6a-afe7-5b3400a017da",
+      "software_title": "Falcon.app",
+      "software_title_id": 8353,
+      "software_package": "FalconSensor-6.44.pkg",
+      "host_id": 123,
+      "status": "failed_install",
+      "output": "Installing software...\nError: The operation can’t be completed because the item \"Falcon\" is in use.",
+      "pre_install_query_output": "Query returned result\nSuccess",
+      "post_install_script_output": "Running script...\nExit code: 1 (Failed)\nRolling back software install...\nSuccess"
+    }
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#get-software-install-result
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/software/install/:install_uuid/results'
+    params:
+    - name: install_uuid
+      value: ''
+      type: path
+      description: '**Required**. The software installation UUID.'
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "results": {
+            "install_uuid": "b15ce221-e22e-4c6a-afe7-5b3400a017da",
+            "software_title": "Falcon.app",
+            "software_title_id": 8353,
+            "software_package": "FalconSensor-6.44.pkg",
+            "host_id": 123,
+            "status": "failed_install",
+            "output": "Installing software...\nError: The operation can’t be completed because the item \"Falcon\" is in use.",
+            "pre_install_query_output": "Query returned result\nSuccess",
+            "post_install_script_output": "Running script...\nExit code: 1 (Failed)\nRolling back software install...\nSuccess"
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

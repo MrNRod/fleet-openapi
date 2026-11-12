@@ -1,0 +1,82 @@
+info:
+  name: Update host's custom host vital value
+  type: http
+  seq: 5
+http:
+  method: PUT
+  url: '{{baseUrl}}/api/v1/fleet/hosts/:host_id/custom_host_vitals/:id'
+  auth: inherit
+  params:
+  - name: host_id
+    value: ''
+    type: path
+    description: '**Required.** The host''s ID.'
+  - name: id
+    value: ''
+    type: path
+    description: '**Required.** The custom host vital''s ID.'
+  body:
+    type: json
+    data: |-
+      {
+        "value": "C02XL0Zerato"
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  Sets a host's value for a custom host vital.
+
+  `PUT /api/v1/fleet/hosts/:host_id/custom_host_vitals/:id`
+
+  #### Parameters
+
+  | Name    | Type    | In   | Description                                       |
+  |:------- |:------- |:---- |:---------------------------------------------------|
+  | host_id | integer | path | **Required.** The host's ID. |
+  | id      | integer | path | **Required.** The custom host vital's ID. |
+  | value   | string  | body | **Required.** The value to set for this host. |
+
+  #### Example
+
+  `PUT /api/v1/fleet/hosts/123/custom_host_vitals/1`
+
+  ##### Request body
+
+  ```json
+  {
+    "value": "C02XL0Zerato"
+  }
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#update-hosts-custom-host-vital-value
+examples:
+- name: 200 Default response
+  request:
+    method: PUT
+    url: '{{baseUrl}}/api/v1/fleet/hosts/:host_id/custom_host_vitals/:id'
+    params:
+    - name: host_id
+      value: ''
+      type: path
+      description: '**Required.** The host''s ID.'
+    - name: id
+      value: ''
+      type: path
+      description: '**Required.** The custom host vital''s ID.'
+    body:
+      type: json
+      data: |-
+        {
+          "value": "C02XL0Zerato"
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 200
+    statusText: OK

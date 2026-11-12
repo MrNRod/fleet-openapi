@@ -1,0 +1,105 @@
+info:
+  name: Create custom host vital
+  type: http
+  seq: 2
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/custom_host_vitals'
+  auth: inherit
+  body:
+    type: json
+    data: |-
+      {
+        "name": "Asset tag"
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  Creates a custom host vital.
+
+  `POST /api/v1/fleet/custom_host_vitals`
+
+  #### Parameters
+
+  | Name | Type   | In   | Description                                |
+  |:---- |:------ |:---- |:--------------------------------------------|
+  | name | string | body | **Required.** The vital's name, without the `FLEET_HOST_VITAL_` prefix. Must be unique across all custom host vitals (case-insensitive), and 255 characters or fewer. |
+
+  Fails with a `409` if a custom host vital with this name already exists.
+
+  #### Example
+
+  `POST /api/v1/fleet/custom_host_vitals`
+
+  ##### Request body
+
+  ```json
+  {
+    "name": "Asset tag"
+  }
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "custom_host_vital": {
+      "id": 1,
+      "name": "Asset tag",
+      "created_at": "2026-06-04T15:22:36Z",
+      "updated_at": "2026-06-04T15:22:36Z"
+    }
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#create-custom-host-vital
+examples:
+- name: 409 Parameters
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/custom_host_vitals'
+    body:
+      type: json
+      data: |-
+        {
+          "name": "Asset tag"
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 409
+    statusText: Conflict
+- name: 200 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/custom_host_vitals'
+    body:
+      type: json
+      data: |-
+        {
+          "name": "Asset tag"
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "custom_host_vital": {
+            "id": 1,
+            "name": "Asset tag",
+            "created_at": "2026-06-04T15:22:36Z",
+            "updated_at": "2026-06-04T15:22:36Z"
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

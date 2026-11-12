@@ -1,0 +1,100 @@
+info:
+  name: Update self-service category
+  type: http
+  seq: 3
+http:
+  method: PATCH
+  url: '{{baseUrl}}/api/v1/fleet/software/self_service_categories/:id'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required**. The self-service category ID.'
+  body:
+    type: json
+    data: |-
+      {
+        "name": "💼 Engineering tools"
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  Renames an existing self-service category. Only global and fleet admins and maintainers can call this endpoint.
+
+  `PATCH /api/v1/fleet/software/self_service_categories/:id`
+
+  #### Parameters
+
+  | Name | Type    | In   | Description                                                                                                                                                |
+  | ---- | ------- | ---- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+  | id   | integer | path | **Required**. The self-service category ID.                                                                                                                |
+  | name | string  | body | **Required**. The new category name. Must be unique within the fleet (case-insensitive) and at most 255 characters. Emojis are supported and are part of the name. |
+
+  #### Example
+
+  `PATCH /api/v1/fleet/software/self_service_categories/42`
+
+  ##### Request body
+
+  ```json
+  {
+    "name": "💼 Engineering tools"
+  }
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "self_service_category": {
+      "id": 42,
+      "name": "💼 Engineering tools",
+      "fleet_id": 3,
+      "created_at": "2026-05-12T18:45:00Z",
+      "updated_at": "2026-05-12T19:01:00Z"
+    }
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#update-self-service-category
+examples:
+- name: 200 Default response
+  request:
+    method: PATCH
+    url: '{{baseUrl}}/api/v1/fleet/software/self_service_categories/:id'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required**. The self-service category ID.'
+    body:
+      type: json
+      data: |-
+        {
+          "name": "💼 Engineering tools"
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "self_service_category": {
+            "id": 42,
+            "name": "💼 Engineering tools",
+            "fleet_id": 3,
+            "created_at": "2026-05-12T18:45:00Z",
+            "updated_at": "2026-05-12T19:01:00Z"
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

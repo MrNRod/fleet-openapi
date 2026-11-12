@@ -1,0 +1,77 @@
+info:
+  name: Get OS setting (configuration profile) status
+  type: http
+  seq: 19
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/configuration_profiles/:profile_uuid/status'
+  auth: inherit
+  params:
+  - name: profile_uuid
+    value: ''
+    type: query
+    disabled: true
+    description: '**Required**. The UUID of configuration profile.'
+  - name: profile_uuid
+    value: ''
+    type: path
+docs: |-
+  Get status counts of a single OS settings (configuration profile) enforced on hosts.
+
+  `GET /api/v1/fleet/configuration_profiles/:profile_uuid/status`
+
+  #### Parameters
+
+  | Name                      | Type   | In    | Description                                                               |
+  | ------------------------- | ------ | ----- | ------------------------------------------------------------------------- |
+  | profile_uuid                   | string | query | **Required**. The UUID of configuration profile.             |
+
+  #### Example
+
+  `GET /api/v1/fleet/configuration_profiles/f663713f-04ee-40f0-a95a-7af428c351a9/status`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "verified": 123,
+    "verifying": 123,
+    "failed": 123,
+    "pending": 123
+  }
+  ```
+
+  ---
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#get-os-setting-configuration-profile-status
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/configuration_profiles/:profile_uuid/status'
+    params:
+    - name: profile_uuid
+      value: ''
+      type: query
+      disabled: true
+      description: '**Required**. The UUID of configuration profile.'
+    - name: profile_uuid
+      value: ''
+      type: path
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "verified": 123,
+          "verifying": 123,
+          "failed": 123,
+          "pending": 123
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

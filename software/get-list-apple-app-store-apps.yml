@@ -1,0 +1,113 @@
+info:
+  name: List Apple App Store apps
+  type: http
+  seq: 12
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/software/app_store_apps'
+  auth: inherit
+  params:
+  - name: fleet_id
+    value: ''
+    type: query
+    disabled: true
+    description: '**Required**. The fleet ID.'
+docs: |-
+  Returns the list of Apple App Store (VPP) apps that can be added to the specified fleet. If an app is already added to the fleet, it's excluded from the list.
+
+  `GET /api/v1/fleet/software/app_store_apps`
+
+  #### Parameters
+
+  | Name    | Type | In | Description |
+  | ------- | ---- | -- | ----------- |
+  | fleet_id | integer | query | **Required**. The fleet ID. |
+
+  #### Example
+
+  `GET /api/v1/fleet/software/app_store_apps?fleet_id=3`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "app_store_apps": [
+      {
+        "name": "Xcode",
+        "display_name": "",
+        "icon_url": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/f1/65/1e/a4844ccd-486d-455f-bb31-67336fe46b14/AppIcon-1x_U007emarketing-0-7-0-85-220-0.png/512x512bb.jpg",
+        "latest_version": "15.4",
+        "app_store_id": "497799835",
+        "platform": "darwin"
+      },
+      {
+        "name": "Logic Pro",
+        "display_name": "",
+        "icon_url": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/f1/65/1e/a4844ccd-486d-455f-bb31-67336fe46b14/AppIcon-1x_U007emarketing-0-7-0-85-220-0.png/512x512bb.jpg",
+        "latest_version": "2.04",
+        "app_store_id": "634148309",
+        "platform": "ios"
+      },
+      {
+        "name": "Logic Pro",
+        "display_name": "",
+        "icon_url": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/f1/65/1e/a4844ccd-486d-455f-bb31-67336fe46b14/AppIcon-1x_U007emarketing-0-7-0-85-220-0.png/512x512bb.jpg",
+        "latest_version": "2.04",
+        "app_store_id": "634148309",
+        "platform": "ipados"
+      }
+    ]
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#list-apple-app-store-apps
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/software/app_store_apps'
+    params:
+    - name: fleet_id
+      value: ''
+      type: query
+      disabled: true
+      description: '**Required**. The fleet ID.'
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "app_store_apps": [
+            {
+              "name": "Xcode",
+              "display_name": "",
+              "icon_url": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/f1/65/1e/a4844ccd-486d-455f-bb31-67336fe46b14/AppIcon-1x_U007emarketing-0-7-0-85-220-0.png/512x512bb.jpg",
+              "latest_version": "15.4",
+              "app_store_id": "497799835",
+              "platform": "darwin"
+            },
+            {
+              "name": "Logic Pro",
+              "display_name": "",
+              "icon_url": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/f1/65/1e/a4844ccd-486d-455f-bb31-67336fe46b14/AppIcon-1x_U007emarketing-0-7-0-85-220-0.png/512x512bb.jpg",
+              "latest_version": "2.04",
+              "app_store_id": "634148309",
+              "platform": "ios"
+            },
+            {
+              "name": "Logic Pro",
+              "display_name": "",
+              "icon_url": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/f1/65/1e/a4844ccd-486d-455f-bb31-67336fe46b14/AppIcon-1x_U007emarketing-0-7-0-85-220-0.png/512x512bb.jpg",
+              "latest_version": "2.04",
+              "app_store_id": "634148309",
+              "platform": "ipados"
+            }
+          ]
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

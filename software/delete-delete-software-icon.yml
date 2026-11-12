@@ -1,0 +1,59 @@
+info:
+  name: Delete software icon
+  type: http
+  seq: 11
+http:
+  method: DELETE
+  url: '{{baseUrl}}/api/v1/fleet/software/titles/:id/icon'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: ID of the software title being updated.
+  - name: fleet_id
+    value: ''
+    type: query
+    disabled: true
+    description: '**Required**. The fleet ID. Deletes the software icon in the specified fleet.'
+docs: |-
+  _Available in Fleet Premium._
+
+  Delete a custom icon added via [Update software icon](#update-software-icon). This will revert to using the software title's built-in icon.
+
+  `DELETE /api/v1/fleet/software/titles/:id/icon`
+
+  #### Parameters
+
+  | Name            | Type    | In   | Description                                      |
+  | ----            | ------- | ---- | --------------------------------------------     |
+  | id              | integer | path | ID of the software title being updated. |
+  | fleet_id         | integer | query | **Required**. The fleet ID. Deletes the software icon in the specified fleet. |
+
+  #### Example
+
+  `DELETE /api/v1/fleet/software/titles/33/icon?fleet_id=2`
+
+  ##### Default response
+
+  `Status: 204`
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#delete-software-icon
+examples:
+- name: 204 Default response
+  request:
+    method: DELETE
+    url: '{{baseUrl}}/api/v1/fleet/software/titles/:id/icon'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: ID of the software title being updated.
+    - name: fleet_id
+      value: ''
+      type: query
+      disabled: true
+      description: '**Required**. The fleet ID. Deletes the software icon in the specified fleet.'
+  response:
+    status: 204
+    statusText: No Content

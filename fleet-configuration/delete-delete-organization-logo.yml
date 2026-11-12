@@ -1,0 +1,67 @@
+info:
+  name: Delete organization logo
+  type: http
+  seq: 6
+http:
+  method: DELETE
+  url: '{{baseUrl}}/api/v1/fleet/logo'
+  auth: inherit
+  params:
+  - name: mode
+    value: ''
+    type: query
+    disabled: true
+    description: 'Either `"light"` for the logo displayed in light mode, `"dark" for the logo displayed in dark
+      mode`, or "all" to replace both light and dark mode logos. (Default: `"all"`.)'
+  body:
+    type: multipart-form
+    data:
+    - name: logo
+      value: []
+      description: The logo image to upload. For best results, use a square logo at least 150px x 150px.
+      disabled: true
+      type: file
+docs: |-
+  Delete a custom logo added via [Update organization logo](#update-organization-logo). This will revert to using the Fleet logo.
+
+  `DELETE /api/v1/fleet/logo`
+
+  #### Parameters
+
+  | Name        | Type    | In   | Description                                      |
+  | ----        | ------- | ---- | --------------------------------------------     |
+  | logo        | file    | body | The logo image to upload. For best results, use a square logo at least 150px x 150px. |
+  | mode        | string  | query | Either `"light"` for the logo displayed in light mode, `"dark" for the logo displayed in dark mode`, or "all" to replace both light and dark mode logos. (Default: `"all"`.)|
+
+  #### Example
+
+  `DELETE /api/v1/fleet/logo?mode=light`
+
+  ##### Default response
+
+  `Status: 204`
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#delete-organization-logo
+examples:
+- name: 204 Default response
+  request:
+    method: DELETE
+    url: '{{baseUrl}}/api/v1/fleet/logo'
+    params:
+    - name: mode
+      value: ''
+      type: query
+      disabled: true
+      description: 'Either `"light"` for the logo displayed in light mode, `"dark" for the logo displayed in dark
+        mode`, or "all" to replace both light and dark mode logos. (Default: `"all"`.)'
+    body:
+      type: multipart-form
+      data:
+      - name: logo
+        value: []
+        description: The logo image to upload. For best results, use a square logo at least 150px x 150px.
+        disabled: true
+        type: file
+  response:
+    status: 204
+    statusText: No Content

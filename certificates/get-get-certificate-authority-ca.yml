@@ -1,0 +1,97 @@
+info:
+  name: Get certificate authority (CA)
+  type: http
+  seq: 5
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/certificate_authorities/:id'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+  body:
+    type: json
+    data: |-
+      {
+        "id": 0
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  Get details of the certificate authority.
+
+  `GET /api/v1/fleet/certificate_authorities/:id`
+
+  #### Parameters
+
+  | Name            | Type    | In   | Description                                                 |
+  |---------------- |-------- |------|-------------------------------------------------------------|
+  | id   | integer | body | **Required**. The ID of certificate authority. |
+
+  #### Example
+
+  `GET /api/v1/fleet/certificate_authorities/1`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "id": 1,
+    "type": "digicert",
+    "name": "WIFI_CERTIFICATE",
+    "url": "https://one.digicert.com",
+    "api_token": "********",
+    "profile_id": "b416e058-1bdc-4844-9c3f-7c71d58d0eff",
+    "certificate_common_name": "$FLEET_VAR_HOST_HARDWARE_SERIAL",
+    "certificate_user_principal_names": [
+      "$FLEET_VAR_HOST_HARDWARE_SERIAL"
+    ],
+    "certificate_seat_id": "$FLEET_VAR_HOST_END_USER_EMAIL_IDP"
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#get-certificate-authority-ca
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/certificate_authorities/:id'
+    params:
+    - name: id
+      value: ''
+      type: path
+    body:
+      type: json
+      data: |-
+        {
+          "id": 0
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "id": 1,
+          "type": "digicert",
+          "name": "WIFI_CERTIFICATE",
+          "url": "https://one.digicert.com",
+          "api_token": "********",
+          "profile_id": "b416e058-1bdc-4844-9c3f-7c71d58d0eff",
+          "certificate_common_name": "$FLEET_VAR_HOST_HARDWARE_SERIAL",
+          "certificate_user_principal_names": [
+            "$FLEET_VAR_HOST_HARDWARE_SERIAL"
+          ],
+          "certificate_seat_id": "$FLEET_VAR_HOST_END_USER_EMAIL_IDP"
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

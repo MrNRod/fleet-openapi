@@ -1,0 +1,270 @@
+info:
+  name: Add package
+  type: http
+  seq: 7
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/software/package'
+  auth: inherit
+  body:
+    type: multipart-form
+    data:
+    - name: software
+      value: []
+      description: '**Required**. Installer package file or custom script file. Supported packages are `.pkg`, `.msi`,
+        `.exe`, `.deb`, `.rpm`, `.tar.gz`, `.ipa`, `.sh`, `.py`, and `.ps1`.'
+      disabled: false
+      type: file
+    - name: fleet_id
+      value: ''
+      description: The fleet ID. Adds a software package to the specified fleet. If not specified, it will add the
+        software for "Unassigned" hosts.
+      disabled: true
+      type: text
+    - name: install_script
+      value: ''
+      description: Script that Fleet runs to install software. If not specified Fleet runs the [default install
+        script](https://github.com/fleetdm/fleet/tree/main/pkg/file/scripts) for each package type if one exists.
+        Required for `.tar.gz` and `.exe` (no default script). Not supported for `.sh`, `.py`, and `.ps1`.
+      disabled: true
+      type: text
+    - name: uninstall_script
+      value: ''
+      description: Script that Fleet runs to uninstall software. If not specified Fleet runs the [default uninstall
+        script](https://github.com/fleetdm/fleet/tree/main/pkg/file/scripts) for each package type if one exists.
+        Required for `.tar.gz` and `.exe` (no default script).
+      disabled: true
+      type: text
+    - name: pre_install_query
+      value: ''
+      description: Query that is pre-install condition. If the query doesn't return any result, Fleet won't proceed
+        to install.
+      disabled: true
+      type: text
+    - name: post_install_script
+      value: ''
+      description: The contents of the script to run after install. If the specified script fails (exit code non-zero)
+        software install will be marked as failed and rolled back.
+      disabled: true
+      type: text
+    - name: self_service
+      value: ''
+      description: Self-service software is optional and can be installed by the end user.
+      disabled: true
+      type: text
+    - name: labels_include_all
+      value: ''
+      description: Target hosts that have all labels, specified by label name, in the array.
+      disabled: true
+      type: text
+    - name: labels_include_any
+      value: ''
+      description: Target hosts that have any label, specified by label name, in the array.
+      disabled: true
+      type: text
+    - name: labels_exclude_any
+      value: ''
+      description: Target hosts that don't have any label, specified by label name, in the array.
+      disabled: true
+      type: text
+    - name: automatic_install
+      value: ''
+      description: Specifies whether to create a policy that triggers a software install only on hosts missing the
+        software. Not supported for iOS, iPadOS, Android, or for `.sh`, `.py`, and `.ps1`.
+      disabled: true
+      type: text
+docs: |-
+  _Available in Fleet Premium._
+
+  Add a package (.pkg, .msi, .exe, .deb, .rpm, .tar.gz, .ipa) to install on Apple (macOS/iOS/iPadOS), Windows, or Linux hosts. Also supports adding a custom script (.sh and .py for macOS and Linux, .ps1 for Windows).
+
+  > You need to send a request of type `multipart/form-data`.
+
+  > This endpoint accepts a maximum request body size of 10GB.
+
+  `POST /api/v1/fleet/software/package`
+
+  #### Parameters
+
+  | Name            | Type    | In   | Description                                      |
+  | ----            | ------- | ---- | --------------------------------------------     |
+  | software        | file    | body | **Required**. Installer package file or custom script file. Supported packages are `.pkg`, `.msi`, `.exe`, `.deb`, `.rpm`, `.tar.gz`, `.ipa`, `.sh`, `.py`, and `.ps1`. |
+  | fleet_id         | integer | body | The fleet ID. Adds a software package to the specified fleet. If not specified, it will add the software for "Unassigned" hosts. |
+  | install_script  | string | body | Script that Fleet runs to install software. If not specified Fleet runs the [default install script](https://github.com/fleetdm/fleet/tree/main/pkg/file/scripts) for each package type if one exists. Required for `.tar.gz` and `.exe` (no default script). Not supported for `.sh`, `.py`, and `.ps1`. |
+  | uninstall_script  | string | body | Script that Fleet runs to uninstall software. If not specified Fleet runs the [default uninstall script](https://github.com/fleetdm/fleet/tree/main/pkg/file/scripts) for each package type if one exists. Required for `.tar.gz` and `.exe` (no default script). |
+  | pre_install_query  | string | body | Query that is pre-install condition. If the query doesn't return any result, Fleet won't proceed to install. |
+  | post_install_script | string | body | The contents of the script to run after install. If the specified script fails (exit code non-zero) software install will be marked as failed and rolled back. |
+  | self_service | boolean | body | Self-service software is optional and can be installed by the end user. |
+  | labels_include_all        | array     | body | Target hosts that have all labels, specified by label name, in the array. |
+  | labels_include_any        | array     | body | Target hosts that have any label, specified by label name, in the array. |
+  | labels_exclude_any | array | body | Target hosts that don't have any label, specified by label name, in the array. |
+  | automatic_install | boolean | body | Specifies whether to create a policy that triggers a software install only on hosts missing the software. Not supported for iOS, iPadOS, Android, or for `.sh`, `.py`, and `.ps1`. |
+
+  Only one of `labels_include_all`, `labels_include_any` or `labels_exclude_any` can be specified. If none are specified, all hosts are targeted.
+
+  Add the `X-Fleet-Scripts-Encoded: base64` header line to parse `install_script`, `uninstall_script`, `post_install_script`, and `pre_install_query` fields as bas64-encoded rather than as-is.
+
+  #### Example
+
+  ```
+  POST /api/v1/fleet/software/package
+  ```
+
+  ##### Request body
+
+  ```
+  fleet_id="1"
+  self_service="true"
+  install_script="sudo installer -pkg /temp/FalconSensor-6.44.pkg -target /"
+  pre_install_query"SELECT 1 FROM macos_profiles WHERE uuid='c9f4f0d5-8426-4eb8-b61b-27c543c9d3db';"
+  post_install_script"sudo /Applications/Falcon.app/Contents/Resources/falconctl license 0123456789ABCDEFGHIJKLMNOPQRSTUV-WX"
+  software="FalconSensor-6.44.pkg"
+  labels_exclude_any="Engineering"
+  labels_exclude_any="QA"
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "software_package": {
+      "team_id": 310,
+      "title_id": 2792,
+      "name": "Slack-4.50.128-macOS.pkg",
+      "icon_url": null,
+      "version": "4.50.128",
+      "platform": "darwin",
+      "uploaded_at": "2026-06-04T17:43:46.125681Z",
+      "installer_id": 36818,
+      "install_script": "#!/bin/sh\n\ninstaller -pkg \"$INSTALLER_PATH\" -target /\n",
+      "pre_install_query": "",
+      "post_install_script": "",
+      "uninstall_script": "#!/bin/sh\n\n# Fleet extracts and saves package IDs.\npkg_ids=(\n  'com.tinyspeck.slackmacgap'\n)\n\n# For each package id, get all .app folders associated with the package and remove them.\nfor pkg_id in \"${pkg_ids[@]}\"\ndo\n  # Get volume and location of the package.\n  volume=$(pkgutil --pkg-info \"$pkg_id\" | grep -i \"volume\" | awk '{if (NF>1) print $NF}')\n  location=$(pkgutil --pkg-info \"$pkg_id\" | grep -i \"location\" | awk '{if (NF>1) print $NF}')\n  # Check if this package id corresponds to a valid/installed package\n  if [[ ! -z \"$volume\" ]]; then\n    # Remove individual directories that end with \".app\" belonging to the package.\n    # Only process directories that end with \".app\" to prevent Fleet from removing top level directories.\n    pkgutil --only-dirs --files \"$pkg_id\" | grep \"\\.app$\" | sed -e 's@^@'\"$volume\"\"$location\"'/@' | tr '\\n' '\\0' | xargs -n 1 -0 rm -rf\n    # Remove receipts\n    pkgutil --forget \"$pkg_id\"\n  else\n    echo \"WARNING: volume is empty for package ID $pkg_id\"\n  fi\ndone\n",
+      "hash_sha256": "f7e4cba7676dacb03ac4cdbe5a99cc1d80ef751c484a13c6a7cf6a93de4a494e",
+      "self_service": false,
+      "url": "",
+      "fleet_maintained_app_id": null,
+      "automatic_install_policies": null,
+      "labels_include_any": null,
+      "labels_exclude_any": null,
+      "labels_include_all": null,
+      "categories": null,
+      "display_name": "",
+      "patch_policy": null,
+      "fleet_id": 310
+    }
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#add-package
+examples:
+- name: 200 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/software/package'
+    body:
+      type: multipart-form
+      data:
+      - name: software
+        value: []
+        description: '**Required**. Installer package file or custom script file. Supported packages are `.pkg`,
+          `.msi`, `.exe`, `.deb`, `.rpm`, `.tar.gz`, `.ipa`, `.sh`, `.py`, and `.ps1`.'
+        disabled: false
+        type: file
+      - name: fleet_id
+        value: ''
+        description: The fleet ID. Adds a software package to the specified fleet. If not specified, it will add
+          the software for "Unassigned" hosts.
+        disabled: true
+        type: text
+      - name: install_script
+        value: ''
+        description: Script that Fleet runs to install software. If not specified Fleet runs the [default install
+          script](https://github.com/fleetdm/fleet/tree/main/pkg/file/scripts) for each package type if one exists.
+          Required for `.tar.gz` and `.exe` (no default script). Not supported for `.sh`, `.py`, and `.ps1`.
+        disabled: true
+        type: text
+      - name: uninstall_script
+        value: ''
+        description: Script that Fleet runs to uninstall software. If not specified Fleet runs the [default uninstall
+          script](https://github.com/fleetdm/fleet/tree/main/pkg/file/scripts) for each package type if one exists.
+          Required for `.tar.gz` and `.exe` (no default script).
+        disabled: true
+        type: text
+      - name: pre_install_query
+        value: ''
+        description: Query that is pre-install condition. If the query doesn't return any result, Fleet won't proceed
+          to install.
+        disabled: true
+        type: text
+      - name: post_install_script
+        value: ''
+        description: The contents of the script to run after install. If the specified script fails (exit code non-zero)
+          software install will be marked as failed and rolled back.
+        disabled: true
+        type: text
+      - name: self_service
+        value: ''
+        description: Self-service software is optional and can be installed by the end user.
+        disabled: true
+        type: text
+      - name: labels_include_all
+        value: ''
+        description: Target hosts that have all labels, specified by label name, in the array.
+        disabled: true
+        type: text
+      - name: labels_include_any
+        value: ''
+        description: Target hosts that have any label, specified by label name, in the array.
+        disabled: true
+        type: text
+      - name: labels_exclude_any
+        value: ''
+        description: Target hosts that don't have any label, specified by label name, in the array.
+        disabled: true
+        type: text
+      - name: automatic_install
+        value: ''
+        description: Specifies whether to create a policy that triggers a software install only on hosts missing
+          the software. Not supported for iOS, iPadOS, Android, or for `.sh`, `.py`, and `.ps1`.
+        disabled: true
+        type: text
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "software_package": {
+            "team_id": 310,
+            "title_id": 2792,
+            "name": "Slack-4.50.128-macOS.pkg",
+            "icon_url": null,
+            "version": "4.50.128",
+            "platform": "darwin",
+            "uploaded_at": "2026-06-04T17:43:46.125681Z",
+            "installer_id": 36818,
+            "install_script": "#!/bin/sh\n\ninstaller -pkg \"$INSTALLER_PATH\" -target /\n",
+            "pre_install_query": "",
+            "post_install_script": "",
+            "uninstall_script": "#!/bin/sh\n\n# Fleet extracts and saves package IDs.\npkg_ids=(\n  'com.tinyspeck.slackmacgap'\n)\n\n# For each package id, get all .app folders associated with the package and remove them.\nfor pkg_id in \"${pkg_ids[@]}\"\ndo\n  # Get volume and location of the package.\n  volume=$(pkgutil --pkg-info \"$pkg_id\" | grep -i \"volume\" | awk '{if (NF>1) print $NF}')\n  location=$(pkgutil --pkg-info \"$pkg_id\" | grep -i \"location\" | awk '{if (NF>1) print $NF}')\n  # Check if this package id corresponds to a valid/installed package\n  if [[ ! -z \"$volume\" ]]; then\n    # Remove individual directories that end with \".app\" belonging to the package.\n    # Only process directories that end with \".app\" to prevent Fleet from removing top level directories.\n    pkgutil --only-dirs --files \"$pkg_id\" | grep \"\\.app$\" | sed -e 's@^@'\"$volume\"\"$location\"'/@' | tr '\\n' '\\0' | xargs -n 1 -0 rm -rf\n    # Remove receipts\n    pkgutil --forget \"$pkg_id\"\n  else\n    echo \"WARNING: volume is empty for package ID $pkg_id\"\n  fi\ndone\n",
+            "hash_sha256": "f7e4cba7676dacb03ac4cdbe5a99cc1d80ef751c484a13c6a7cf6a93de4a494e",
+            "self_service": false,
+            "url": "",
+            "fleet_maintained_app_id": null,
+            "automatic_install_policies": null,
+            "labels_include_any": null,
+            "labels_exclude_any": null,
+            "labels_include_all": null,
+            "categories": null,
+            "display_name": "",
+            "patch_policy": null,
+            "fleet_id": 310
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

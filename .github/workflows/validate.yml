@@ -1,4 +1,4 @@
-name: Validate Bruno collection
+name: Validate OpenCollection
 
 on:
   push:

@@ -1,0 +1,228 @@
+info:
+  name: Update report
+  type: http
+  seq: 7
+http:
+  method: PATCH
+  url: '{{baseUrl}}/api/v1/fleet/reports/:id'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required.** The ID of the report.'
+  body:
+    type: json
+    data: |-
+      {
+        "name": "new_title_for_my_report",
+        "interval": 3600,
+        "platform": "",
+        "min_osquery_version": "",
+        "automations_enabled": false,
+        "discard_data": true,
+        "labels_include_any": [
+          "Hosts with Docker installed",
+          "macOS 13+"
+        ]
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  Modifies the report specified by ID.
+
+  `PATCH /api/v1/fleet/reports/:id`
+
+  #### Parameters
+
+  | Name                        | Type    | In   | Description                                                                                                                                            |
+  | --------------------------- | ------- | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+  | id                          | integer | path | **Required.** The ID of the report.                                                                                                                     |
+  | name                        | string  | body | The name of the report.                                                                                                                                 |
+  | query                       | string  | body | The report's SQL query.                                                                                                                               |
+  | description                 | string  | body | The report's description.                                                                                                                               |
+  | observer_can_run            | boolean | body | Whether or not users with the `observer` role can run the report as a live report. This field is only relevant for the `observer` role. The `observer_plus` role can run any query and is not limited by this flag. |
+  | interval                    | integer | body | The amount of time, in seconds, the report waits before running. Can be set to `0` to never run. Default: 0.       |
+  | platform                    | string  | body | The OS platforms where this report will run (other platforms ignored). Comma-separated string. If set to "", runs on all compatible platforms.                    |
+  | labels_include_any          | list    | body | _Available in Fleet Premium_. Labels, specified by label name, to target with this report. If specified, the report will run on hosts that match **any of these** labels. |
+  | labels_include_all              | array    | body | _Available in Fleet Premium_. Labels, specified by label name, to target with this report. If specified, the report will run on hosts that match **all of these** labels. |
+  | min_osquery_version             | string  | body | The minimum required osqueryd version installed on a host. If omitted, all osqueryd versions are acceptable.                                                                          |
+  | automations_enabled             | boolean | body | Whether to send data to the configured log destination according to the report's `interval`. |
+  | logging             | string  | body | The type of log output for this query. Valid values: `"snapshot"`(default), `"differential"`, or `"differential_ignore_removals"`.                        |
+  | discard_data        | boolean  | body | Whether to skip saving the latest results for each host. If set to `true`, data is still sent to the configured log destination if `automations_enabled`. |
+
+  Only one of  `labels_include_any` or `labels_include_all` can be specified. If none are specified, all hosts are targeted.
+
+  > Note that any of the following conditions will cause the existing report's data to be discarded:
+  > - Updating the `query` (SQL) field
+  > - Updating the filters for targeted hosts (`platform`, `min_osquery_version`, `labels_include_any`)
+  > - Changing `discard_data` from `false` to `true`
+  > - Changing `logging` from `"snapshot"` to `"differential"` or `"differential_ignore_removals"`
+
+  #### Example
+
+  `PATCH /api/v1/fleet/reports/2`
+
+  ##### Request body
+
+  ```json
+  {
+    "name": "new_title_for_my_report",
+    "interval": 3600, // Once per hour,
+    "platform": "",
+    "min_osquery_version": "",
+    "automations_enabled": false,
+    "discard_data": true,
+    "labels_include_any": [
+      "Hosts with Docker installed",
+      "macOS 13+"
+    ]
+  }
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "query": {
+      "created_at": "2021-01-22T17:23:27Z",
+      "updated_at": "2021-01-22T17:23:27Z",
+      "id": 288,
+      "name": "new_title_for_my_query",
+      "description": "This is a new query.",
+      "query": "SELECT * FROM osquery_info",
+      "team_id": null,
+      "interval": 3600,
+      "platform": "",
+      "min_osquery_version": "",
+      "automations_enabled": false,
+      "logging": "snapshot",
+      "saved": true,
+      "author_id": 1,
+      "author_name": "noah",
+      "observer_can_run": true,
+      "discard_data": true,
+      "packs": [],
+      "labels_include_any": [
+        "Hosts with Docker installed",
+        "macOS 13+"
+      ]
+    },
+    "report": {
+      "created_at": "2021-01-22T17:23:27Z",
+      "updated_at": "2021-01-22T17:23:27Z",
+      "id": 288,
+      "name": "new_title_for_my_query",
+      "description": "This is a new query.",
+      "query": "SELECT * FROM osquery_info",
+      "team_id": null,
+      "interval": 3600,
+      "platform": "",
+      "min_osquery_version": "",
+      "automations_enabled": false,
+      "logging": "snapshot",
+      "saved": true,
+      "author_id": 1,
+      "author_name": "noah",
+      "observer_can_run": true,
+      "discard_data": true,
+      "packs": [],
+      "labels_include_any": [
+        "Hosts with Docker installed",
+        "macOS 13+"
+      ]
+    }
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#update-report
+examples:
+- name: 200 Default response
+  request:
+    method: PATCH
+    url: '{{baseUrl}}/api/v1/fleet/reports/:id'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required.** The ID of the report.'
+    body:
+      type: json
+      data: |-
+        {
+          "name": "new_title_for_my_report",
+          "interval": 3600,
+          "platform": "",
+          "min_osquery_version": "",
+          "automations_enabled": false,
+          "discard_data": true,
+          "labels_include_any": [
+            "Hosts with Docker installed",
+            "macOS 13+"
+          ]
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "query": {
+            "created_at": "2021-01-22T17:23:27Z",
+            "updated_at": "2021-01-22T17:23:27Z",
+            "id": 288,
+            "name": "new_title_for_my_query",
+            "description": "This is a new query.",
+            "query": "SELECT * FROM osquery_info",
+            "team_id": null,
+            "interval": 3600,
+            "platform": "",
+            "min_osquery_version": "",
+            "automations_enabled": false,
+            "logging": "snapshot",
+            "saved": true,
+            "author_id": 1,
+            "author_name": "noah",
+            "observer_can_run": true,
+            "discard_data": true,
+            "packs": [],
+            "labels_include_any": [
+              "Hosts with Docker installed",
+              "macOS 13+"
+            ]
+          },
+          "report": {
+            "created_at": "2021-01-22T17:23:27Z",
+            "updated_at": "2021-01-22T17:23:27Z",
+            "id": 288,
+            "name": "new_title_for_my_query",
+            "description": "This is a new query.",
+            "query": "SELECT * FROM osquery_info",
+            "team_id": null,
+            "interval": 3600,
+            "platform": "",
+            "min_osquery_version": "",
+            "automations_enabled": false,
+            "logging": "snapshot",
+            "saved": true,
+            "author_id": 1,
+            "author_name": "noah",
+            "observer_can_run": true,
+            "discard_data": true,
+            "packs": [],
+            "labels_include_any": [
+              "Hosts with Docker installed",
+              "macOS 13+"
+            ]
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

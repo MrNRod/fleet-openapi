@@ -1,0 +1,57 @@
+info:
+  name: Resend host's certificate
+  type: http
+  seq: 11
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/hosts/:id/certificates/:certificate_template_id/resend'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required.** The host''s ID.'
+  - name: certificate_template_id
+    value: ''
+    type: path
+    description: '**Required.** The ID of the certificate to resend to the host.'
+docs: |-
+  Resends a certificate for the specified host. Currently, only Android certificates are supported.
+
+  `POST /api/v1/fleet/hosts/:id/certificates/:certificate_template_id/resend`
+
+  #### Parameters
+
+  | Name | Type | In | Description |
+  | ---- | ---- | -- | ----------- |
+  | id   | integer | path | **Required.** The host's ID. |
+  | certificate_template_id   | string | path | **Required.** The ID of the certificate to resend to the host. |
+
+  #### Example
+
+  `POST /api/v1/fleet/hosts/233/certificates/322/resend`
+
+  ##### Default response
+
+  `Status: 202`
+
+  ---
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#resend-hosts-certificate
+examples:
+- name: 202 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/hosts/:id/certificates/:certificate_template_id/resend'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required.** The host''s ID.'
+    - name: certificate_template_id
+      value: ''
+      type: path
+      description: '**Required.** The ID of the certificate to resend to the host.'
+  response:
+    status: 202
+    statusText: Accepted

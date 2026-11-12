@@ -1,0 +1,94 @@
+info:
+  name: Update disk encryption
+  type: http
+  seq: 14
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/disk_encryption'
+  auth: inherit
+  body:
+    type: json
+    data: |-
+      {
+        "fleet_id": 0,
+        "enable_disk_encryption": false,
+        "macos_settings": {},
+        "windows_settings": {},
+        "linux_settings": {}
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  > The `PATCH /api/v1/fleet/mdm/apple/settings` API endpoint is deprecated as of Fleet 4.45. It is maintained for backward compatibility. Please use the new API endpoint below. You can view [archived documentation for the deprecated endpoint](https://github.com/iansltx/fleet/blob/d1791518a43c9d290192dbf992bcea290c8158a3/docs/REST%20API/rest-api.md#update-disk-encryption-enforcement).
+
+  _Available in Fleet Premium_
+
+  `POST /api/v1/fleet/disk_encryption`
+
+  #### Parameters
+
+  | Name                                    | Type    | In    | Description                                                                                 |
+  | --------------------------------------- | ------  | ----  | --------------------------------------------------------------------------------------      |
+  | fleet_id                                | integer | body  | The fleet ID to apply the settings to. Settings are applied to "Unassigned" hosts if absent.       |
+  | enable_disk_encryption                  | boolean | body  | _Deprecated._ Whether disk encryption and/or escrow should be enforced on all platforms. When set to true, enables disk encryption for macOS and Windows hosts, and enables escrow for macOS and Linux hosts. Use per-platform settings instead. |
+  | windows_require_bitlocker_pin           | boolean | _Deprecated at this level._ Use `windows_settings.require_bitlocker_pin` instead. |
+  | macos_settings                          | object  | body  | See `macos_settings` below. |
+  | windows_settings                        | object  | body  | See `windows_settings` below. |
+  | linux_settings                          | object  | body  | See `linux_settings` below. |
+
+  ##### macos_settings
+
+  | Name                              | Type    | Description   |
+  | ---------------------             | ------- | -------------------------------------------------------------------------------------------------------- |
+  | enable_disk_encryption            | boolean | Whether disk encryption should be enforced on macOS hosts that belong to the fleet (or "Unassigned"). |
+  | enable_escrow_disk_encryption_key | boolean | Specifies whether Fleet stores the disk encryption recovery key without prompting users to turn on disk encryption. Set to true when a third-party tool handles enforcement. |
+
+  <br/>
+
+  ##### windows_settings
+
+  | Name                              | Type    | Description   |
+  | ---------------------             | ------- | -------------------------------------------------------------------------------------------------------- |
+  | enable_disk_encryption            | boolean | Whether disk encryption should be enforced on Windows hosts that belong to the fleet (or "Unassigned"). |
+  | require_bitlocker_pin             | boolean | End users on Windows hosts that belong to the fleet (or "Unassigned") will be required to set a BitLocker PIN if set to true. `windows_settings.enable_disk_encryption` must be set to true. When the PIN is set, it's required to unlock Windows host during startup. |
+
+  <br/>
+
+  ##### linux_settings
+
+  | Name                              | Type    | Description   |
+  | ---------------------             | ------- | -------------------------------------------------------------------------------------------------------- |
+  | enable_escrow_disk_encryption_key | boolean | Specifies whether Fleet stores the disk encryption recovery key without prompting users to turn on disk encryption. Set to true when a third-party tool handles enforcement. |
+
+
+  #### Example
+
+  `POST /api/v1/fleet/disk_encryption`
+
+  ##### Default response
+
+  `Status: 204`
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#update-disk-encryption
+examples:
+- name: 204 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/disk_encryption'
+    body:
+      type: json
+      data: |-
+        {
+          "fleet_id": 0,
+          "enable_disk_encryption": false,
+          "macos_settings": {},
+          "windows_settings": {},
+          "linux_settings": {}
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 204
+    statusText: No Content

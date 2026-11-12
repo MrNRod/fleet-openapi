@@ -1,0 +1,6 @@
+info:
+  name: Vulnerabilities
+  type: folder
+  seq: 21
+request:
+  auth: inherit

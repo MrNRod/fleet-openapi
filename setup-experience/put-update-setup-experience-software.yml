@@ -1,0 +1,89 @@
+info:
+  name: Update setup experience software
+  type: http
+  seq: 18
+http:
+  method: PUT
+  url: '{{baseUrl}}/api/v1/fleet/setup_experience/software'
+  auth: inherit
+  body:
+    type: json
+    data: |-
+      {
+        "platform": "linux",
+        "fleet_id": 1,
+        "software_title_ids": [
+          3000,
+          3001
+        ]
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  _Available in Fleet Premium_
+
+
+  Set software that will be automatically installed during setup. Software that isn't included in the request will be unset.
+
+  `PUT /api/v1/fleet/setup_experience/software`
+
+  #### Parameters
+
+  | Name  | Type   | In    | Description                              |
+  | ----- | ------ | ----- | ---------------------------------------- |
+  | platform | string  | body | Platform to install software for. Either `"macos"`, `"windows"`, `"linux"`, `"ios"`, `"ipados"`, or `"android"`. Defaults to `"macos"`. |
+  | fleet_id | integer | body | _Available in Fleet Premium_. The ID of the fleet to set the software for. If not specified, it will set the software for "Unassigned" hosts. |
+  | software_title_ids | array | body | The ID of software titles to install during setup. |
+
+  #### Example
+
+  `PUT /api/v1/fleet/setup_experience/software`
+
+  ##### Request body
+
+  ```json
+  {
+    "platform": "linux",
+    "fleet_id": 1,
+    "software_title_ids": [3000, 3001]
+  }
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {}
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#update-setup-experience-software
+examples:
+- name: 200 Default response
+  request:
+    method: PUT
+    url: '{{baseUrl}}/api/v1/fleet/setup_experience/software'
+    body:
+      type: json
+      data: |-
+        {
+          "platform": "linux",
+          "fleet_id": 1,
+          "software_title_ids": [
+            3000,
+            3001
+          ]
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: '{}'
+    headers:
+    - name: Content-Type
+      value: application/json

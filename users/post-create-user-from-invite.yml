@@ -1,0 +1,274 @@
+info:
+  name: Create user from invite
+  type: http
+  seq: 3
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/users'
+  auth: inherit
+  body:
+    type: json
+    data: |-
+      {
+        "email": "",
+        "invite_token": "",
+        "name": "",
+        "password": "",
+        "password_confirmation": ""
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  Creates a user account after an invited user provides registration information and submits the form.
+
+  `POST /api/v1/fleet/users`
+
+  #### Parameters
+
+  | Name                  | Type   | In   | Description                                                                                                                                                                                                                                                                                                                                              |
+  | --------------------- | ------ | ---- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+  | email                 | string | body | **Required**. The email address of the user.                                                                                                                                                                                                                                                                                                             |
+  | invite_token          | string | body | **Required**. Token provided to the user in the invitation email.                                                                                                                                                                                                                                                                                        |
+  | name                  | string | body | **Required**. The name of the user.                                                                                                                                                                                                                                                                                                                      |
+  | password              | string | body | The password chosen by the user (if not SSO user).                                                                                                                                                                                                                                                                                                       |
+  | password_confirmation | string | body | Confirmation of the password chosen by the user.                                                                                                                                                                                                                                                                                                         |
+
+  #### Example
+
+  `POST /api/v1/fleet/users`
+
+  ##### Request query parameters
+
+  ```json
+  {
+    "email": "janedoe@example.com",
+    "invite_token": "SjdReDNuZW5jd3dCbTJtQTQ5WjJTc2txWWlEcGpiM3c=",
+    "name": "janedoe",
+    "password": "test-123",
+    "password_confirmation": "test-123"
+  }
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "user": {
+      "created_at": "0001-01-01T00:00:00Z",
+      "updated_at": "0001-01-01T00:00:00Z",
+      "id": 2,
+      "name": "janedoe",
+      "email": "janedoe@example.com",
+      "enabled": true,
+      "force_password_reset": false,
+      "gravatar_url": "",
+      "sso_enabled": false,
+      "mfa_enabled": false,
+      "global_role": "admin",
+      "fleets": []
+    }
+  }
+  ```
+
+  ##### Failed authentication
+
+  `Status: 401 Authentication Failed`
+
+  ```json
+  {
+    "message": "Authentication Failed",
+    "errors": [
+      {
+        "name": "base",
+        "reason": "Authentication failed"
+      }
+    ]
+  }
+  ```
+
+  ##### Expired or used invite code
+
+  `Status: 404 Resource Not Found`
+
+  ```json
+  {
+    "message": "Resource Not Found",
+    "errors": [
+      {
+        "name": "base",
+        "reason": "Invite with token SjdReDNuZW5jd3dCbTJtQTQ5WjJTc2txWWlEcGpiM3c= was not found in the datastore"
+      }
+    ]
+  }
+  ```
+
+  ##### Validation failed
+
+  `Status: 422 Validation Failed`
+
+  The same error will be returned whenever one of the required parameters fails the validation.
+
+  ```json
+  {
+    "message": "Validation Failed",
+    "errors": [
+      {
+        "name": "name",
+        "reason": "cannot be empty"
+      }
+    ]
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#create-user-from-invite
+examples:
+- name: 200 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/users'
+    body:
+      type: json
+      data: |-
+        {
+          "email": "",
+          "invite_token": "",
+          "name": "",
+          "password": "",
+          "password_confirmation": ""
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "user": {
+            "created_at": "0001-01-01T00:00:00Z",
+            "updated_at": "0001-01-01T00:00:00Z",
+            "id": 2,
+            "name": "janedoe",
+            "email": "janedoe@example.com",
+            "enabled": true,
+            "force_password_reset": false,
+            "gravatar_url": "",
+            "sso_enabled": false,
+            "mfa_enabled": false,
+            "global_role": "admin",
+            "fleets": []
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+- name: 401 Failed authentication
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/users'
+    body:
+      type: json
+      data: |-
+        {
+          "email": "",
+          "invite_token": "",
+          "name": "",
+          "password": "",
+          "password_confirmation": ""
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 401
+    statusText: Unauthorized
+    body:
+      type: json
+      data: |-
+        {
+          "message": "Authentication Failed",
+          "errors": [
+            {
+              "name": "base",
+              "reason": "Authentication failed"
+            }
+          ]
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+- name: 404 Expired or used invite code
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/users'
+    body:
+      type: json
+      data: |-
+        {
+          "email": "",
+          "invite_token": "",
+          "name": "",
+          "password": "",
+          "password_confirmation": ""
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 404
+    statusText: Not Found
+    body:
+      type: json
+      data: |-
+        {
+          "message": "Resource Not Found",
+          "errors": [
+            {
+              "name": "base",
+              "reason": "Invite with token SjdReDNuZW5jd3dCbTJtQTQ5WjJTc2txWWlEcGpiM3c= was not found in the datastore"
+            }
+          ]
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+- name: 422 Validation failed
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/users'
+    body:
+      type: json
+      data: |-
+        {
+          "email": "",
+          "invite_token": "",
+          "name": "",
+          "password": "",
+          "password_confirmation": ""
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 422
+    statusText: Unprocessable Content
+    body:
+      type: json
+      data: |-
+        {
+          "message": "Validation Failed",
+          "errors": [
+            {
+              "name": "name",
+              "reason": "cannot be empty"
+            }
+          ]
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

@@ -1,0 +1,211 @@
+info:
+  name: Translate IDs
+  type: http
+  seq: 1
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/translate'
+  auth: inherit
+  body:
+    type: json
+    data: |-
+      {
+        "list": [
+          {
+            "type": "user",
+            "payload": {
+              "identifier": "some@email.com"
+            }
+          },
+          {
+            "type": "label",
+            "payload": {
+              "identifier": "labelA"
+            }
+          },
+          {
+            "type": "team",
+            "payload": {
+              "identifier": "team1"
+            }
+          },
+          {
+            "type": "host",
+            "payload": {
+              "identifier": "host-ABC"
+            }
+          }
+        ]
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  Transforms a host name into a host id. For example, the Fleet UI uses this endpoint when sending live reports to a set of hosts.
+
+  `POST /api/v1/fleet/translate`
+
+  #### Parameters
+
+  | Name  | Type  | In   | Description                              |
+  | ----- | ----- | ---- | ---------------------------------------- |
+  | array | array | body | **Required** list of items to translate. |
+
+  #### Example
+
+  `POST /api/v1/fleet/translate`
+
+  ##### Request body
+
+  ```json
+  {
+    "list": [
+      {
+        "type": "user",
+        "payload": {
+          "identifier": "some@email.com"
+        }
+      },
+      {
+        "type": "label",
+        "payload": {
+          "identifier": "labelA"
+        }
+      },
+      {
+        "type": "team",
+        "payload": {
+          "identifier": "team1"
+        }
+      },
+      {
+        "type": "host",
+        "payload": {
+          "identifier": "host-ABC"
+        }
+      }
+    ]
+  }
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "list": [
+      {
+        "type": "user",
+        "payload": {
+          "identifier": "some@email.com",
+          "id": 32
+        }
+      },
+      {
+        "type": "label",
+        "payload": {
+          "identifier": "labelA",
+          "id": 1
+        }
+      },
+      {
+        "type": "team",
+        "payload": {
+          "identifier": "team1",
+          "id": 22
+        }
+      },
+      {
+        "type": "host",
+        "payload": {
+          "identifier": "host-ABC",
+          "id": 45
+        }
+      }
+    ]
+  }
+  ```
+  ---
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#translate-ids
+examples:
+- name: 200 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/translate'
+    body:
+      type: json
+      data: |-
+        {
+          "list": [
+            {
+              "type": "user",
+              "payload": {
+                "identifier": "some@email.com"
+              }
+            },
+            {
+              "type": "label",
+              "payload": {
+                "identifier": "labelA"
+              }
+            },
+            {
+              "type": "team",
+              "payload": {
+                "identifier": "team1"
+              }
+            },
+            {
+              "type": "host",
+              "payload": {
+                "identifier": "host-ABC"
+              }
+            }
+          ]
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "list": [
+            {
+              "type": "user",
+              "payload": {
+                "identifier": "some@email.com",
+                "id": 32
+              }
+            },
+            {
+              "type": "label",
+              "payload": {
+                "identifier": "labelA",
+                "id": 1
+              }
+            },
+            {
+              "type": "team",
+              "payload": {
+                "identifier": "team1",
+                "id": 22
+              }
+            },
+            {
+              "type": "host",
+              "payload": {
+                "identifier": "host-ABC",
+                "id": 45
+              }
+            }
+          ]
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

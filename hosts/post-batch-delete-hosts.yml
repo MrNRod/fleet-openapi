@@ -1,0 +1,116 @@
+info:
+  name: Batch-delete hosts
+  type: http
+  seq: 13
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/hosts/delete'
+  auth: inherit
+  body:
+    type: json
+    data: |-
+      {
+        "filters": {
+          "status": "online",
+          "team_id": 1,
+          "fleet_id": 1
+        }
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  Delete hosts selected by filter or ids.
+
+  `POST /api/v1/fleet/hosts/delete`
+
+  #### Parameters
+
+  | Name    | Type    | In   | Description                                                                                                                                                                                                                                                                                                                        |
+  | ------- | ------- | ---- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+  | ids     | array   | body | A list of the host IDs you'd like to delete. Required if `filters` not specified. Only one of `ids` or `filters` may be included in the request. |
+  | filters | object  | body | **Required**. See [filters](#filters2). Required if `ids` not specified. Only one of `ids` or `filters` may be included in the request.   |
+
+
+  ##### Filters
+
+  | Name                              | Type    | Description   |
+  | ---------------------             | ------- | ----------------------------------------------------------------------------------- |
+  | query                             | string  | Search query keywords. Searchable fields include `hostname`, `hardware_serial`, `uuid`, and `ipv4`. |
+  | status                            | string  | Host status. Can either be `new`, `online`, `offline`, `mia` or `missing`. |
+  | label_id                          | number  | ID of a label to filter by.  |
+  | fleet_id                           | number  | ID of the fleet to filter by. |
+
+  > Notes: `label_id` and `status` filters cannot be used at the same time.
+
+
+  Request (using `ids`):
+
+  ```json
+  {
+    "ids": [1]
+  }
+  ```
+
+  Request (using `filters`):
+  ```json
+  {
+    "filters": {
+      "status": "online",
+      "label_id": 1,
+      "team_id": 1,
+      "fleet_id": 1,
+      "query": "abc"
+    }
+  }
+  ```
+
+  Request (`filters` is specified and empty, to delete all hosts):
+  ```json
+  {
+    "filters": {}
+  }
+  ```
+
+  #### Example
+
+  `POST /api/v1/fleet/hosts/delete`
+
+  ##### Request body
+
+  ```json
+  {
+    "filters": {
+      "status": "online",
+      "team_id": 1,
+      "fleet_id": 1
+    }
+  }
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#batch-delete-hosts
+examples:
+- name: 200 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/hosts/delete'
+    body:
+      type: json
+      data: |-
+        {
+          "filters": {
+            "status": "online",
+            "team_id": 1,
+            "fleet_id": 1
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 200
+    statusText: OK

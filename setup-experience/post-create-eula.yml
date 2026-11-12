@@ -1,0 +1,64 @@
+info:
+  name: Create EULA
+  type: http
+  seq: 13
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/setup_experience/eula'
+  auth: inherit
+  body:
+    type: multipart-form
+    data:
+    - name: eula
+      value: []
+      description: '**Required**. A PDF document containing the EULA.'
+      disabled: false
+      type: file
+docs: |-
+  _Available in Fleet Premium_
+
+  Upload an EULA that will be shown during the DEP flow.
+
+  > You need to send a request of type `multipart/form-data`.
+
+  > This endpoint accepts a maximum request body size of 25MiB.
+
+  `POST /api/v1/fleet/setup_experience/eula`
+
+  #### Parameters
+
+  | Name | Type | In   | Description                                       |
+  | ---- | ---- | ---- | ------------------------------------------------- |
+  | eula | file | body | **Required**. A PDF document containing the EULA. |
+
+  #### Example
+
+  `POST /api/v1/fleet/setup_experience/eula`
+
+  ##### Request body
+
+  ```http
+  eula="eula.pdf"
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#create-eula
+examples:
+- name: 200 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/setup_experience/eula'
+    body:
+      type: multipart-form
+      data:
+      - name: eula
+        value: []
+        description: '**Required**. A PDF document containing the EULA.'
+        disabled: false
+        type: file
+  response:
+    status: 200
+    statusText: OK

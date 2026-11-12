@@ -1,0 +1,53 @@
+info:
+  name: Get Apple Push Notification service (APNs)
+  type: http
+  seq: 1
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/apns'
+  auth: inherit
+docs: |-
+  `GET /api/v1/fleet/apns`
+
+  #### Parameters
+
+  None.
+
+  #### Example
+
+  `GET /api/v1/fleet/apns`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "common_name": "APSP:04u52i98aewuh-xxxx-xxxx-xxxx-xxxx",
+    "serial_number": "1234567890987654321",
+    "issuer": "Apple Application Integration 2 Certification Authority",
+    "renew_date": "2023-09-30T00:00:00Z"
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#get-apple-push-notification-service-apns
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/apns'
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "common_name": "APSP:04u52i98aewuh-xxxx-xxxx-xxxx-xxxx",
+          "serial_number": "1234567890987654321",
+          "issuer": "Apple Application Integration 2 Certification Authority",
+          "renew_date": "2023-09-30T00:00:00Z"
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

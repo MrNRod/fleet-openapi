@@ -1,0 +1,124 @@
+info:
+  name: Verify invite
+  type: http
+  seq: 13
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/invites/:token'
+  auth: inherit
+  params:
+  - name: token
+    value: ''
+    type: path
+    description: '**Required.** The user''s invite token.'
+docs: |-
+  Verify the specified invite.
+
+  `GET /api/v1/fleet/invites/:token`
+
+  #### Parameters
+
+  | Name  | Type   | In   | Description                            |
+  | ----- | -------| ---- | -------------------------------------- |
+  | token | string | path | **Required.** The user's invite token. |
+
+  #### Example
+
+  `GET /api/v1/fleet/invites/abcdef012456789`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "invite": {
+      "created_at": "2021-01-15T00:58:33Z",
+      "updated_at": "2021-01-15T00:58:33Z",
+      "id": 4,
+      "email": "steve@example.com",
+      "name": "Steve",
+      "sso_enabled": false,
+      "mfa_enabled": false,
+      "global_role": "admin",
+      "fleets": []
+    }
+  }
+  ```
+
+  ##### Not found
+
+  `Status: 404`
+
+  ```json
+  {
+    "message": "Resource Not Found",
+    "errors": [
+      {
+        "name": "base",
+        "reason": "Invite with token <token> was not found in the datastore"
+      }
+    ]
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#verify-invite
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/invites/:token'
+    params:
+    - name: token
+      value: ''
+      type: path
+      description: '**Required.** The user''s invite token.'
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "invite": {
+            "created_at": "2021-01-15T00:58:33Z",
+            "updated_at": "2021-01-15T00:58:33Z",
+            "id": 4,
+            "email": "steve@example.com",
+            "name": "Steve",
+            "sso_enabled": false,
+            "mfa_enabled": false,
+            "global_role": "admin",
+            "fleets": []
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+- name: 404 Not found
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/invites/:token'
+    params:
+    - name: token
+      value: ''
+      type: path
+      description: '**Required.** The user''s invite token.'
+  response:
+    status: 404
+    statusText: Not Found
+    body:
+      type: json
+      data: |-
+        {
+          "message": "Resource Not Found",
+          "errors": [
+            {
+              "name": "base",
+              "reason": "Invite with token <token> was not found in the datastore"
+            }
+          ]
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

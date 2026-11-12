@@ -1,0 +1,79 @@
+info:
+  name: Get custom MDM setup enrollment profile
+  type: http
+  seq: 2
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/enrollment_profiles/automatic'
+  auth: inherit
+  params:
+  - name: fleet_id
+    value: ''
+    type: query
+    disabled: true
+    description: The fleet ID for which to return the custom enrollment profile, or "Unassigned" if omitted.
+docs: |-
+  _Available in Fleet Premium_
+
+  Gets the custom MDM setup enrollment profile for a fleet or "Unassigned".
+
+  `GET /api/v1/fleet/enrollment_profiles/automatic`
+
+  #### Parameters
+
+  | Name                      | Type    | In    | Description                                                                           |
+  | ------------------------- | ------  | ----- | -------------------------------------------------------------------------             |
+  | fleet_id                   | integer | query | The fleet ID for which to return the custom enrollment profile, or "Unassigned" if omitted. |
+
+  #### Example
+
+  `GET /api/v1/fleet/enrollment_profiles/automatic?fleet_id=123`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "team_id": 123,
+    "fleet_id": 123,
+    "name": "dep_profile.json",
+    "uploaded_at": "2023-04-04:00:00Z",
+    "enrollment_profile": {
+      "is_mandatory": true,
+      "is_mdm_removable": false
+    }
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#get-custom-mdm-setup-enrollment-profile
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/enrollment_profiles/automatic'
+    params:
+    - name: fleet_id
+      value: ''
+      type: query
+      disabled: true
+      description: The fleet ID for which to return the custom enrollment profile, or "Unassigned" if omitted.
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "team_id": 123,
+          "fleet_id": 123,
+          "name": "dep_profile.json",
+          "uploaded_at": "2023-04-04:00:00Z",
+          "enrollment_profile": {
+            "is_mandatory": true,
+            "is_mdm_removable": false
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

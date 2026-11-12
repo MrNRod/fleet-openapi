@@ -1,0 +1,97 @@
+info:
+  name: List API endpoints for API-only user permissions
+  type: http
+  seq: 16
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/rest_api'
+  auth: inherit
+  params:
+  - name: query
+    value: ''
+    type: query
+    disabled: true
+    description: Search query keywords. Searchable fields include `display_name` and `path`.
+docs: |-
+  _Available in Fleet Premium._
+
+  Lists Fleet REST API endpoints that an API-only user can be granted access to.
+
+  `GET /api/v1/fleet/rest_api`
+
+  | Name                    | Type    | In    | Description |
+  | :---------------------- | :------ | :---- | :---------- |
+  | query                   | string  | query | Search query keywords. Searchable fields include `display_name` and `path`. |
+
+  Searching by path ignores the naming of path parameters that are specified with `:` , e.g. `:id`. So searching `/hosts/:id/report` is the same as searching `/hosts/:host_id/report`.
+
+  Experimental endpoints are excluded from the results, since they are not for use in automated workflows.
+
+  #### Example
+
+  `GET /api/v1/fleet/rest_api?query=get%20host%20by%20identifier`
+  or
+  `GET /api/v1/fleet/rest_api?query=%2Fapi%2Fv1%2Ffleet%2Fhosts%2Fidentifier%2F%3Ahost_identifier`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "api_endpoints": [
+      {
+        "id": 123,
+        "display_name": "Get host by identifier",
+        "method": "GET",
+        "path": "/api/v1/fleet/hosts/identifier/:identifier",
+        "deprecated": false
+      }
+    ],
+    "meta": {
+      "has_next_results": true,
+      "has_previous_results": false
+    },
+    "count": 1
+  }
+  ```
+
+  ---
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#list-api-endpoints-for-api-only-user-permissions
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/rest_api'
+    params:
+    - name: query
+      value: ''
+      type: query
+      disabled: true
+      description: Search query keywords. Searchable fields include `display_name` and `path`.
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "api_endpoints": [
+            {
+              "id": 123,
+              "display_name": "Get host by identifier",
+              "method": "GET",
+              "path": "/api/v1/fleet/hosts/identifier/:identifier",
+              "deprecated": false
+            }
+          ],
+          "meta": {
+            "has_next_results": true,
+            "has_previous_results": false
+          },
+          "count": 1
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

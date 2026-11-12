@@ -1,0 +1,158 @@
+info:
+  name: Replace SCIM group
+  type: http
+  seq: 10
+http:
+  method: PUT
+  url: '{{baseUrl}}/api/v1/fleet/scim/Groups/:id'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required**. The group''s ID (format: `group-<number>`).'
+  body:
+    type: json
+    data: |-
+      {
+        "schemas": [
+          "urn:ietf:params:scim:schemas:core:2.0:Group"
+        ],
+        "displayName": "Engineering",
+        "members": [
+          {
+            "value": "1"
+          },
+          {
+            "value": "2"
+          }
+        ]
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  _Available in Fleet Premium_
+
+  Replaces all attributes of an existing group. Any attributes not included in the request body are cleared.
+
+  `PUT /api/v1/fleet/scim/Groups/:id`
+
+  #### Parameters
+
+  | Name        | Type   | In   | Description                                                                                |
+  | ----------- | ------ | ---- | ------------------------------------------------------------------------------------------ |
+  | id          | string | path | **Required**. The group's ID (format: `group-<number>`).                                   |
+  | schemas     | array  | body | **Required**. Must include `"urn:ietf:params:scim:schemas:core:2.0:Group"`.                |
+  | displayName | string | body | **Required**. Human-readable group name. Must be unique.                                   |
+  | externalId  | string | body | Optional. External identifier from the IdP.                                                 |
+  | members     | array  | body | Optional. List of member objects with a `value` field containing a SCIM user ID.           |
+
+  #### Example
+
+  `PUT /api/v1/fleet/scim/Groups/group-1`
+
+  ##### Request body
+
+  ```json
+  {
+    "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
+    "displayName": "Engineering",
+    "members": [
+      {
+        "value": "1"
+      },
+      {
+        "value": "2"
+      }
+    ]
+  }
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
+    "id": "group-1",
+    "displayName": "Engineering",
+    "members": [
+      {
+        "value": "1",
+        "type": "User"
+      },
+      {
+        "value": "2",
+        "type": "User"
+      }
+    ],
+    "meta": {
+      "resourceType": "Group"
+    }
+  }
+  ```
+
+  ---
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#replace-scim-group
+examples:
+- name: 200 Default response
+  request:
+    method: PUT
+    url: '{{baseUrl}}/api/v1/fleet/scim/Groups/:id'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required**. The group''s ID (format: `group-<number>`).'
+    body:
+      type: json
+      data: |-
+        {
+          "schemas": [
+            "urn:ietf:params:scim:schemas:core:2.0:Group"
+          ],
+          "displayName": "Engineering",
+          "members": [
+            {
+              "value": "1"
+            },
+            {
+              "value": "2"
+            }
+          ]
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "schemas": [
+            "urn:ietf:params:scim:schemas:core:2.0:Group"
+          ],
+          "id": "group-1",
+          "displayName": "Engineering",
+          "members": [
+            {
+              "value": "1",
+              "type": "User"
+            },
+            {
+              "value": "2",
+              "type": "User"
+            }
+          ],
+          "meta": {
+            "resourceType": "Group"
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

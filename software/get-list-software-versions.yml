@@ -1,0 +1,363 @@
+info:
+  name: List software versions
+  type: http
+  seq: 2
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/software/versions'
+  auth: inherit
+  params:
+  - name: page
+    value: ''
+    type: query
+    disabled: true
+    description: Page number of the results to fetch.
+  - name: per_page
+    value: ''
+    type: query
+    disabled: true
+    description: Results per page. If no pagination parameters are specified, defaults to 10,000.
+  - name: order_key
+    value: ''
+    type: query
+    disabled: true
+    description: What to order results by. Allowed fields are `name`, `hosts_count`, `cve_published`, `cvss_score`,
+      `epss_probability` and `cisa_known_exploit`. Default is `hosts_count` (descending).
+  - name: order_direction
+    value: ''
+    type: query
+    disabled: true
+    description: '**Requires `order_key`**. The direction of the order given the order key. Options include `"asc"`
+      and `"desc"`. Default is `"asc"`.'
+  - name: query
+    value: ''
+    type: query
+    disabled: true
+    description: Search query keywords. Searchable fields include `name`, `version`, and `cve`.
+  - name: fleet_id
+    value: ''
+    type: query
+    disabled: true
+    description: _Available in Fleet Premium_. Filters the software to only include the software installed on the
+      hosts that are assigned to the specified fleet. Use `0` to filter by "Unassigned" hosts.
+  - name: vulnerable
+    value: ''
+    type: query
+    disabled: true
+    description: If true or 1, only list software that has detected vulnerabilities. Default is `false`.
+  - name: min_cvss_score
+    value: ''
+    type: query
+    disabled: true
+    description: _Available in Fleet Premium_. Filters to include only software with vulnerabilities that have a
+      CVSS version 3.x base score higher than the specified value.
+  - name: max_cvss_score
+    value: ''
+    type: query
+    disabled: true
+    description: _Available in Fleet Premium_. Filters to only include software with vulnerabilities that have a
+      CVSS version 3.x base score lower than what's specified.
+  - name: exploit
+    value: ''
+    type: query
+    disabled: true
+    description: '_Available in Fleet Premium_. If `true`, filters to only include software with vulnerabilities
+      that have been actively exploited in the wild (`cisa_known_exploit: true`). Default is `false`.'
+  - name: without_vulnerability_details
+    value: ''
+    type: query
+    disabled: true
+    description: _Available in Fleet Premium_. If `true` only vulnerability name is included in response. If `false`
+      (or omitted), adds vulnerability description, CVSS score, and other details available in Fleet Premium. See
+      note above on performance.
+  - name: after
+    value: ''
+    type: query
+    disabled: true
+    description: The value to get results after. This needs `order_key` defined, as that's the column that would
+      be used.
+docs: |-
+  > For optimal performance, we recommend Fleet Premium users set `without_vulnerability_details` to `true` whenever possible. If set to `false` a large amount of data will be included in the response. If you need vulnerability details, consider using the [Get vulnerability](#get-vulnerability) endpoint.
+
+  > A request without pagination parameters returns at most 10,000 versions. Use `page` and `per_page` to retrieve the rest; `count` in the response is the total number of versions matching the request.
+
+  Get a list of all software versions.
+
+  `GET /api/v1/fleet/software/versions`
+
+  #### Parameters
+
+  | Name                    | Type    | In    | Description                                                                                                                                                                |
+  | ----------------------- | ------- | ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+  | page                    | integer | query | Page number of the results to fetch.                                                                                                                                       |
+  | per_page                | integer | query | Results per page. If no pagination parameters are specified, defaults to 10,000.                                                                                            |
+  | order_key               | string  | query | What to order results by. Allowed fields are `name`, `hosts_count`, `cve_published`, `cvss_score`, `epss_probability` and `cisa_known_exploit`. Default is `hosts_count` (descending).      |
+  | order_direction         | string  | query | **Requires `order_key`**. The direction of the order given the order key. Options include `"asc"` and `"desc"`. Default is `"asc"`.                                              |
+  | query                   | string  | query | Search query keywords. Searchable fields include `name`, `version`, and `cve`.                                                                                             |
+  | fleet_id                 | integer | query | _Available in Fleet Premium_. Filters the software to only include the software installed on the hosts that are assigned to the specified fleet. Use `0` to filter by "Unassigned" hosts.                             |
+  | vulnerable              | boolean    | query | If true or 1, only list software that has detected vulnerabilities. Default is `false`.                                                                                    |
+  | min_cvss_score | integer | query | _Available in Fleet Premium_. Filters to include only software with vulnerabilities that have a CVSS version 3.x base score higher than the specified value.   |
+  | max_cvss_score | integer | query | _Available in Fleet Premium_. Filters to only include software with vulnerabilities that have a CVSS version 3.x base score lower than what's specified.   |
+  | exploit | boolean | query | _Available in Fleet Premium_. If `true`, filters to only include software with vulnerabilities that have been actively exploited in the wild (`cisa_known_exploit: true`). Default is `false`.  |
+  | without_vulnerability_details | boolean | query | _Available in Fleet Premium_. If `true` only vulnerability name is included in response. If `false` (or omitted), adds vulnerability description, CVSS score, and other details available in Fleet Premium. See note above on performance. |
+  | after | string | query | The value to get results after. This needs `order_key` defined, as that's the column that would be used. |
+
+
+  #### Example
+
+  `GET /api/v1/fleet/software/versions`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+      "counts_updated_at": "2022-01-01T12:32:00Z",
+      "count": 2,
+      "software": [
+        {
+          "id": 1,
+          "name": "glibc",
+          "display_name": "",
+          "version": "2.12",
+          "source": "rpm_packages",
+          "release": "1.212.el6",
+          "vendor": "CentOS",
+          "arch": "x86_64",
+          "generated_cpe": "cpe:2.3:a:gnu:glibc:2.12:*:*:*:*:*:*:*",
+          "vulnerabilities": [
+            {
+              "cve": "CVE-2009-5155",
+              "details_link": "https://nvd.nist.gov/vuln/detail/CVE-2009-5155",
+              "cvss_score": 7.5,
+              "epss_probability": 0.01537,
+              "cisa_known_exploit": false,
+              "cve_published": "2022-01-01T12:32:00Z",
+              "cve_description": "In the GNU C Library (aka glibc or libc6) before 2.28, parse_reg_exp in posix/regcomp.c misparses alternatives, which allows attackers to cause a denial of service (assertion failure and application exit) or trigger an incorrect result by attempting a regular-expression match.",
+              "resolved_in_version": "2.28"
+            }
+          ],
+          "hosts_count": 1
+        },
+        {
+          "id": 2,
+          "name": "1Password – Password Manager",
+          "display_name": "",
+          "version": "2.10.0",
+          "source": "chrome_extensions",
+          "browser": "chrome",
+          "extension_for": "chrome",
+          "extension_id": "aeblfdkhhhdcdjpifhhbdiojplfjncoa",
+          "generated_cpe": "cpe:2.3:a:1password:1password:2.19.0:*:*:*:*:chrome:*:*",
+          "hosts_count": 345,
+          "vulnerabilities": null
+        },
+        {
+          "id": 3,
+          "name": "Prettier",
+          "version": "232.1.0",
+          "source": "jetbrains_plugins",
+          "extension_for": "goland",
+          "generated_cpe": "cpe:2.3:a:*:prettier:232.1.0:*:*:*:*:node.js:*:*",
+          "hosts_count": 19,
+          "vulnerabilities": null
+        },
+        {
+          "id": 4,
+          "name": "gopls",
+          "display_name": "",
+          "version": "v0.21.1",
+          "source": "go_binaries",
+          "release": "go1.26.1",
+          "generated_cpe": "",
+          "hosts_count": 19,
+          "vulnerabilities": [
+            {
+              "cve": "CVE-2026-56860",
+              "details_link": "https://nvd.nist.gov/vuln/detail/CVE-2026-56860",
+              "cvss_score": 7.5,
+              "epss_probability": 0.00043,
+              "cisa_known_exploit": false,
+              "cve_published": "2026-01-15T18:15:00Z",
+              "cve_description": "Quadratic complexity in resolvePath in net/url when parsing a URL with many dot segments.",
+              "resolved_in_version": ""
+            }
+          ]
+        }
+      ],
+      "meta": {
+        "has_next_results": false,
+        "has_previous_results": false
+      }
+  }
+  ```
+
+  `browser` and `extension_for` fields are included when set and when empty. `extension_for` will show the browser or Visual Studio Code fork associated with the extension, allowing for differentiation between e.g. an extension installed on Visual Studio Code and one installed on Cursor. `browser` is deprecated, and only shows this information for browser plugins.
+
+  `release` is included when set. For `rpm_packages`, it's the package release (for example, `1.212.el6`). For `go_binaries`, it's the version of the Go toolchain the binary was built with (for example, `go1.26.1`). Fleet uses it to detect Go standard library vulnerabilities, so the same binary version built with two toolchains is listed as two versions. `generated_cpe` is empty for Go binaries. Their vulnerabilities come from the [Go vulnerability database](https://vuln.go.dev) instead of NVD.
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#list-software-versions
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/software/versions'
+    params:
+    - name: page
+      value: ''
+      type: query
+      disabled: true
+      description: Page number of the results to fetch.
+    - name: per_page
+      value: ''
+      type: query
+      disabled: true
+      description: Results per page. If no pagination parameters are specified, defaults to 10,000.
+    - name: order_key
+      value: ''
+      type: query
+      disabled: true
+      description: What to order results by. Allowed fields are `name`, `hosts_count`, `cve_published`, `cvss_score`,
+        `epss_probability` and `cisa_known_exploit`. Default is `hosts_count` (descending).
+    - name: order_direction
+      value: ''
+      type: query
+      disabled: true
+      description: '**Requires `order_key`**. The direction of the order given the order key. Options include `"asc"`
+        and `"desc"`. Default is `"asc"`.'
+    - name: query
+      value: ''
+      type: query
+      disabled: true
+      description: Search query keywords. Searchable fields include `name`, `version`, and `cve`.
+    - name: fleet_id
+      value: ''
+      type: query
+      disabled: true
+      description: _Available in Fleet Premium_. Filters the software to only include the software installed on
+        the hosts that are assigned to the specified fleet. Use `0` to filter by "Unassigned" hosts.
+    - name: vulnerable
+      value: ''
+      type: query
+      disabled: true
+      description: If true or 1, only list software that has detected vulnerabilities. Default is `false`.
+    - name: min_cvss_score
+      value: ''
+      type: query
+      disabled: true
+      description: _Available in Fleet Premium_. Filters to include only software with vulnerabilities that have
+        a CVSS version 3.x base score higher than the specified value.
+    - name: max_cvss_score
+      value: ''
+      type: query
+      disabled: true
+      description: _Available in Fleet Premium_. Filters to only include software with vulnerabilities that have
+        a CVSS version 3.x base score lower than what's specified.
+    - name: exploit
+      value: ''
+      type: query
+      disabled: true
+      description: '_Available in Fleet Premium_. If `true`, filters to only include software with vulnerabilities
+        that have been actively exploited in the wild (`cisa_known_exploit: true`). Default is `false`.'
+    - name: without_vulnerability_details
+      value: ''
+      type: query
+      disabled: true
+      description: _Available in Fleet Premium_. If `true` only vulnerability name is included in response. If `false`
+        (or omitted), adds vulnerability description, CVSS score, and other details available in Fleet Premium.
+        See note above on performance.
+    - name: after
+      value: ''
+      type: query
+      disabled: true
+      description: The value to get results after. This needs `order_key` defined, as that's the column that would
+        be used.
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "counts_updated_at": "2022-01-01T12:32:00Z",
+          "count": 2,
+          "software": [
+            {
+              "id": 1,
+              "name": "glibc",
+              "display_name": "",
+              "version": "2.12",
+              "source": "rpm_packages",
+              "release": "1.212.el6",
+              "vendor": "CentOS",
+              "arch": "x86_64",
+              "generated_cpe": "cpe:2.3:a:gnu:glibc:2.12:*:*:*:*:*:*:*",
+              "vulnerabilities": [
+                {
+                  "cve": "CVE-2009-5155",
+                  "details_link": "https://nvd.nist.gov/vuln/detail/CVE-2009-5155",
+                  "cvss_score": 7.5,
+                  "epss_probability": 0.01537,
+                  "cisa_known_exploit": false,
+                  "cve_published": "2022-01-01T12:32:00Z",
+                  "cve_description": "In the GNU C Library (aka glibc or libc6) before 2.28, parse_reg_exp in posix/regcomp.c misparses alternatives, which allows attackers to cause a denial of service (assertion failure and application exit) or trigger an incorrect result by attempting a regular-expression match.",
+                  "resolved_in_version": "2.28"
+                }
+              ],
+              "hosts_count": 1
+            },
+            {
+              "id": 2,
+              "name": "1Password – Password Manager",
+              "display_name": "",
+              "version": "2.10.0",
+              "source": "chrome_extensions",
+              "browser": "chrome",
+              "extension_for": "chrome",
+              "extension_id": "aeblfdkhhhdcdjpifhhbdiojplfjncoa",
+              "generated_cpe": "cpe:2.3:a:1password:1password:2.19.0:*:*:*:*:chrome:*:*",
+              "hosts_count": 345,
+              "vulnerabilities": null
+            },
+            {
+              "id": 3,
+              "name": "Prettier",
+              "version": "232.1.0",
+              "source": "jetbrains_plugins",
+              "extension_for": "goland",
+              "generated_cpe": "cpe:2.3:a:*:prettier:232.1.0:*:*:*:*:node.js:*:*",
+              "hosts_count": 19,
+              "vulnerabilities": null
+            },
+            {
+              "id": 4,
+              "name": "gopls",
+              "display_name": "",
+              "version": "v0.21.1",
+              "source": "go_binaries",
+              "release": "go1.26.1",
+              "generated_cpe": "",
+              "hosts_count": 19,
+              "vulnerabilities": [
+                {
+                  "cve": "CVE-2026-56860",
+                  "details_link": "https://nvd.nist.gov/vuln/detail/CVE-2026-56860",
+                  "cvss_score": 7.5,
+                  "epss_probability": 0.00043,
+                  "cisa_known_exploit": false,
+                  "cve_published": "2026-01-15T18:15:00Z",
+                  "cve_description": "Quadratic complexity in resolvePath in net/url when parsing a URL with many dot segments.",
+                  "resolved_in_version": ""
+                }
+              ]
+            }
+          ],
+          "meta": {
+            "has_next_results": false,
+            "has_previous_results": false
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

@@ -1,0 +1,165 @@
+info:
+  name: Get labels summary
+  type: http
+  seq: 4
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/labels/summary'
+  auth: inherit
+  params:
+  - name: fleet_id
+    value: ''
+    type: query
+    disabled: true
+    description: _Available in Fleet Premium._  Filters to labels belonging to the specified fleet, plus global
+      labels. Specify `"global"` to show only globally-available labels. If omitted, Fleet returns all global labels,
+      plus all labels for fleets to which the requestor has access.
+docs: |-
+  Returns a list of labels in Fleet, including basic information on each label.
+
+  `GET /api/v1/fleet/labels/summary`
+
+  #### Parameters
+
+  | Name            | Type    | In    | Description   |
+  | --------------- | ------- | ----- |------------------------------------- |
+  | fleet_id         | string | query | _Available in Fleet Premium._  Filters to labels belonging to the specified fleet, plus global labels. Specify `"global"` to show only globally-available labels. If omitted, Fleet returns all global labels, plus all labels for fleets to which the requestor has access. |
+
+  #### Example
+
+  `GET /api/v1/fleet/labels/summary`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "labels": [
+      {
+        "id": 6,
+        "name": "All Hosts",
+        "description": "All hosts which have enrolled in Fleet",
+        "label_type": "builtin",
+        "team_id": null,
+        "fleet_id": null
+      },
+      {
+        "id": 7,
+        "name": "macOS",
+        "description": "All macOS hosts",
+        "label_type": "builtin",
+        "team_id": null,
+        "fleet_id": null
+      },
+      {
+        "id": 8,
+        "name": "Ubuntu Linux",
+        "description": "All Ubuntu hosts",
+        "label_type": "builtin",
+        "team_id": null,
+        "fleet_id": null
+      },
+      {
+        "id": 9,
+        "name": "CentOS Linux",
+        "description": "All CentOS hosts",
+        "label_type": "builtin",
+        "team_id": null,
+        "fleet_id": null
+      },
+      {
+        "id": 10,
+        "name": "MS Windows",
+        "description": "All Windows hosts",
+        "label_type": "builtin",
+        "team_id": null,
+        "fleet_id": null
+      },
+      {
+        "id": 11,
+        "name": "My fleet-specific label",
+        "description": "This one goes to eleven, but only on one fleet",
+        "label_type": "regular",
+        "team_id": 1,
+        "fleet_id": 1
+      }
+    ]
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#get-labels-summary
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/labels/summary'
+    params:
+    - name: fleet_id
+      value: ''
+      type: query
+      disabled: true
+      description: _Available in Fleet Premium._  Filters to labels belonging to the specified fleet, plus global
+        labels. Specify `"global"` to show only globally-available labels. If omitted, Fleet returns all global
+        labels, plus all labels for fleets to which the requestor has access.
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "labels": [
+            {
+              "id": 6,
+              "name": "All Hosts",
+              "description": "All hosts which have enrolled in Fleet",
+              "label_type": "builtin",
+              "team_id": null,
+              "fleet_id": null
+            },
+            {
+              "id": 7,
+              "name": "macOS",
+              "description": "All macOS hosts",
+              "label_type": "builtin",
+              "team_id": null,
+              "fleet_id": null
+            },
+            {
+              "id": 8,
+              "name": "Ubuntu Linux",
+              "description": "All Ubuntu hosts",
+              "label_type": "builtin",
+              "team_id": null,
+              "fleet_id": null
+            },
+            {
+              "id": 9,
+              "name": "CentOS Linux",
+              "description": "All CentOS hosts",
+              "label_type": "builtin",
+              "team_id": null,
+              "fleet_id": null
+            },
+            {
+              "id": 10,
+              "name": "MS Windows",
+              "description": "All Windows hosts",
+              "label_type": "builtin",
+              "team_id": null,
+              "fleet_id": null
+            },
+            {
+              "id": 11,
+              "name": "My fleet-specific label",
+              "description": "This one goes to eleven, but only on one fleet",
+              "label_type": "regular",
+              "team_id": 1,
+              "fleet_id": 1
+            }
+          ]
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

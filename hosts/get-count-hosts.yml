@@ -1,0 +1,381 @@
+info:
+  name: Count hosts
+  type: http
+  seq: 2
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/hosts/count'
+  auth: inherit
+  params:
+  - name: order_key
+    value: ''
+    type: query
+    disabled: true
+    description: What to order results by. Can be any column in the hosts table.
+  - name: order_direction
+    value: ''
+    type: query
+    disabled: true
+    description: '**Requires `order_key`**. The direction of the order given the order key. Options include `"asc"`
+      and `"desc"`. Default is `"asc"`.'
+  - name: after
+    value: ''
+    type: query
+    disabled: true
+    description: The value to get results after. This needs `order_key` defined, as that's the column that would
+      be used.
+  - name: status
+    value: ''
+    type: query
+    disabled: true
+    description: Indicates the status of the hosts to return. Can either be 'new', 'online', 'offline', 'mia', 'missing'
+      or 'enrolled'. 'enrolled' returns every host except those pending MDM enrollment.
+  - name: query
+    value: ''
+    type: query
+    disabled: true
+    description: Search query keywords. Searchable fields include `hostname`, `hardware_serial`, `uuid`, `ipv4`,
+      and end user email addresses.
+  - name: fleet_id
+    value: ''
+    type: query
+    disabled: true
+    description: _Available in Fleet Premium_. Filters the hosts to only include hosts in the specified fleet.
+  - name: policy_id
+    value: ''
+    type: query
+    disabled: true
+    description: The ID of the policy to filter hosts by.
+  - name: policy_response
+    value: ''
+    type: query
+    disabled: true
+    description: '**Requires `policy_id`**. Valid options are ''passing'' or ''failing''.'
+  - name: software_version_id
+    value: ''
+    type: query
+    disabled: true
+    description: The ID of the software version to filter hosts by.
+  - name: software_title_id
+    value: ''
+    type: query
+    disabled: true
+    description: The ID of the software title to filter hosts by.
+  - name: os_version_id
+    value: ''
+    type: query
+    disabled: true
+    description: The ID of the operating system version to filter hosts by.
+  - name: os_name
+    value: ''
+    type: query
+    disabled: true
+    description: The name of the operating system to filter hosts by. `os_version` must also be specified with `os_name`
+  - name: os_version
+    value: ''
+    type: query
+    disabled: true
+    description: The version of the operating system to filter hosts by. `os_name` must also be specified with `os_version`
+  - name: vulnerability
+    value: ''
+    type: query
+    disabled: true
+    description: The cve to filter hosts by (including "cve-" prefix, case-insensitive).
+  - name: label_id
+    value: ''
+    type: query
+    disabled: true
+    description: A valid label ID. Can only be used in combination with `order_key`, `order_direction`, `after`,
+      `status`, `query` and `fleet_id`.
+  - name: mdm_id
+    value: ''
+    type: query
+    disabled: true
+    description: The ID of the _mobile device management_ (MDM) solution to filter hosts by (that is, filter hosts
+      that use a specific MDM provider and URL).
+  - name: mdm_name
+    value: ''
+    type: query
+    disabled: true
+    description: The name of the _mobile device management_ (MDM) solution to filter hosts by (that is, filter hosts
+      that use a specific MDM provider).
+  - name: mdm_enrollment_status
+    value: ''
+    type: query
+    disabled: true
+    description: The _mobile device management_ (MDM) enrollment status to filter hosts by. Valid options are 'manual',
+      'manual-personal', 'automatic', 'enrolled', 'pending', or 'unenrolled'. 'pending' only includes Apple (macOS,
+      iOS, iPadOS) hosts in Apple Business (AB) that are not yet enrolled to Fleet.
+  - name: macos_settings
+    value: ''
+    type: query
+    disabled: true
+    description: 'Filters the hosts by the status of the _mobile device management_ (MDM) profiles applied to hosts.
+      Valid options are ''verified'', ''verifying'', ''pending'', or ''failed''. **Note: If this filter is used
+      in Fleet Premium without a fleet ID filter, the results include only "Unassigned" hosts.**'
+  - name: munki_issue_id
+    value: ''
+    type: query
+    disabled: true
+    description: The ID of the _munki issue_ (a Munki-reported error or warning message) to filter hosts by (that
+      is, filter hosts that are affected by that corresponding error or warning message).
+  - name: low_disk_space
+    value: ''
+    type: query
+    disabled: true
+    description: _Available in Fleet Premium_. Filters the hosts to only include hosts with less GB of disk space
+      available than this value. Must be a number between 1-100.
+  - name: macos_settings_disk_encryption
+    value: ''
+    type: query
+    disabled: true
+    description: Filters the hosts by disk encryption status. Valid options are 'verified', 'verifying', 'action_required',
+      'enforcing', 'failed', or 'removing_enforcement'.
+  - name: bootstrap_package
+    value: ''
+    type: query
+    disabled: true
+    description: '_Available in Fleet Premium_. Filters the hosts by the status of the MDM bootstrap package on
+      the host. Valid options are ''installed'', ''pending'', or ''failed''. **Note: If this filter is used in Fleet
+      Premium without a fleet ID filter, the results include only "Unassigned" hosts.**'
+  - name: os_settings
+    value: ''
+    type: query
+    disabled: true
+    description: 'Filters the hosts by the status of the operating system settings applied to the hosts. Valid options
+      are ''verified'', ''verifying'', ''pending'', or ''failed''. **Note: If this filter is used in Fleet Premium
+      without a fleet ID filter, the results include only "Unassigned" hosts.**'
+  - name: os_settings_disk_encryption
+    value: ''
+    type: query
+    disabled: true
+    description: 'Filters the hosts by disk encryption status. Valid options are ''verified'', ''verifying'', ''action_required'',
+      ''enforcing'', ''failed'', or ''removing_enforcement''.  **Note: If this filter is used in Fleet Premium without
+      a fleet ID filter, the results include only "Unassigned" hosts.**'
+docs: |-
+  `GET /api/v1/fleet/hosts/count`
+
+  #### Parameters
+
+  | Name                    | Type    | In    | Description                                                                                                                                                                                                                                                                                                                                 |
+  | ----------------------- | ------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+  | order_key               | string  | query | What to order results by. Can be any column in the hosts table.                                                                                                                                                                                                                                                                             |
+  | order_direction         | string  | query | **Requires `order_key`**. The direction of the order given the order key. Options include `"asc"` and `"desc"`. Default is `"asc"`.                                                                                                                                                                                                               |
+  | after                   | string  | query | The value to get results after. This needs `order_key` defined, as that's the column that would be used.                                                                                                                                                                                                                                    |
+  | status                  | string  | query | Indicates the status of the hosts to return. Can either be 'new', 'online', 'offline', 'mia', 'missing' or 'enrolled'. 'enrolled' returns every host except those pending MDM enrollment.                                                                                                                                                                                                                                  |
+  | query                   | string  | query | Search query keywords. Searchable fields include `hostname`, `hardware_serial`, `uuid`, `ipv4`, and end user email addresses. |
+  | fleet_id                 | integer | query | _Available in Fleet Premium_. Filters the hosts to only include hosts in the specified fleet.                                                                                                                                                                                                                                                 |
+  | policy_id               | integer | query | The ID of the policy to filter hosts by.                                                                                                                                                                                                                                                                                                    |
+  | policy_response         | string  | query | **Requires `policy_id`**. Valid options are 'passing' or 'failing'.                                                                                                                                                                                                                                       |
+  | software_version_id     | integer | query | The ID of the software version to filter hosts by.                                                                                                            |
+  | software_title_id       | integer | query | The ID of the software title to filter hosts by.                                                                                                              |
+  | os_version_id | integer | query | The ID of the operating system version to filter hosts by. |
+  | os_name                 | string  | query | The name of the operating system to filter hosts by. `os_version` must also be specified with `os_name`                                                                                                                                                                                                                                     |
+  | os_version              | string  | query | The version of the operating system to filter hosts by. `os_name` must also be specified with `os_version`                                                                                                                                                                                                                                  |
+  | vulnerability           | string  | query | The cve to filter hosts by (including "cve-" prefix, case-insensitive).                                                                                                                                                                                                                                                                     |
+  | label_id                | integer | query | A valid label ID. Can only be used in combination with `order_key`, `order_direction`, `after`, `status`, `query` and `fleet_id`.                                                                                                                                                                                                            |
+  | mdm_id                  | integer | query | The ID of the _mobile device management_ (MDM) solution to filter hosts by (that is, filter hosts that use a specific MDM provider and URL).                                                                                                                                                                                                |
+  | mdm_name                | string  | query | The name of the _mobile device management_ (MDM) solution to filter hosts by (that is, filter hosts that use a specific MDM provider).                                                                                                                                                                                                |
+  | mdm_enrollment_status   | string  | query | The _mobile device management_ (MDM) enrollment status to filter hosts by. Valid options are 'manual', 'manual-personal', 'automatic', 'enrolled', 'pending', or 'unenrolled'. 'pending' only includes Apple (macOS, iOS, iPadOS) hosts in Apple Business (AB) that are not yet enrolled to Fleet.   |
+  | macos_settings          | string  | query | Filters the hosts by the status of the _mobile device management_ (MDM) profiles applied to hosts. Valid options are 'verified', 'verifying', 'pending', or 'failed'. **Note: If this filter is used in Fleet Premium without a fleet ID filter, the results include only "Unassigned" hosts.**                                                                                                                                                                                                             |
+  | munki_issue_id          | integer | query | The ID of the _munki issue_ (a Munki-reported error or warning message) to filter hosts by (that is, filter hosts that are affected by that corresponding error or warning message).                                                                                                                                                        |
+  | low_disk_space          | integer | query | _Available in Fleet Premium_. Filters the hosts to only include hosts with less GB of disk space available than this value. Must be a number between 1-100.                                                                                                                                                                                  |
+  | macos_settings_disk_encryption | string | query | Filters the hosts by disk encryption status. Valid options are 'verified', 'verifying', 'action_required', 'enforcing', 'failed', or 'removing_enforcement'. |
+  | bootstrap_package       | string | query | _Available in Fleet Premium_. Filters the hosts by the status of the MDM bootstrap package on the host. Valid options are 'installed', 'pending', or 'failed'. **Note: If this filter is used in Fleet Premium without a fleet ID filter, the results include only "Unassigned" hosts.** |
+  | os_settings          | string  | query | Filters the hosts by the status of the operating system settings applied to the hosts. Valid options are 'verified', 'verifying', 'pending', or 'failed'. **Note: If this filter is used in Fleet Premium without a fleet ID filter, the results include only "Unassigned" hosts.** |
+  | os_settings_disk_encryption | string | query | Filters the hosts by disk encryption status. Valid options are 'verified', 'verifying', 'action_required', 'enforcing', 'failed', or 'removing_enforcement'.  **Note: If this filter is used in Fleet Premium without a fleet ID filter, the results include only "Unassigned" hosts.** |
+
+  If `additional_info_filters` is not specified, no `additional` information will be returned.
+
+  If `mdm_id`, `mdm_name` or `mdm_enrollment_status` is specified, then Windows Servers are excluded from the results.
+
+  #### Example
+
+  `GET /api/v1/fleet/hosts/count?page=0&per_page=100&order_key=hostname&query=2ce`
+
+  ##### Request query parameters
+
+  ```json
+  {
+    "page": 0,
+    "per_page": 100,
+    "order_key": "hostname"
+  }
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "count": 123
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#count-hosts
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/hosts/count'
+    params:
+    - name: order_key
+      value: ''
+      type: query
+      disabled: true
+      description: What to order results by. Can be any column in the hosts table.
+    - name: order_direction
+      value: ''
+      type: query
+      disabled: true
+      description: '**Requires `order_key`**. The direction of the order given the order key. Options include `"asc"`
+        and `"desc"`. Default is `"asc"`.'
+    - name: after
+      value: ''
+      type: query
+      disabled: true
+      description: The value to get results after. This needs `order_key` defined, as that's the column that would
+        be used.
+    - name: status
+      value: ''
+      type: query
+      disabled: true
+      description: Indicates the status of the hosts to return. Can either be 'new', 'online', 'offline', 'mia',
+        'missing' or 'enrolled'. 'enrolled' returns every host except those pending MDM enrollment.
+    - name: query
+      value: ''
+      type: query
+      disabled: true
+      description: Search query keywords. Searchable fields include `hostname`, `hardware_serial`, `uuid`, `ipv4`,
+        and end user email addresses.
+    - name: fleet_id
+      value: ''
+      type: query
+      disabled: true
+      description: _Available in Fleet Premium_. Filters the hosts to only include hosts in the specified fleet.
+    - name: policy_id
+      value: ''
+      type: query
+      disabled: true
+      description: The ID of the policy to filter hosts by.
+    - name: policy_response
+      value: ''
+      type: query
+      disabled: true
+      description: '**Requires `policy_id`**. Valid options are ''passing'' or ''failing''.'
+    - name: software_version_id
+      value: ''
+      type: query
+      disabled: true
+      description: The ID of the software version to filter hosts by.
+    - name: software_title_id
+      value: ''
+      type: query
+      disabled: true
+      description: The ID of the software title to filter hosts by.
+    - name: os_version_id
+      value: ''
+      type: query
+      disabled: true
+      description: The ID of the operating system version to filter hosts by.
+    - name: os_name
+      value: ''
+      type: query
+      disabled: true
+      description: The name of the operating system to filter hosts by. `os_version` must also be specified with
+        `os_name`
+    - name: os_version
+      value: ''
+      type: query
+      disabled: true
+      description: The version of the operating system to filter hosts by. `os_name` must also be specified with
+        `os_version`
+    - name: vulnerability
+      value: ''
+      type: query
+      disabled: true
+      description: The cve to filter hosts by (including "cve-" prefix, case-insensitive).
+    - name: label_id
+      value: ''
+      type: query
+      disabled: true
+      description: A valid label ID. Can only be used in combination with `order_key`, `order_direction`, `after`,
+        `status`, `query` and `fleet_id`.
+    - name: mdm_id
+      value: ''
+      type: query
+      disabled: true
+      description: The ID of the _mobile device management_ (MDM) solution to filter hosts by (that is, filter hosts
+        that use a specific MDM provider and URL).
+    - name: mdm_name
+      value: ''
+      type: query
+      disabled: true
+      description: The name of the _mobile device management_ (MDM) solution to filter hosts by (that is, filter
+        hosts that use a specific MDM provider).
+    - name: mdm_enrollment_status
+      value: ''
+      type: query
+      disabled: true
+      description: The _mobile device management_ (MDM) enrollment status to filter hosts by. Valid options are
+        'manual', 'manual-personal', 'automatic', 'enrolled', 'pending', or 'unenrolled'. 'pending' only includes
+        Apple (macOS, iOS, iPadOS) hosts in Apple Business (AB) that are not yet enrolled to Fleet.
+    - name: macos_settings
+      value: ''
+      type: query
+      disabled: true
+      description: 'Filters the hosts by the status of the _mobile device management_ (MDM) profiles applied to
+        hosts. Valid options are ''verified'', ''verifying'', ''pending'', or ''failed''. **Note: If this filter
+        is used in Fleet Premium without a fleet ID filter, the results include only "Unassigned" hosts.**'
+    - name: munki_issue_id
+      value: ''
+      type: query
+      disabled: true
+      description: The ID of the _munki issue_ (a Munki-reported error or warning message) to filter hosts by (that
+        is, filter hosts that are affected by that corresponding error or warning message).
+    - name: low_disk_space
+      value: ''
+      type: query
+      disabled: true
+      description: _Available in Fleet Premium_. Filters the hosts to only include hosts with less GB of disk space
+        available than this value. Must be a number between 1-100.
+    - name: macos_settings_disk_encryption
+      value: ''
+      type: query
+      disabled: true
+      description: Filters the hosts by disk encryption status. Valid options are 'verified', 'verifying', 'action_required',
+        'enforcing', 'failed', or 'removing_enforcement'.
+    - name: bootstrap_package
+      value: ''
+      type: query
+      disabled: true
+      description: '_Available in Fleet Premium_. Filters the hosts by the status of the MDM bootstrap package on
+        the host. Valid options are ''installed'', ''pending'', or ''failed''. **Note: If this filter is used in
+        Fleet Premium without a fleet ID filter, the results include only "Unassigned" hosts.**'
+    - name: os_settings
+      value: ''
+      type: query
+      disabled: true
+      description: 'Filters the hosts by the status of the operating system settings applied to the hosts. Valid
+        options are ''verified'', ''verifying'', ''pending'', or ''failed''. **Note: If this filter is used in Fleet
+        Premium without a fleet ID filter, the results include only "Unassigned" hosts.**'
+    - name: os_settings_disk_encryption
+      value: ''
+      type: query
+      disabled: true
+      description: 'Filters the hosts by disk encryption status. Valid options are ''verified'', ''verifying'',
+        ''action_required'', ''enforcing'', ''failed'', or ''removing_enforcement''.  **Note: If this filter is
+        used in Fleet Premium without a fleet ID filter, the results include only "Unassigned" hosts.**'
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "count": 123
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

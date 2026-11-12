@@ -1,0 +1,234 @@
+info:
+  name: Update fleet-level agent options
+  type: http
+  seq: 7
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/fleets/:id/agent_options'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required.** The desired fleet''s ID.'
+  - name: force
+    value: ''
+    type: query
+    disabled: true
+    description: Force apply the options even if there are validation errors.
+  - name: dry_run
+    value: ''
+    type: query
+    disabled: true
+    description: Validate the options and return any validation errors, but do not apply the changes.
+  body:
+    type: json
+    data: |-
+      {
+        "config": {
+          "options": {
+            "pack_delimiter": "/",
+            "logger_tls_period": 20,
+            "distributed_plugin": "tls",
+            "disable_distributed": false,
+            "logger_tls_endpoint": "/api/v1/osquery/log",
+            "distributed_interval": 60,
+            "distributed_tls_max_attempts": 3
+          },
+          "decorators": {
+            "load": [
+              "SELECT uuid AS host_uuid FROM system_info;",
+              "SELECT hostname AS hostname FROM system_info;"
+            ]
+          }
+        },
+        "overrides": {},
+        "command_line_flags": {}
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  _Available in Fleet Premium_
+
+  `POST /api/v1/fleet/fleets/:id/agent_options`
+
+  `mdm.apple_settings.configuration_profiles`, `mdm.windows_settings.configuration_profiles`, `scripts`, and `mdm.setup_experience` only include the configuration profiles, scripts, and setup experience settings applied using [Fleet's YAML](https://fleetdm.com/docs/configuration/yaml-files). To list profiles, scripts, or setup experience settings added in the UI or API, use the [List configuration profiles](https://fleetdm.com/docs/rest-api/rest-api#list-custom-os-settings-configuration-profiles), [List scripts](https://fleetdm.com/docs/rest-api/rest-api#list-scripts), or GET endpoints from [Setup experience](https://fleetdm.com/docs/rest-api/rest-api#setup-experience) instead.
+
+  #### Parameters
+
+  | Name                             | Type    | In    | Description                                                                                                                                                  |
+  | ---                              | ---     | ---   | ---                                                                                                                                                          |
+  | id                               | integer | path  | **Required.** The desired fleet's ID.                                                                                                                         |
+  | force                            | boolean | query | Force apply the options even if there are validation errors.                                                                                                 |
+  | dry_run                          | boolean | query | Validate the options and return any validation errors, but do not apply the changes.                                                                         |
+  | _JSON data_                      | object  | body  | The JSON to use as agent options for this fleet. See [Agent options](https://fleetdm.com/docs/using-fleet/configuration-files#agent-options) for details.                              |
+
+  #### Example
+
+  `POST /api/v1/fleet/fleets/1/agent_options`
+
+  ##### Request body
+
+  ```json
+  {
+    "config": {
+      "options": {
+        "pack_delimiter": "/",
+        "logger_tls_period": 20,
+        "distributed_plugin": "tls",
+        "disable_distributed": false,
+        "logger_tls_endpoint": "/api/v1/osquery/log",
+        "distributed_interval": 60,
+        "distributed_tls_max_attempts": 3
+      },
+      "decorators": {
+        "load": [
+          "SELECT uuid AS host_uuid FROM system_info;",
+          "SELECT hostname AS hostname FROM system_info;"
+        ]
+      }
+    },
+    "overrides": {},
+    "command_line_flags": {}
+  }
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "team": {
+      "name": "Workstations",
+      "id": 1,
+      "user_count": 4,
+      "host_count": 8,
+      "agent_options": {
+        "config": {
+          "options": {
+            "pack_delimiter": "/",
+            "logger_tls_period": 20,
+            "distributed_plugin": "tls",
+            "disable_distributed": false,
+            "logger_tls_endpoint": "/api/v1/osquery/log",
+            "distributed_interval": 60,
+            "distributed_tls_max_attempts": 3
+          },
+          "decorators": {
+            "load": [
+              "SELECT uuid AS host_uuid FROM system_info;",
+              "SELECT hostname AS hostname FROM system_info;"
+            ]
+          }
+        },
+        "overrides": {},
+        "command_line_flags": {}
+      },
+      "webhook_settings": {
+        "failing_policies_webhook": {
+          "enable_failing_policies_webhook": false,
+          "destination_url": "",
+          "policy_ids": null,
+          "host_batch_size": 0
+        }
+      }
+    }
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#update-fleet-level-agent-options
+examples:
+- name: 200 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/fleets/:id/agent_options'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required.** The desired fleet''s ID.'
+    - name: force
+      value: ''
+      type: query
+      disabled: true
+      description: Force apply the options even if there are validation errors.
+    - name: dry_run
+      value: ''
+      type: query
+      disabled: true
+      description: Validate the options and return any validation errors, but do not apply the changes.
+    body:
+      type: json
+      data: |-
+        {
+          "config": {
+            "options": {
+              "pack_delimiter": "/",
+              "logger_tls_period": 20,
+              "distributed_plugin": "tls",
+              "disable_distributed": false,
+              "logger_tls_endpoint": "/api/v1/osquery/log",
+              "distributed_interval": 60,
+              "distributed_tls_max_attempts": 3
+            },
+            "decorators": {
+              "load": [
+                "SELECT uuid AS host_uuid FROM system_info;",
+                "SELECT hostname AS hostname FROM system_info;"
+              ]
+            }
+          },
+          "overrides": {},
+          "command_line_flags": {}
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "team": {
+            "name": "Workstations",
+            "id": 1,
+            "user_count": 4,
+            "host_count": 8,
+            "agent_options": {
+              "config": {
+                "options": {
+                  "pack_delimiter": "/",
+                  "logger_tls_period": 20,
+                  "distributed_plugin": "tls",
+                  "disable_distributed": false,
+                  "logger_tls_endpoint": "/api/v1/osquery/log",
+                  "distributed_interval": 60,
+                  "distributed_tls_max_attempts": 3
+                },
+                "decorators": {
+                  "load": [
+                    "SELECT uuid AS host_uuid FROM system_info;",
+                    "SELECT hostname AS hostname FROM system_info;"
+                  ]
+                }
+              },
+              "overrides": {},
+              "command_line_flags": {}
+            },
+            "webhook_settings": {
+              "failing_policies_webhook": {
+                "enable_failing_policies_webhook": false,
+                "destination_url": "",
+                "policy_ids": null,
+                "host_batch_size": 0
+              }
+            }
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

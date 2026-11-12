@@ -1,0 +1,123 @@
+info:
+  name: Batch-run script
+  type: http
+  seq: 3
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/scripts/run/batch'
+  auth: inherit
+  body:
+    type: json
+    data: |-
+      {
+        "script_id": 123,
+        "host_ids": [
+          1,
+          2,
+          3
+        ],
+        "not_before": "2025-07-01T15:00:00Z"
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  Run a script on multiple hosts.
+
+  The script will be added to each host's list of upcoming activities.
+
+  `POST /api/v1/fleet/scripts/run/batch`
+
+  #### Parameters
+
+  | Name            | Type    | In   | Description                                                                                    |
+  | ----            | ------- | ---- | --------------------------------------------                                                   |
+  | script_id       | integer | body | **Required**. The ID of the existing saved script to run. |
+  | host_ids        | array   | body |  List of host IDs.  Required if `filters` not specified. Only one of `host_ids` or `filters` may be included in the request.   |
+  | filters | object  | body | See [filters](#filters4). Required if `host_ids` not specified. Only one of `host_ids` or `filters` may be included in the request.   |
+  | not_before       | string  | body | UTC time when the script run is scheduled to begin. If omitted, the batch script will begin right away. |
+
+
+  ##### Filters
+
+  | Name                              | Type    | Description   |
+  | ---------------------             | ------- | ----------------------------------------------------------------------------------- |
+  | query                             | string  | Search query keywords. Searchable fields include `hostname`, `hardware_serial`, `uuid`, and `ipv4`. |
+  | status                            | string  | Host status. Can either be `new`, `online`, `offline`, `mia` or `missing`. |
+  | label_id                          | number  | ID of a label to filter by.  |
+  | fleet_id                           | number  | ID of the fleet to filter by. |
+
+  > Note that if a batch script is scheduled for the future using `not_before`, and hosts are targeted using `filters`, the script will run on any hosts matching the filters _at the time the batch script was added_. To see all targeted hosts, use the [List hosts targeted in batch script](#list-hosts-targeted-in-batch-script) endpoint.
+
+
+  #### Example
+
+  `POST /api/v1/fleet/scripts/run/batch`
+
+  ##### Request body
+
+  Request (using `host_ids`):
+
+  ```json
+  {
+    "script_id": 123,
+    "host_ids": [1, 2, 3],
+    "not_before": "2025-07-01T15:00:00Z"
+  }
+  ```
+
+  Request (using `filters`):
+  ```json
+  {
+    "script_id": 123,
+    "filters": {
+      "status": "online",
+      "query": "abc"
+    }
+  }
+  ```
+
+  ##### Default response
+
+  `Status: 202`
+
+
+  ```json
+  {
+    "batch_execution_id": "e797d6c6-3aae-11ee-be56-0242ac120002"
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#batch-run-script
+examples:
+- name: 202 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/scripts/run/batch'
+    body:
+      type: json
+      data: |-
+        {
+          "script_id": 123,
+          "host_ids": [
+            1,
+            2,
+            3
+          ],
+          "not_before": "2025-07-01T15:00:00Z"
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 202
+    statusText: Accepted
+    body:
+      type: json
+      data: |-
+        {
+          "batch_execution_id": "e797d6c6-3aae-11ee-be56-0242ac120002"
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

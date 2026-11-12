@@ -1,0 +1,59 @@
+info:
+  name: Get Android zero-touch enrollment configuration
+  type: http
+  seq: 8
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/android_enterprise/zero_touch_configuration'
+  auth: inherit
+docs: |-
+  _Available in Fleet Premium_
+
+  Get Fleet's Android zero-touch DPC extras JSON to paste into Google's zero-touch enrollment portal. Android MDM must be enabled.
+
+  As part of this request, Fleet generates a token w/ 1,000 year expiry. If a token already exists, Fleet doesn't generate a new one.
+
+  `GET /api/v1/fleet/android_enterprise/zero_touch_configuration`
+
+  #### Parameters
+
+  None.
+
+  #### Example
+
+  `GET /api/v1/fleet/android_enterprise/zero_touch_configuration`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "android.app.extra.PROVISIONING_ADMIN_EXTRAS_BUNDLE": {
+      "com.google.android.apps.work.clouddpc.EXTRA_ENROLLMENT_TOKEN": "<token>"
+    }
+  }
+  ```
+
+  ---
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#get-android-zero-touch-enrollment-configuration
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/android_enterprise/zero_touch_configuration'
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "android.app.extra.PROVISIONING_ADMIN_EXTRAS_BUNDLE": {
+            "com.google.android.apps.work.clouddpc.EXTRA_ENROLLMENT_TOKEN": "<token>"
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

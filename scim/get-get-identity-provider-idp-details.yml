@@ -1,0 +1,61 @@
+info:
+  name: Get identity provider (IdP) details
+  type: http
+  seq: 16
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/scim/details'
+  auth: inherit
+docs: |-
+  _Available in Fleet Premium_
+
+  Get details about the most recent SCIM request from your identity provider (IdP). Useful for diagnosing SCIM integration issues.
+
+  `GET /api/v1/fleet/scim/details`
+
+  #### Parameters
+
+  None.
+
+  #### Example
+
+  `GET /api/v1/fleet/scim/details`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "last_request": {
+      "requested_at": "2025-03-11T02:02:17Z",
+      "status": "success",
+      "details": ""
+    }
+  }
+  ```
+
+  ---
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#get-identity-provider-idp-details
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/scim/details'
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "last_request": {
+            "requested_at": "2025-03-11T02:02:17Z",
+            "status": "success",
+            "details": ""
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

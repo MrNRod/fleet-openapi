@@ -1,0 +1,32 @@
+info:
+  name: Log out
+  type: http
+  seq: 2
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/logout'
+  auth: inherit
+docs: |-
+  Logs out the authenticated user.
+
+  `POST /api/v1/fleet/logout`
+
+  #### Example
+
+  `POST /api/v1/fleet/logout`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ---
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#log-out
+examples:
+- name: 200 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/logout'
+  response:
+    status: 200
+    statusText: OK

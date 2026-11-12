@@ -1,0 +1,79 @@
+info:
+  name: Download software icon
+  type: http
+  seq: 10
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/software/titles/:id/icon'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: ID of the software title to get icon for.
+  - name: fleet_id
+    value: ''
+    type: query
+    disabled: true
+    description: '**Required**. The fleet ID.'
+docs: |-
+  _Available in Fleet Premium._
+
+  Download the icon added via [Update software icon](#update-software-icon) or icon from the Apple App Store (VPP). **This endpoint requires authentication.**
+
+  `GET /api/v1/fleet/software/titles/:id/icon`
+
+  #### Parameters
+
+  | Name            | Type    | In   | Description                                      |
+  | ----            | ------- | ---- | --------------------------------------------     |
+  | id              | integer | path | ID of the software title to get icon for. |
+  | fleet_id         | integer | query | **Required**. The fleet ID. |
+
+  This endpoint will redirect (302) to the Apple-hosted URL of an icon if an icon override isn't set and a VPP app is added for the title on the host's team.
+
+  #### Example
+
+  `GET /api/v1/fleet/software/titles/33/icon?fleet_id=2`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```http
+  Status: 200
+  Content-Type: image/png
+  Content-Disposition: inline; filename="zoom-icon-512x512.png"
+  Content-Length: 124567
+
+  <BINARY_IMAGE_DATA>
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#download-software-icon
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/software/titles/:id/icon'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: ID of the software title to get icon for.
+    - name: fleet_id
+      value: ''
+      type: query
+      disabled: true
+      description: '**Required**. The fleet ID.'
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: text
+      data: |-
+        Status: 200
+        Content-Type: image/png
+        Content-Disposition: inline; filename="zoom-icon-512x512.png"
+        Content-Length: 124567
+
+        <BINARY_IMAGE_DATA>

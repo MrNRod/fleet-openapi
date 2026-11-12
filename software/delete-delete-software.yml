@@ -1,0 +1,71 @@
+info:
+  name: Delete software
+  type: http
+  seq: 24
+http:
+  method: DELETE
+  url: '{{baseUrl}}/api/v1/fleet/software/titles/:software_title_id/available_for_install'
+  auth: inherit
+  params:
+  - name: software_title_id
+    value: ''
+    type: path
+    description: '**Required**. The ID of the software title to delete software available for install.'
+  - name: fleet_id
+    value: ''
+    type: query
+    disabled: true
+    description: '**Required**. The fleet ID. Deletes a software package added to the specified fleet.'
+  - name: installer_id
+    value: ''
+    type: query
+    disabled: true
+    description: Deletes only the specified package. If omitted, all of the title's packages on the fleet are deleted.
+docs: |-
+  _Available in Fleet Premium._
+
+  Deletes software that's available for install. For Android hosts, the software is also uninstalled. For all other hosts, the software isn't uninstalled.
+
+  `DELETE /api/v1/fleet/software/titles/:software_title_id/available_for_install`
+
+  #### Parameters
+
+  | Name            | Type    | In   | Description                                      |
+  | ----            | ------- | ---- | --------------------------------------------     |
+  | software_title_id              | integer | path | **Required**. The ID of the software title to delete software available for install. |
+  | fleet_id | integer | query | **Required**. The fleet ID. Deletes a software package added to the specified fleet. |
+  | installer_id | integer | query | Deletes only the specified package. If omitted, all of the title's packages on the fleet are deleted. |
+
+  #### Example
+
+  `DELETE /api/v1/fleet/software/titles/24/available_for_install?fleet_id=2`
+
+  ##### Default response
+
+  `Status: 204`
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#delete-software
+examples:
+- name: 204 Default response
+  request:
+    method: DELETE
+    url: '{{baseUrl}}/api/v1/fleet/software/titles/:software_title_id/available_for_install'
+    params:
+    - name: software_title_id
+      value: ''
+      type: path
+      description: '**Required**. The ID of the software title to delete software available for install.'
+    - name: fleet_id
+      value: ''
+      type: query
+      disabled: true
+      description: '**Required**. The fleet ID. Deletes a software package added to the specified fleet.'
+    - name: installer_id
+      value: ''
+      type: query
+      disabled: true
+      description: Deletes only the specified package. If omitted, all of the title's packages on the fleet are
+        deleted.
+  response:
+    status: 204
+    statusText: No Content

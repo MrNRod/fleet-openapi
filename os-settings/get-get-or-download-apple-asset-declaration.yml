@@ -1,0 +1,129 @@
+info:
+  name: Get or download Apple asset declaration
+  type: http
+  seq: 10
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/assets/:asset_uuid'
+  auth: inherit
+  params:
+  - name: asset_uuid
+    value: ''
+    type: path
+    description: '**Required** The UUID of the asset to get.'
+  - name: alt
+    value: ''
+    type: query
+    disabled: true
+    description: If specified and set to "media", downloads the asset.
+docs: |-
+  Get or download the original Apple asset declaration file that was uploaded to Fleet.
+
+  `GET /api/v1/fleet/assets/:asset_uuid`
+
+  #### Parameters
+
+  | Name                      | Type    | In    | Description                                             |
+  | ------------------------- | ------- | ----- | ------------------------------------------------------- |
+  | asset_uuid                | string  | url   | **Required** The UUID of the asset to get.  |
+  | alt                       | string  | query | If specified and set to "media", downloads the asset. |
+
+  #### Example (get asset metadata)
+
+  `GET /api/v1/fleet/assets/954ec5ea-a334-4825-87b3-937e7e381f24`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "asset_uuid": "954ec5ea-a334-4825-87b3-937e7e381f24",
+    "fleet_id": 0,
+    "asset": "my-asset.json",
+    "identifier": "com.example.asset1",
+    "created_at": "2023-03-31T00:00:00Z",
+    "updated_at": "2023-03-31T00:00:00Z",
+    "checksum": "dGVzdAo="
+  }
+  ```
+
+  #### Example (download an asset)
+
+  `GET /api/v1/fleet/assets/954ec5ea-a334-4825-87b3-937e7e381f24?alt=media`
+
+  ##### Default response
+
+  `Status: 200`
+
+  **Note** To confirm success, it is important for clients to match content length with the response header (this is done automatically by most clients, including the browser) rather than relying solely on the response status code returned by this endpoint.
+
+  ##### Example response headers
+
+  ```http
+  Content-Length: 542
+  Content-Type: application/octet-stream
+  Content-Disposition: attachment;filename="2023-03-31 my-asset.json"
+  ```
+
+  ###### Example response body
+
+  ```json
+  {
+    "Type": "com.apple.asset.data",
+    "Identifier": "com.example.asset1",
+    "ServerURL": "https://example.com/assets/my-asset.json"
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#get-or-download-apple-asset-declaration
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/assets/:asset_uuid'
+    params:
+    - name: asset_uuid
+      value: ''
+      type: path
+      description: '**Required** The UUID of the asset to get.'
+    - name: alt
+      value: ''
+      type: query
+      disabled: true
+      description: If specified and set to "media", downloads the asset.
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "asset_uuid": "954ec5ea-a334-4825-87b3-937e7e381f24",
+          "fleet_id": 0,
+          "asset": "my-asset.json",
+          "identifier": "com.example.asset1",
+          "created_at": "2023-03-31T00:00:00Z",
+          "updated_at": "2023-03-31T00:00:00Z",
+          "checksum": "dGVzdAo="
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/assets/:asset_uuid'
+    params:
+    - name: asset_uuid
+      value: ''
+      type: path
+      description: '**Required** The UUID of the asset to get.'
+    - name: alt
+      value: ''
+      type: query
+      disabled: true
+      description: If specified and set to "media", downloads the asset.
+  response:
+    status: 200
+    statusText: OK

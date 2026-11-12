@@ -1,0 +1,50 @@
+info:
+  name: Delete setup experience script
+  type: http
+  seq: 21
+http:
+  method: DELETE
+  url: '{{baseUrl}}/api/v1/fleet/setup_experience/script'
+  auth: inherit
+  params:
+  - name: fleet_id
+    value: ''
+    type: query
+    disabled: true
+    description: _Available in Fleet Premium_. The ID of the fleet to get the script for. If not specified, script
+      will be returned for "Unassigned" hosts.
+docs: |-
+  _Available in Fleet Premium_
+
+  Delete a script that will automatically run during macOS setup.
+
+  `DELETE /api/v1/fleet/setup_experience/script`
+
+  | Name  | Type   | In    | Description                              |
+  | ----- | ------ | ----- | ---------------------------------------- |
+  | fleet_id | integer | query | _Available in Fleet Premium_. The ID of the fleet to get the script for. If not specified, script will be returned for "Unassigned" hosts. |
+
+  #### Example
+
+  `DELETE /api/v1/fleet/setup_experience/script?fleet_id=3`
+
+  ##### Default response
+
+  `Status: 200`
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#delete-setup-experience-script
+examples:
+- name: 200 Default response
+  request:
+    method: DELETE
+    url: '{{baseUrl}}/api/v1/fleet/setup_experience/script'
+    params:
+    - name: fleet_id
+      value: ''
+      type: query
+      disabled: true
+      description: _Available in Fleet Premium_. The ID of the fleet to get the script for. If not specified, script
+        will be returned for "Unassigned" hosts.
+  response:
+    status: 200
+    statusText: OK

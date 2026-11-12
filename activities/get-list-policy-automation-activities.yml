@@ -1,0 +1,324 @@
+info:
+  name: List policy automation activities
+  type: http
+  seq: 2
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/policies/:id/automation_activities'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required**. The policy ID.'
+  - name: status
+    value: ''
+    type: query
+    disabled: true
+    description: Optional filter by automation status. Either "success" or "error"
+  - name: query
+    value: ''
+    type: query
+    disabled: true
+    description: Search query to filter by. Can search by host's name.
+  - name: page
+    value: ''
+    type: query
+    disabled: true
+    description: Page number of the results to fetch.
+  - name: per_page
+    value: ''
+    type: query
+    disabled: true
+    description: Results per page. Maximum is 10,000 records. If no pagination parameters are specified, defaults
+      to 10,000.
+  - name: order_key
+    value: ''
+    type: query
+    disabled: true
+    description: What to order results by. Allowed fields are `id`, `created_at`, and `activity_type`.
+  - name: order_direction
+    value: ''
+    type: query
+    disabled: true
+    description: '**Requires `order_key`**. The direction of the order given the order key. Options include `"asc"`
+      and `"desc"`. Default is `"asc"`.'
+  - name: after
+    value: ''
+    type: query
+    disabled: true
+    description: The value to get results after. This needs `order_key` defined, as that's the column that would
+      be used.
+docs: |-
+  `GET /api/v1/fleet/policies/:id/automation_activities`
+
+  #### Parameters
+
+  | Name | Type    | In   | Description                  |
+  | ---- | ------- | ---- | ---------------------------- |
+  | id   | integer | path | **Required**. The policy ID. |
+  | status   | string | path | Optional filter by automation status. Either "success" or "error" |
+  | query   | string | path | Search query to filter by. Can search by host's name. |
+  | page | integer | query | Page number of the results to fetch.|
+  | per_page | integer | query | Results per page. Maximum is 10,000 records. If no pagination parameters are specified, defaults to 10,000.|
+  | order_key | string | query | What to order results by. Allowed fields are `id`, `created_at`, and `activity_type`. |
+  | order_direction | string | query | **Requires `order_key`**. The direction of the order given the order key. Options include `"asc"` and `"desc"`. Default is `"asc"`. |
+  | after | string | query | The value to get results after. This needs `order_key` defined, as that's the column that would be used. |
+
+  #### Example
+
+  `GET /api/v1/fleet/policies/12/automation_activities?query=Anna's%20MacBook`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "activities": [
+      {
+        "created_at": "2023-07-27T14:35:08Z",
+        "id": 412,
+        "actor_full_name": "Fleet",
+        "actor_id": null,
+        "actor_gravatar": "",
+        "actor_email": "",
+        "type": "failed_webhook_policy_automation",
+        "fleet_initiated": true,
+        "details": {
+          "policy_id": 42,
+          "policy_name": "Gatekeeper enabled"
+        },
+        "host_id": 10,
+        "host_display_name": "Anna's MacBook Pro",
+        "status": "error",
+        "output": null
+      },
+      {
+        "created_at": "2023-07-27T14:34:22Z",
+        "id": 410,
+        "actor_full_name": "Anna Chao",
+        "actor_id": 3,
+        "actor_gravatar": "",
+        "actor_email": "anna@example.com",
+        "type": "ran_script",
+        "fleet_initiated": false,
+        "details": {
+          "host_id": 10,
+          "host_display_name": "Anna's MacBook Pro",
+          "script_name": "remediate-gatekeeper.sh",
+          "script_execution_id": "d6cffa75-b5b5-41ef-9230-15073c8a88cf",
+          "policy_id": 42,
+          "policy_name": "Gatekeeper enabled"
+        },
+        "host_id": 10,
+        "host_display_name": "Anna's MacBook Pro",
+        "status": "success",
+        "output": "Gatekeeper enabled\n"
+      },
+      {
+        "created_at": "2023-07-27T14:33:01Z",
+        "id": 407,
+        "actor_full_name": "Fleet",
+        "actor_id": null,
+        "actor_gravatar": "",
+        "actor_email": "",
+        "type": "installed_software",
+        "fleet_initiated": true,
+        "details": {
+          "host_id": 11,
+          "host_display_name": "Marco's Windows",
+          "install_uuid": "23c18ea1-8cd7-4af4-a1d8-f2666993a66b",
+          "software_title": "1Password",
+          "software_package": "1Password.msi",
+          "policy_id": 42,
+          "policy_name": "Gatekeeper enabled"
+        },
+        "host_id": 11,
+        "host_display_name": "Marco's Windows",
+        "status": "error",
+        "output": "Installing software...\nFailed\nExit code: 1"
+      },
+      {
+        "created_at": "2023-07-27T14:31:47Z",
+        "id": 404,
+        "actor_full_name": "Fleet",
+        "actor_id": null,
+        "actor_gravatar": "",
+        "actor_email": "",
+        "type": "installed_app_store_app",
+        "fleet_initiated": true,
+        "details": {
+          "host_id": 10,
+          "host_display_name": "Anna's MacBook Pro",
+          "software_title": "Logic Pro",
+          "app_store_id": "1234567",
+          "command_uuid": "98765432-1234-1234-1234-1234567890ab",
+          "policy_id": 42,
+          "policy_name": "Gatekeeper enabled"
+        },
+        "host_id": 10,
+        "host_display_name": "Anna's MacBook Pro",
+        "status": "success",
+        "output": null
+      }
+    ],
+    "meta": {
+      "has_next_results": false,
+      "has_previous_results": false
+    }
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#list-policy-automation-activities
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/policies/:id/automation_activities'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required**. The policy ID.'
+    - name: status
+      value: ''
+      type: query
+      disabled: true
+      description: Optional filter by automation status. Either "success" or "error"
+    - name: query
+      value: ''
+      type: query
+      disabled: true
+      description: Search query to filter by. Can search by host's name.
+    - name: page
+      value: ''
+      type: query
+      disabled: true
+      description: Page number of the results to fetch.
+    - name: per_page
+      value: ''
+      type: query
+      disabled: true
+      description: Results per page. Maximum is 10,000 records. If no pagination parameters are specified, defaults
+        to 10,000.
+    - name: order_key
+      value: ''
+      type: query
+      disabled: true
+      description: What to order results by. Allowed fields are `id`, `created_at`, and `activity_type`.
+    - name: order_direction
+      value: ''
+      type: query
+      disabled: true
+      description: '**Requires `order_key`**. The direction of the order given the order key. Options include `"asc"`
+        and `"desc"`. Default is `"asc"`.'
+    - name: after
+      value: ''
+      type: query
+      disabled: true
+      description: The value to get results after. This needs `order_key` defined, as that's the column that would
+        be used.
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "activities": [
+            {
+              "created_at": "2023-07-27T14:35:08Z",
+              "id": 412,
+              "actor_full_name": "Fleet",
+              "actor_id": null,
+              "actor_gravatar": "",
+              "actor_email": "",
+              "type": "failed_webhook_policy_automation",
+              "fleet_initiated": true,
+              "details": {
+                "policy_id": 42,
+                "policy_name": "Gatekeeper enabled"
+              },
+              "host_id": 10,
+              "host_display_name": "Anna's MacBook Pro",
+              "status": "error",
+              "output": null
+            },
+            {
+              "created_at": "2023-07-27T14:34:22Z",
+              "id": 410,
+              "actor_full_name": "Anna Chao",
+              "actor_id": 3,
+              "actor_gravatar": "",
+              "actor_email": "anna@example.com",
+              "type": "ran_script",
+              "fleet_initiated": false,
+              "details": {
+                "host_id": 10,
+                "host_display_name": "Anna's MacBook Pro",
+                "script_name": "remediate-gatekeeper.sh",
+                "script_execution_id": "d6cffa75-b5b5-41ef-9230-15073c8a88cf",
+                "policy_id": 42,
+                "policy_name": "Gatekeeper enabled"
+              },
+              "host_id": 10,
+              "host_display_name": "Anna's MacBook Pro",
+              "status": "success",
+              "output": "Gatekeeper enabled\n"
+            },
+            {
+              "created_at": "2023-07-27T14:33:01Z",
+              "id": 407,
+              "actor_full_name": "Fleet",
+              "actor_id": null,
+              "actor_gravatar": "",
+              "actor_email": "",
+              "type": "installed_software",
+              "fleet_initiated": true,
+              "details": {
+                "host_id": 11,
+                "host_display_name": "Marco's Windows",
+                "install_uuid": "23c18ea1-8cd7-4af4-a1d8-f2666993a66b",
+                "software_title": "1Password",
+                "software_package": "1Password.msi",
+                "policy_id": 42,
+                "policy_name": "Gatekeeper enabled"
+              },
+              "host_id": 11,
+              "host_display_name": "Marco's Windows",
+              "status": "error",
+              "output": "Installing software...\nFailed\nExit code: 1"
+            },
+            {
+              "created_at": "2023-07-27T14:31:47Z",
+              "id": 404,
+              "actor_full_name": "Fleet",
+              "actor_id": null,
+              "actor_gravatar": "",
+              "actor_email": "",
+              "type": "installed_app_store_app",
+              "fleet_initiated": true,
+              "details": {
+                "host_id": 10,
+                "host_display_name": "Anna's MacBook Pro",
+                "software_title": "Logic Pro",
+                "app_store_id": "1234567",
+                "command_uuid": "98765432-1234-1234-1234-1234567890ab",
+                "policy_id": 42,
+                "policy_name": "Gatekeeper enabled"
+              },
+              "host_id": 10,
+              "host_display_name": "Anna's MacBook Pro",
+              "status": "success",
+              "output": null
+            }
+          ],
+          "meta": {
+            "has_next_results": false,
+            "has_previous_results": false
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

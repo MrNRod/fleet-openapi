@@ -1,0 +1,36 @@
+info:
+  name: Get Okta configuration profile
+  type: http
+  seq: 2
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/conditional_access/idp/apple/profile'
+  auth: inherit
+docs: |-
+  Download the macOS configuration profile (.mobileconfig) for Okta conditional access. This profile configures SCEP enrollment and client certificate authentication on macOS hosts.
+
+  `GET /api/v1/fleet/conditional_access/idp/apple/profile`
+
+  #### Parameters
+
+  None.
+
+  #### Example
+
+  `GET /api/v1/fleet/conditional_access/idp/apple/profile`
+
+  ##### Default response
+
+  `Status: 200`
+
+  Returns an Apple configuration profile file with `Content-Type: application/x-apple-aspen-config`.
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#get-okta-configuration-profile
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/conditional_access/idp/apple/profile'
+  response:
+    status: 200
+    statusText: OK

@@ -1,0 +1,94 @@
+info:
+  name: Delete fleet-level policies
+  type: http
+  seq: 10
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/fleets/:fleet_id/policies/delete'
+  auth: inherit
+  params:
+  - name: fleet_id
+    value: ''
+    type: path
+    description: '**Required.** Defines what fleet ID to operate on'
+  body:
+    type: json
+    data: |-
+      {
+        "ids": [
+          1
+        ]
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  _Available in Fleet Premium_
+
+  `POST /api/v1/fleet/fleets/:fleet_id/policies/delete`
+
+  #### Parameters
+
+  | Name     | Type    | In   | Description                                       |
+  | -------- | ------- | ---- | ------------------------------------------------- |
+  | fleet_id  | integer | path  | **Required.** Defines what fleet ID to operate on                |
+  | ids      | array   | body | **Required.** The IDs of the policies to delete.  |
+
+  #### Example
+
+  `POST /api/v1/fleet/fleets/1/policies/delete`
+
+  ##### Request body
+
+  ```json
+  {
+    "ids": [ 1 ]
+  }
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "deleted": 1
+  }
+  ```
+
+  ---
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#delete-fleet-level-policies
+examples:
+- name: 200 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/fleets/:fleet_id/policies/delete'
+    params:
+    - name: fleet_id
+      value: ''
+      type: path
+      description: '**Required.** Defines what fleet ID to operate on'
+    body:
+      type: json
+      data: |-
+        {
+          "ids": [
+            1
+          ]
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "deleted": 1
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

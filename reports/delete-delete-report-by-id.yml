@@ -1,0 +1,46 @@
+info:
+  name: Delete report by ID
+  type: http
+  seq: 9
+http:
+  method: DELETE
+  url: '{{baseUrl}}/api/v1/fleet/reports/id/:id'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required.** The ID of the report.'
+docs: |-
+  Deletes the report specified by ID.
+
+  `DELETE /api/v1/fleet/reports/id/:id`
+
+  #### Parameters
+
+  | Name | Type    | In   | Description                        |
+  | ---- | ------- | ---- | ---------------------------------- |
+  | id   | integer | path | **Required.** The ID of the report. |
+
+  #### Example
+
+  `DELETE /api/v1/fleet/reports/id/28`
+
+  ##### Default response
+
+  `Status: 200`
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#delete-report-by-id
+examples:
+- name: 200 Default response
+  request:
+    method: DELETE
+    url: '{{baseUrl}}/api/v1/fleet/reports/id/:id'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required.** The ID of the report.'
+  response:
+    status: 200
+    statusText: OK

@@ -1,0 +1,45 @@
+info:
+  name: Clear host passcode
+  type: http
+  seq: 41
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/hosts/:id/clear_passcode'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required.** The Fleet host ID of the ADE-enrolled host to clear the passcode for.'
+docs: "_Available in Fleet Premium._\n\nRemotely clear the passcode on a host. Requires iOS/iPadOS host to have\
+  \ sent its unlock token during MDM check-in.\n\n`POST /api/v1/fleet/hosts/:id/clear_passcode`\n\n#### Parameters\n\
+  \n| Name        | Type   | In   | Description                                                                \
+  \         |\n| ----------- | ------ | ---- | -----------------------------------------------------------------------------------\
+  \ |\n| id          | number | path | **Required.** The Fleet host ID of the ADE-enrolled host to clear the passcode\
+  \ for. |\n\n\n#### Example \n\n`POST /api/v1/fleet/hosts/123/clear_passcode`\n\n##### Default response \n\n`Status:\
+  \ 200` \n\n```json\n{\n  \"command_uuid\": \"84F7F777-803E-40BB-8B47-2C0DC8B0118A\",\n  \"request_type\": \"ClearPasscode\"\
+  ,\n  \"platform\": \"ios\"\n}\n```\n\nReference: https://fleetdm.com/docs/rest-api/rest-api#clear-host-passcode"
+examples:
+- name: 200 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/hosts/:id/clear_passcode'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required.** The Fleet host ID of the ADE-enrolled host to clear the passcode for.'
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "command_uuid": "84F7F777-803E-40BB-8B47-2C0DC8B0118A",
+          "request_type": "ClearPasscode",
+          "platform": "ios"
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

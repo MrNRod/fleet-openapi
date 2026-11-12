@@ -1,0 +1,87 @@
+info:
+  name: Delete reports
+  type: http
+  seq: 10
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/reports/delete'
+  auth: inherit
+  body:
+    type: json
+    data: |-
+      {
+        "ids": [
+          2,
+          24,
+          25
+        ]
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  Deletes the reports specified by ID. Returns the count of reports successfully deleted.
+
+  `POST /api/v1/fleet/reports/delete`
+
+  #### Parameters
+
+  | Name | Type  | In   | Description                           |
+  | ---- | ----- | ---- | ------------------------------------- |
+  | ids  | array | body | **Required.** The IDs of the reports. |
+
+  #### Example
+
+  `POST /api/v1/fleet/reports/delete`
+
+  ##### Request body
+
+  ```json
+  {
+    "ids": [
+      2, 24, 25
+    ]
+  }
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "deleted": 3
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#delete-reports
+examples:
+- name: 200 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/reports/delete'
+    body:
+      type: json
+      data: |-
+        {
+          "ids": [
+            2,
+            24,
+            25
+          ]
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "deleted": 3
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

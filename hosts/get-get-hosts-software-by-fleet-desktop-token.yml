@@ -1,0 +1,425 @@
+info:
+  name: Get host's software by Fleet Desktop token
+  type: http
+  seq: 22
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/device/:token/software'
+  params:
+  - name: token
+    value: ''
+    type: path
+    description: '**Required.** The host''s [Fleet Desktop token](https://fleetdm.com/guides/fleet-desktop#secure-fleet-desktop).'
+  - name: query
+    value: ''
+    type: query
+    disabled: true
+    description: Search query keywords. Searchable fields include `name`.
+  - name: available_for_install
+    value: ''
+    type: query
+    disabled: true
+    description: If `true` or `1`, only list software that is available for install (added by the user). Default
+      is `false`.
+  - name: self_service
+    value: ''
+    type: query
+    disabled: true
+    description: If `true` or `1`, only lists self-service software. Default is `false`.
+  - name: vulnerable
+    value: ''
+    type: query
+    disabled: true
+    description: If `true` or `1`, only list software that have vulnerabilities. Default is `false`.
+  - name: page
+    value: ''
+    type: query
+    disabled: true
+    description: Page number of the results to fetch.
+  - name: per_page
+    value: ''
+    type: query
+    disabled: true
+    description: Results per page.
+  - name: order_key
+    value: ''
+    type: query
+    disabled: true
+    description: What to order results by. Options include `"name"`. Default is `"name"`.
+  - name: order_direction
+    value: ''
+    type: query
+    disabled: true
+    description: '**Requires `order_key`**. The direction of the order given the order key. Options include `"asc"`
+      and `"desc"`. Default is `"asc"`.'
+  - name: min_cvss_score
+    value: ''
+    type: query
+    disabled: true
+    description: _Available in Fleet Premium_. Filters to include only software with vulnerabilities that have a
+      CVSS version 3.x base score higher than the specified value.
+  - name: max_cvss_score
+    value: ''
+    type: query
+    disabled: true
+    description: _Available in Fleet Premium_. Filters to only include software with vulnerabilities that have a
+      CVSS version 3.x base score lower than what's specified.
+  - name: exploit
+    value: ''
+    type: query
+    disabled: true
+    description: '_Available in Fleet Premium_. If `true`, filters to only include software with vulnerabilities
+      that have been actively exploited in the wild (`cisa_known_exploit: true`). Default is `false`.'
+docs: |-
+  `GET /api/v1/fleet/device/:token/software`
+
+  #### Parameters
+
+  | Name | Type    | In   | Description                  |
+  | ---- | ------- | ---- | ---------------------------- |
+  | token   | string | path | **Required.** The host's [Fleet Desktop token](https://fleetdm.com/guides/fleet-desktop#secure-fleet-desktop). |
+  | query   | string | query | Search query keywords. Searchable fields include `name`. |
+  | available_for_install | boolean | query | If `true` or `1`, only list software that is available for install (added by the user). Default is `false`. |
+  | self_service            | boolean | query | If `true` or `1`, only lists self-service software. Default is `false`. |
+  | vulnerable | boolean | query | If `true` or `1`, only list software that have vulnerabilities. Default is `false`. |
+  | page | integer | query | Page number of the results to fetch.|
+  | per_page | integer | query | Results per page.|
+  | order_key | string | query | What to order results by. Options include `"name"`. Default is `"name"`. |
+  | order_direction | string | query | **Requires `order_key`**. The direction of the order given the order key. Options include `"asc"` and `"desc"`. Default is `"asc"`. |
+  | min_cvss_score | integer | query | _Available in Fleet Premium_. Filters to include only software with vulnerabilities that have a CVSS version 3.x base score higher than the specified value.   |
+  | max_cvss_score | integer | query | _Available in Fleet Premium_. Filters to only include software with vulnerabilities that have a CVSS version 3.x base score lower than what's specified.   |
+  | exploit | boolean | query | _Available in Fleet Premium_. If `true`, filters to only include software with vulnerabilities that have been actively exploited in the wild (`cisa_known_exploit: true`). Default is `false`.  |
+
+  On macOS hosts, `last_opened_at` is supported for software from the `apps` source and is the last open time of the most recently installed version of the software. After an update, it may be empty until the software is opened again.
+
+  On Windows hosts, `last_opened_at` is supported for software from the `programs` source. On Linux hosts, `last_opened_at` is supported for software from the `deb_packages` and `rpm_packages` sources. On Windows and Linux hosts, it represents the last open time of any version.
+
+  `signature_information` is returned for macOS software from the `apps` and `homebrew_packages` sources.
+
+  For `apps`, `hash_sha256` is the [`cdhash_sha256`](https://fleetdm.com/tables/codesign) of the bundle.
+
+  For `homebrew_packages`, Fleet returns one entry per Mach-O executable in the formula's `bin` and `sbin` directories. Each entry has the executable's `executable_path` and its `executable_sha256`. `team_identifier` is empty and `hash_sha256` is `null`. Scripts and helpers under `libexec` aren't hashed, so a formula that installs only scripts, such as a Python or Ruby based tool, has one entry with no hashes. A formula's `installed_paths` lists its Cellar directory once, even when it has several entries. Homebrew hashes require fleetd 1.63.0.
+
+  Each entry in `installed_versions` includes `release` when set. For `rpm_packages`, it's the package release (for example, `1.212.el6`). For `go_binaries`, it's the version of the Go toolchain the binary was built with (for example, `go1.26.1`). Fleet uses it to detect Go standard library vulnerabilities, so the same binary version built with two toolchains is listed as two versions.
+
+  `software_package.has_uninstall_script` is `true` when the installer has a non-empty uninstall script configured. It's omitted for VPP and in-house apps. For `.tgz` and script-only (`.ps1`/`.sh`/`.py`) packages the uninstall script is optional, so this field is what tells clients whether uninstall is actually available.
+
+  `skipped_install` is `true` when the last install was a patch-when-closed skip (the target app was open). `status` is `failed_install` in that case; the field distinguishes a deferred install from a real failure. Omitted otherwise.
+
+  #### Example
+
+  `GET /api/v1/fleet/device/:token/software`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "count": 2,
+    "software": [
+      {
+        "id": 1042,
+        "name": "gopls",
+        "icon_url": null,
+        "source": "go_binaries",
+        "extension_for": "",
+        "status": null,
+        "installed_versions": [
+          {
+            "version": "v0.21.1",
+            "release": "go1.26.1",
+            "vulnerabilities": ["CVE-2026-56860"],
+            "installed_paths": [
+              "/Users/alice/go/bin/gopls"
+            ]
+          }
+        ],
+        "display_name": "",
+        "software_package": null,
+        "app_store_app": null
+      },
+      {
+        "id": 936,
+        "name": "Google Chrome",
+        "icon_url": null,
+        "source": "apps",
+        "extension_for": "",
+        "status": null,
+        "installed_versions": [
+          {
+            "version": "149.0.7827.54",
+            "bundle_identifier": "com.google.Chrome",
+            "vulnerabilities": null,
+            "installed_paths": [
+              "/Applications/Google Chrome.app"
+            ],
+            "signature_information": [
+              {
+                "installed_path": "/Applications/Google Chrome.app",
+                "team_identifier": "EQHXZ8M8AV",
+                "hash_sha256": "ce484e67c58b18313382e9fe2e225df52fb20b5f",
+                "executable_sha256": null,
+                "executable_path": null
+              }
+            ],
+            "last_opened_at": "2026-06-04T15:22:36Z"
+          }
+        ],
+        "display_name": "",
+        "software_package": {
+          "name": "GoogleChrome.pkg",
+          "automatic_install_policies": null,
+          "version": "149.0.7827.54",
+          "platform": "darwin",
+          "self_service": true,
+          "has_uninstall_script": true,
+          "last_install": null,
+          "last_uninstall": null,
+          "package_url": null,
+          "categories": [
+            "Browsers"
+          ]
+        },
+        "app_store_app": null
+      },
+      {
+        "id": 1042,
+        "name": "git",
+        "icon_url": null,
+        "source": "homebrew_packages",
+        "extension_for": "",
+        "status": null,
+        "installed_versions": [
+          {
+            "version": "2.46.0",
+            "bundle_identifier": "",
+            "vulnerabilities": null,
+            "installed_paths": [
+              "/opt/homebrew/Cellar/git"
+            ],
+            "signature_information": [
+              {
+                "installed_path": "/opt/homebrew/Cellar/git",
+                "team_identifier": "",
+                "hash_sha256": null,
+                "executable_sha256": "2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae",
+                "executable_path": "/opt/homebrew/Cellar/git/2.46.0/bin/git"
+              },
+              {
+                "installed_path": "/opt/homebrew/Cellar/git",
+                "team_identifier": "",
+                "hash_sha256": null,
+                "executable_sha256": "fcde2b2edba56bf408601fb721fe9b5c338d10ee429ea04fae5511b68fbf8fb9",
+                "executable_path": "/opt/homebrew/Cellar/git/2.46.0/bin/git-shell"
+              }
+            ],
+            "last_opened_at": ""
+          }
+        ],
+        "display_name": "",
+        "software_package": null,
+        "app_store_app": null
+      }
+    ],
+    "meta": {
+      "has_next_results": false,
+      "has_previous_results": false
+    }
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#get-hosts-software-by-fleet-desktop-token
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/device/:token/software'
+    params:
+    - name: token
+      value: ''
+      type: path
+      description: '**Required.** The host''s [Fleet Desktop token](https://fleetdm.com/guides/fleet-desktop#secure-fleet-desktop).'
+    - name: query
+      value: ''
+      type: query
+      disabled: true
+      description: Search query keywords. Searchable fields include `name`.
+    - name: available_for_install
+      value: ''
+      type: query
+      disabled: true
+      description: If `true` or `1`, only list software that is available for install (added by the user). Default
+        is `false`.
+    - name: self_service
+      value: ''
+      type: query
+      disabled: true
+      description: If `true` or `1`, only lists self-service software. Default is `false`.
+    - name: vulnerable
+      value: ''
+      type: query
+      disabled: true
+      description: If `true` or `1`, only list software that have vulnerabilities. Default is `false`.
+    - name: page
+      value: ''
+      type: query
+      disabled: true
+      description: Page number of the results to fetch.
+    - name: per_page
+      value: ''
+      type: query
+      disabled: true
+      description: Results per page.
+    - name: order_key
+      value: ''
+      type: query
+      disabled: true
+      description: What to order results by. Options include `"name"`. Default is `"name"`.
+    - name: order_direction
+      value: ''
+      type: query
+      disabled: true
+      description: '**Requires `order_key`**. The direction of the order given the order key. Options include `"asc"`
+        and `"desc"`. Default is `"asc"`.'
+    - name: min_cvss_score
+      value: ''
+      type: query
+      disabled: true
+      description: _Available in Fleet Premium_. Filters to include only software with vulnerabilities that have
+        a CVSS version 3.x base score higher than the specified value.
+    - name: max_cvss_score
+      value: ''
+      type: query
+      disabled: true
+      description: _Available in Fleet Premium_. Filters to only include software with vulnerabilities that have
+        a CVSS version 3.x base score lower than what's specified.
+    - name: exploit
+      value: ''
+      type: query
+      disabled: true
+      description: '_Available in Fleet Premium_. If `true`, filters to only include software with vulnerabilities
+        that have been actively exploited in the wild (`cisa_known_exploit: true`). Default is `false`.'
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "count": 2,
+          "software": [
+            {
+              "id": 1042,
+              "name": "gopls",
+              "icon_url": null,
+              "source": "go_binaries",
+              "extension_for": "",
+              "status": null,
+              "installed_versions": [
+                {
+                  "version": "v0.21.1",
+                  "release": "go1.26.1",
+                  "vulnerabilities": [
+                    "CVE-2026-56860"
+                  ],
+                  "installed_paths": [
+                    "/Users/alice/go/bin/gopls"
+                  ]
+                }
+              ],
+              "display_name": "",
+              "software_package": null,
+              "app_store_app": null
+            },
+            {
+              "id": 936,
+              "name": "Google Chrome",
+              "icon_url": null,
+              "source": "apps",
+              "extension_for": "",
+              "status": null,
+              "installed_versions": [
+                {
+                  "version": "149.0.7827.54",
+                  "bundle_identifier": "com.google.Chrome",
+                  "vulnerabilities": null,
+                  "installed_paths": [
+                    "/Applications/Google Chrome.app"
+                  ],
+                  "signature_information": [
+                    {
+                      "installed_path": "/Applications/Google Chrome.app",
+                      "team_identifier": "EQHXZ8M8AV",
+                      "hash_sha256": "ce484e67c58b18313382e9fe2e225df52fb20b5f",
+                      "executable_sha256": null,
+                      "executable_path": null
+                    }
+                  ],
+                  "last_opened_at": "2026-06-04T15:22:36Z"
+                }
+              ],
+              "display_name": "",
+              "software_package": {
+                "name": "GoogleChrome.pkg",
+                "automatic_install_policies": null,
+                "version": "149.0.7827.54",
+                "platform": "darwin",
+                "self_service": true,
+                "has_uninstall_script": true,
+                "last_install": null,
+                "last_uninstall": null,
+                "package_url": null,
+                "categories": [
+                  "Browsers"
+                ]
+              },
+              "app_store_app": null
+            },
+            {
+              "id": 1042,
+              "name": "git",
+              "icon_url": null,
+              "source": "homebrew_packages",
+              "extension_for": "",
+              "status": null,
+              "installed_versions": [
+                {
+                  "version": "2.46.0",
+                  "bundle_identifier": "",
+                  "vulnerabilities": null,
+                  "installed_paths": [
+                    "/opt/homebrew/Cellar/git"
+                  ],
+                  "signature_information": [
+                    {
+                      "installed_path": "/opt/homebrew/Cellar/git",
+                      "team_identifier": "",
+                      "hash_sha256": null,
+                      "executable_sha256": "2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae",
+                      "executable_path": "/opt/homebrew/Cellar/git/2.46.0/bin/git"
+                    },
+                    {
+                      "installed_path": "/opt/homebrew/Cellar/git",
+                      "team_identifier": "",
+                      "hash_sha256": null,
+                      "executable_sha256": "fcde2b2edba56bf408601fb721fe9b5c338d10ee429ea04fae5511b68fbf8fb9",
+                      "executable_path": "/opt/homebrew/Cellar/git/2.46.0/bin/git-shell"
+                    }
+                  ],
+                  "last_opened_at": ""
+                }
+              ],
+              "display_name": "",
+              "software_package": null,
+              "app_store_app": null
+            }
+          ],
+          "meta": {
+            "has_next_results": false,
+            "has_previous_results": false
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

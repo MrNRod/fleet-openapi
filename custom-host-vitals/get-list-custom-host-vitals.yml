@@ -1,0 +1,146 @@
+info:
+  name: List custom host vitals
+  type: http
+  seq: 1
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/custom_host_vitals'
+  auth: inherit
+  params:
+  - name: query
+    value: ''
+    type: query
+    disabled: true
+    description: Search query. Matches against the vital's name or its `$FLEET_HOST_VITAL_<id>` variable.
+  - name: page
+    value: ''
+    type: query
+    disabled: true
+    description: Page number of the results to fetch.
+  - name: per_page
+    value: ''
+    type: query
+    disabled: true
+    description: Results per page.
+  - name: order_key
+    value: ''
+    type: query
+    disabled: true
+    description: What to order results by. Allowed fields are `name`, `id`, and `updated_at`. Default is `name`.
+  - name: order_direction
+    value: ''
+    type: query
+    disabled: true
+    description: '**Requires `order_key`**. The direction of the order given the order key. Options include `"asc"`
+      and `"desc"`. Default is `"asc"`.'
+  - name: after
+    value: ''
+    type: query
+    disabled: true
+    description: The value to get results after. This needs `order_key` defined, as that's the column that would
+      be used.
+docs: |-
+  Lists all [custom host vitals](https://fleetdm.com/guides/custom-host-vitals), which can be referenced as `$FLEET_HOST_VITAL_<id>` in scripts and configuration profiles, or as `custom_host_vital_id` in a Host vitals label's [`criteria`](#criteria).
+
+  `GET /api/v1/fleet/custom_host_vitals`
+
+  #### Parameters
+
+  | Name            | Type    | In    | Description                                                 |
+  |:--------------- |:------- |:----- |:------------------------------------------------------------|
+  | query           | string  | query | Search query. Matches against the vital's name or its `$FLEET_HOST_VITAL_<id>` variable. |
+  | page            | integer | query | Page number of the results to fetch.  |
+  | per_page        | integer | query | Results per page. |
+  | order_key       | string  | query | What to order results by. Allowed fields are `name`, `id`, and `updated_at`. Default is `name`. |
+  | order_direction | string  | query | **Requires `order_key`**. The direction of the order given the order key. Options include `"asc"` and `"desc"`. Default is `"asc"`. |
+  | after           | string  | query | The value to get results after. This needs `order_key` defined, as that's the column that would be used. |
+
+  #### Example
+
+  `GET /api/v1/fleet/custom_host_vitals`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "custom_host_vitals": [
+      {
+        "id": 1,
+        "name": "Asset tag",
+        "created_at": "2026-06-04T15:22:36Z",
+        "updated_at": "2026-06-04T15:22:36Z"
+      }
+    ],
+    "meta": {
+      "has_next_results": false,
+      "has_previous_results": false
+    },
+    "count": 1
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#list-custom-host-vitals
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/custom_host_vitals'
+    params:
+    - name: query
+      value: ''
+      type: query
+      disabled: true
+      description: Search query. Matches against the vital's name or its `$FLEET_HOST_VITAL_<id>` variable.
+    - name: page
+      value: ''
+      type: query
+      disabled: true
+      description: Page number of the results to fetch.
+    - name: per_page
+      value: ''
+      type: query
+      disabled: true
+      description: Results per page.
+    - name: order_key
+      value: ''
+      type: query
+      disabled: true
+      description: What to order results by. Allowed fields are `name`, `id`, and `updated_at`. Default is `name`.
+    - name: order_direction
+      value: ''
+      type: query
+      disabled: true
+      description: '**Requires `order_key`**. The direction of the order given the order key. Options include `"asc"`
+        and `"desc"`. Default is `"asc"`.'
+    - name: after
+      value: ''
+      type: query
+      disabled: true
+      description: The value to get results after. This needs `order_key` defined, as that's the column that would
+        be used.
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "custom_host_vitals": [
+            {
+              "id": 1,
+              "name": "Asset tag",
+              "created_at": "2026-06-04T15:22:36Z",
+              "updated_at": "2026-06-04T15:22:36Z"
+            }
+          ],
+          "meta": {
+            "has_next_results": false,
+            "has_previous_results": false
+          },
+          "count": 1
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

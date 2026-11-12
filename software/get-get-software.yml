@@ -1,0 +1,407 @@
+info:
+  name: Get software
+  type: http
+  seq: 4
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/software/titles/:id'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required.** The software title''s ID.'
+  - name: fleet_id
+    value: ''
+    type: query
+    disabled: true
+    description: _Available in Fleet Premium_. Filters response data to the specified fleet. Use `0` to filter by
+      "Unassigned" hosts.
+docs: |-
+  Returns information about the specified software. By default, `versions` are sorted in descending order by the `hosts_count` field.
+
+  `GET /api/v1/fleet/software/titles/:id`
+
+  #### Parameters
+
+  | Name | Type | In | Description |
+  | ---- | ---- | -- | ----------- |
+  | id   | integer | path | **Required.** The software title's ID. |
+  | fleet_id             | integer | query | _Available in Fleet Premium_. Filters response data to the specified fleet. Use `0` to filter by "Unassigned" hosts.  |
+
+  #### Example
+
+  `GET /api/v1/fleet/software/titles/2792?fleet_id=3`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "software_title": {
+      "id": 2792,
+      "name": "Slack",
+      "icon_url": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/90/f7/27/90f727be-835b-54ad-4d9d-8b597e63e321/electron.png/512x512bb.png",
+      "source": "apps",
+      "extension_for": "",
+      "browser": "",
+      "hosts_count": 5,
+      "versions_count": 4,
+      "versions": [
+          {
+              "id": 515953,
+              "version": "4.39.88",
+              "vulnerabilities": null,
+              "hosts_count": 1
+          },
+          {
+              "id": 610801,
+              "version": "4.47.72",
+              "vulnerabilities": null,
+              "hosts_count": 2
+          }
+      ],
+      "counts_updated_at": "2026-06-04T17:23:45Z",
+      "packages": [
+          {
+              "team_id": 310,
+              "title_id": 2792,
+              "name": "Slack-4.50.128-macOS.pkg",
+              "icon_url": null,
+              "version": "4.50.128",
+              "platform": "darwin",
+              "uploaded_at": "2026-06-04T17:29:09.155424Z",
+              "installer_id": 36817,
+              "install_script": "#!/bin/sh\n\ninstaller -pkg \"$INSTALLER_PATH\" -target /\n",
+              "pre_install_query": "",
+              "post_install_script": "",
+              "uninstall_script": "#!/bin/sh\n\n# Fleet extracts and saves package IDs.\npkg_ids=(\n  'com.tinyspeck.slackmacgap'\n)\n",
+              "hash_sha256": "f7e4cba7676dacb03ac4cdbe5a99cc1d80ef751c484a13c6a7cf6a93de4a494e",
+              "status": {
+                  "installed": 0,
+                  "pending_install": 1,
+                  "failed_install": 0,
+                  "pending_uninstall": 0,
+                  "failed_uninstall": 0
+              },
+              "self_service": false,
+              "url": "",
+              "fleet_maintained_app_id": null,
+              "automatic_install_policies": null,
+              "labels_include_any": null,
+              "labels_exclude_any": null,
+              "labels_include_all": null,
+              "categories": null,
+              "display_name": "",
+              "patch_policy": null,
+              "fleet_id": 310
+          },
+          {
+              "team_id": 310,
+              "title_id": 2792,
+              "name": "Slack-4.51.133-macOS.pkg",
+              "icon_url": null,
+              "version": "4.51.133",
+              "platform": "darwin",
+              "uploaded_at": "2026-06-10T09:14:51.482217Z",
+              "installer_id": 36901,
+              "install_script": "#!/bin/sh\n\ninstaller -pkg \"$INSTALLER_PATH\" -target /\n",
+              "pre_install_query": "",
+              "post_install_script": "",
+              "uninstall_script": "#!/bin/sh\n\n# Fleet extracts and saves package IDs.\npkg_ids=(\n  'com.tinyspeck.slackmacgap'\n)\n",
+              "hash_sha256": "a1b2c3d4e5f60718293a4b5c6d7e8f901a2b3c4d5e6f70819203a4b5c6d7e8f9",
+              "status": {
+                  "installed": 0,
+                  "pending_install": 0,
+                  "failed_install": 0,
+                  "pending_uninstall": 0,
+                  "failed_uninstall": 0
+              },
+              "self_service": true,
+              "url": "",
+              "fleet_maintained_app_id": null,
+              "automatic_install_policies": null,
+              "labels_include_any": null,
+              "labels_exclude_any": null,
+              "labels_include_all": [
+                  {
+                      "id": 12,
+                      "name": "IT test team"
+                  }
+              ],
+              "categories": null,
+              "display_name": "",
+              "patch_policy": null,
+              "fleet_id": 310
+          }
+      ],
+      "software_package": {
+          "team_id": 310,
+          "title_id": 2792,
+          "name": "Slack-4.50.128-macOS.pkg",
+          "icon_url": null,
+          "version": "4.50.128",
+          "platform": "darwin",
+          "uploaded_at": "2026-06-04T17:29:09.155424Z",
+          "installer_id": 36817,
+          "install_script": "#!/bin/sh\n\ninstaller -pkg \"$INSTALLER_PATH\" -target /\n",
+          "pre_install_query": "",
+          "post_install_script": "",
+          "uninstall_script": "#!/bin/sh\n\n# Fleet extracts and saves package IDs.\npkg_ids=(\n  'com.tinyspeck.slackmacgap'\n)\n\n# For each package id, get all .app folders associated with the package and remove them.\nfor pkg_id in \"${pkg_ids[@]}\"\ndo\n  # Get volume and location of the package.\n  volume=$(pkgutil --pkg-info \"$pkg_id\" | grep -i \"volume\" | awk '{if (NF>1) print $NF}')\n  location=$(pkgutil --pkg-info \"$pkg_id\" | grep -i \"location\" | awk '{if (NF>1) print $NF}')\n  # Check if this package id corresponds to a valid/installed package\n  if [[ ! -z \"$volume\" ]]; then\n    # Remove individual directories that end with \".app\" belonging to the package.\n    # Only process directories that end with \".app\" to prevent Fleet from removing top level directories.\n    pkgutil --only-dirs --files \"$pkg_id\" | grep \"\\.app$\" | sed -e 's@^@'\"$volume\"\"$location\"'/@' | tr '\\n' '\\0' | xargs -n 1 -0 rm -rf\n    # Remove receipts\n    pkgutil --forget \"$pkg_id\"\n  else\n    echo \"WARNING: volume is empty for package ID $pkg_id\"\n  fi\ndone\n",
+          "hash_sha256": "f7e4cba7676dacb03ac4cdbe5a99cc1d80ef751c484a13c6a7cf6a93de4a494e",
+          "status": {
+              "installed": 0,
+              "pending_install": 1,
+              "failed_install": 0,
+              "pending_uninstall": 0,
+              "failed_uninstall": 0
+          },
+          "self_service": false,
+          "url": "",
+          "fleet_maintained_app_id": null,
+          "automatic_install_policies": null,
+          "labels_include_any": null,
+          "labels_exclude_any": null,
+          "labels_include_all": null,
+          "categories": null,
+          "display_name": "",
+          "patch_policy": null,
+          "fleet_id": 310
+      },
+      "app_store_app": null,
+      "bundle_identifier": "com.tinyspeck.slackmacgap",
+      "display_name": ""
+    }
+  }
+  ```
+
+  `browser` and `extension_for` fields are included when set and when empty, at the same level as `source`. `extension_for` will show the browser or Visual Studio Code fork associated with the extension, allowing for differentiation between e.g. an extension installed on Visual Studio Code and one installed on Cursor. `browser` is deprecated, and only shows this information for browser plugins.
+
+  Each entry in `versions` includes `release` when set. For `rpm_packages`, it's the package release (for example, `1.212.el6`). For `go_binaries`, it's the version of the Go toolchain the binary was built with (for example, `go1.26.1`). Fleet uses it to detect Go standard library vulnerabilities, so the same binary version built with two toolchains is listed as two versions.
+
+  A software title can have more than one package. The `packages` array lists all packages added for the title, including per-package `self_service`, `categories`, and labels (`labels_include_any`, `labels_exclude_any`, `labels_include_all`). `software_package` is kept for backwards compatibility and contains the oldest (first added) package.
+
+  > Install, pending, and failed counts in `packages.status` are combined across policy automations, setup experience, and manual installs.
+
+  For Fleet-maintained apps, software package objects include two additional fields:
+
+  - `pinned_version`: The version the app is pinned to — a specific version (e.g. `"149.0.7827.54"`) or a caret major-version constraint (e.g. `"^147"`). Omitted when the app automatically updates to the latest version.
+  - `fleet_maintained_versions`: The versions Fleet has cached and that are available to pin or roll back to. Each entry includes `id`, `version`, and `uploaded_at`. For example:
+
+  ```json
+  "packages": [
+    {
+      "name": "GoogleChrome.pkg",
+      "version": "149.0.7827.54",
+      "platform": "darwin",
+      "fleet_maintained_app_id": 12,
+      "pinned_version": "149.0.7827.54",
+      "fleet_maintained_versions": [
+        {
+          "id": 36818,
+          "version": "149.0.7827.54",
+          "uploaded_at": "2026-06-04T17:47:23Z"
+        },
+        {
+          "id": 36817,
+          "version": "148.0.7794.0",
+          "uploaded_at": "2026-05-21T11:02:55Z"
+        }
+      ]
+    }
+  ]
+  ```
+
+  For in-house iOS apps, the `software_package` field is populated with package information.
+
+  For Apple App Store and Google Play apps, the `software_package` field is `null` and `app_store_app` is populated with information from the store. For example:
+
+  ```json
+  {
+    "app_store_app": {
+      "app_store_id": "361285480",
+      "platform": "darwin",
+      "name": "Keynote: Design Presentations",
+      "latest_version": "15.2.1",
+      "status": {
+        "installed": 13,
+        "pending": 0,
+        "failed": 2
+      },
+      "self_service": true,
+      "automatic_install_policies": null,
+      "labels_include_any": null,
+      "labels_exclude_any": null,
+      "labels_include_all": null,
+      "created_at": "2026-01-28T21:49:04.145909Z",
+      "categories": [
+        "Productivity"
+      ],
+      "display_name": "Keynote"
+    }
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#get-software
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/software/titles/:id'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required.** The software title''s ID.'
+    - name: fleet_id
+      value: ''
+      type: query
+      disabled: true
+      description: _Available in Fleet Premium_. Filters response data to the specified fleet. Use `0` to filter
+        by "Unassigned" hosts.
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "software_title": {
+            "id": 2792,
+            "name": "Slack",
+            "icon_url": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/90/f7/27/90f727be-835b-54ad-4d9d-8b597e63e321/electron.png/512x512bb.png",
+            "source": "apps",
+            "extension_for": "",
+            "browser": "",
+            "hosts_count": 5,
+            "versions_count": 4,
+            "versions": [
+              {
+                "id": 515953,
+                "version": "4.39.88",
+                "vulnerabilities": null,
+                "hosts_count": 1
+              },
+              {
+                "id": 610801,
+                "version": "4.47.72",
+                "vulnerabilities": null,
+                "hosts_count": 2
+              }
+            ],
+            "counts_updated_at": "2026-06-04T17:23:45Z",
+            "packages": [
+              {
+                "team_id": 310,
+                "title_id": 2792,
+                "name": "Slack-4.50.128-macOS.pkg",
+                "icon_url": null,
+                "version": "4.50.128",
+                "platform": "darwin",
+                "uploaded_at": "2026-06-04T17:29:09.155424Z",
+                "installer_id": 36817,
+                "install_script": "#!/bin/sh\n\ninstaller -pkg \"$INSTALLER_PATH\" -target /\n",
+                "pre_install_query": "",
+                "post_install_script": "",
+                "uninstall_script": "#!/bin/sh\n\n# Fleet extracts and saves package IDs.\npkg_ids=(\n  'com.tinyspeck.slackmacgap'\n)\n",
+                "hash_sha256": "f7e4cba7676dacb03ac4cdbe5a99cc1d80ef751c484a13c6a7cf6a93de4a494e",
+                "status": {
+                  "installed": 0,
+                  "pending_install": 1,
+                  "failed_install": 0,
+                  "pending_uninstall": 0,
+                  "failed_uninstall": 0
+                },
+                "self_service": false,
+                "url": "",
+                "fleet_maintained_app_id": null,
+                "automatic_install_policies": null,
+                "labels_include_any": null,
+                "labels_exclude_any": null,
+                "labels_include_all": null,
+                "categories": null,
+                "display_name": "",
+                "patch_policy": null,
+                "fleet_id": 310
+              },
+              {
+                "team_id": 310,
+                "title_id": 2792,
+                "name": "Slack-4.51.133-macOS.pkg",
+                "icon_url": null,
+                "version": "4.51.133",
+                "platform": "darwin",
+                "uploaded_at": "2026-06-10T09:14:51.482217Z",
+                "installer_id": 36901,
+                "install_script": "#!/bin/sh\n\ninstaller -pkg \"$INSTALLER_PATH\" -target /\n",
+                "pre_install_query": "",
+                "post_install_script": "",
+                "uninstall_script": "#!/bin/sh\n\n# Fleet extracts and saves package IDs.\npkg_ids=(\n  'com.tinyspeck.slackmacgap'\n)\n",
+                "hash_sha256": "a1b2c3d4e5f60718293a4b5c6d7e8f901a2b3c4d5e6f70819203a4b5c6d7e8f9",
+                "status": {
+                  "installed": 0,
+                  "pending_install": 0,
+                  "failed_install": 0,
+                  "pending_uninstall": 0,
+                  "failed_uninstall": 0
+                },
+                "self_service": true,
+                "url": "",
+                "fleet_maintained_app_id": null,
+                "automatic_install_policies": null,
+                "labels_include_any": null,
+                "labels_exclude_any": null,
+                "labels_include_all": [
+                  {
+                    "id": 12,
+                    "name": "IT test team"
+                  }
+                ],
+                "categories": null,
+                "display_name": "",
+                "patch_policy": null,
+                "fleet_id": 310
+              }
+            ],
+            "software_package": {
+              "team_id": 310,
+              "title_id": 2792,
+              "name": "Slack-4.50.128-macOS.pkg",
+              "icon_url": null,
+              "version": "4.50.128",
+              "platform": "darwin",
+              "uploaded_at": "2026-06-04T17:29:09.155424Z",
+              "installer_id": 36817,
+              "install_script": "#!/bin/sh\n\ninstaller -pkg \"$INSTALLER_PATH\" -target /\n",
+              "pre_install_query": "",
+              "post_install_script": "",
+              "uninstall_script": "#!/bin/sh\n\n# Fleet extracts and saves package IDs.\npkg_ids=(\n  'com.tinyspeck.slackmacgap'\n)\n\n# For each package id, get all .app folders associated with the package and remove them.\nfor pkg_id in \"${pkg_ids[@]}\"\ndo\n  # Get volume and location of the package.\n  volume=$(pkgutil --pkg-info \"$pkg_id\" | grep -i \"volume\" | awk '{if (NF>1) print $NF}')\n  location=$(pkgutil --pkg-info \"$pkg_id\" | grep -i \"location\" | awk '{if (NF>1) print $NF}')\n  # Check if this package id corresponds to a valid/installed package\n  if [[ ! -z \"$volume\" ]]; then\n    # Remove individual directories that end with \".app\" belonging to the package.\n    # Only process directories that end with \".app\" to prevent Fleet from removing top level directories.\n    pkgutil --only-dirs --files \"$pkg_id\" | grep \"\\.app$\" | sed -e 's@^@'\"$volume\"\"$location\"'/@' | tr '\\n' '\\0' | xargs -n 1 -0 rm -rf\n    # Remove receipts\n    pkgutil --forget \"$pkg_id\"\n  else\n    echo \"WARNING: volume is empty for package ID $pkg_id\"\n  fi\ndone\n",
+              "hash_sha256": "f7e4cba7676dacb03ac4cdbe5a99cc1d80ef751c484a13c6a7cf6a93de4a494e",
+              "status": {
+                "installed": 0,
+                "pending_install": 1,
+                "failed_install": 0,
+                "pending_uninstall": 0,
+                "failed_uninstall": 0
+              },
+              "self_service": false,
+              "url": "",
+              "fleet_maintained_app_id": null,
+              "automatic_install_policies": null,
+              "labels_include_any": null,
+              "labels_exclude_any": null,
+              "labels_include_all": null,
+              "categories": null,
+              "display_name": "",
+              "patch_policy": null,
+              "fleet_id": 310
+            },
+            "app_store_app": null,
+            "bundle_identifier": "com.tinyspeck.slackmacgap",
+            "display_name": ""
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

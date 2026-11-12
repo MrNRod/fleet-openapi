@@ -1,0 +1,45 @@
+info:
+  name: Refetch host by Fleet Desktop token
+  type: http
+  seq: 9
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/device/:token/refetch'
+  params:
+  - name: token
+    value: ''
+    type: path
+    description: '**Required**. The host''s [Fleet Desktop token](https://fleetdm.com/guides/fleet-desktop#secure-fleet-desktop).'
+docs: |-
+  Same as [Refetch host](#refetch-host) except with the Fleet Desktop token instead the host ID.
+
+  `POST /api/v1/fleet/device/:token/refetch`
+
+  #### Parameters
+
+  | Name | Type    | In   | Description                  |
+  | ---- | ------- | ---- | ---------------------------- |
+  | token | string | path | **Required**. The host's [Fleet Desktop token](https://fleetdm.com/guides/fleet-desktop#secure-fleet-desktop). |
+
+  #### Example
+
+  `POST /api/v1/fleet/device/6d3e95ca-6783-4d0d-93b8-a5ffdb207867/refetch`
+
+  ##### Default response
+
+  `Status: 200`
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#refetch-host-by-fleet-desktop-token
+examples:
+- name: 200 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/device/:token/refetch'
+    params:
+    - name: token
+      value: ''
+      type: path
+      description: '**Required**. The host''s [Fleet Desktop token](https://fleetdm.com/guides/fleet-desktop#secure-fleet-desktop).'
+  response:
+    status: 200
+    statusText: OK

@@ -1,0 +1,65 @@
+info:
+  name: Get host's device page URL
+  type: http
+  seq: 16
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/hosts/:id/device_url'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required**. The host''s `id`.'
+docs: |-
+  Retrieves the end user url for the host's **My device** page.
+
+  `GET /api/v1/fleet/hosts/:id/device_url`
+
+  #### Parameters
+
+  | Name       | Type              | In   | Description                                                                   |
+  | ---------- | ----------------- | ---- | ----------------------------------------------------------------------------- |
+  | id         | integer           | path | **Required**. The host's `id`.                                                |
+
+  #### Example
+
+  `GET /api/v1/fleet/hosts/1/device_url`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "host_id": 1,
+    "device_url": "example.com/device/device_id"
+  }
+  ```
+
+  ---
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#get-hosts-device-page-url
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/hosts/:id/device_url'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required**. The host''s `id`.'
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "host_id": 1,
+          "device_url": "example.com/device/device_id"
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

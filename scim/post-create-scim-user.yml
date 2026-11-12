@@ -1,0 +1,172 @@
+info:
+  name: Create SCIM user
+  type: http
+  seq: 2
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/fleet/scim/Users'
+  auth: inherit
+  body:
+    type: json
+    data: |-
+      {
+        "schemas": [
+          "urn:ietf:params:scim:schemas:core:2.0:User"
+        ],
+        "userName": "user@example.com",
+        "externalId": "ext-123",
+        "name": {
+          "givenName": "Jane",
+          "familyName": "Doe"
+        },
+        "emails": [
+          {
+            "value": "user@example.com",
+            "type": "work",
+            "primary": true
+          }
+        ],
+        "active": true
+      }
+  headers:
+  - name: Content-Type
+    value: application/json
+docs: |-
+  _Available in Fleet Premium_
+
+  `POST /api/v1/fleet/scim/Users`
+
+  #### Parameters
+
+  | Name                 | Type    | In   | Description                                                                                       |
+  | -------------------- | ------- | ---- | ------------------------------------------------------------------------------------------------- |
+  | schemas              | array   | body | **Required**. Must include `"urn:ietf:params:scim:schemas:core:2.0:User"`.                        |
+  | userName             | string  | body | **Required**. Unique username (typically an email address).                                        |
+  | name.givenName       | string  | body | **Required**. User's first name.                                                                  |
+  | name.familyName      | string  | body | **Required**. User's last name.                                                                   |
+  | externalId           | string  | body | Optional. External identifier from the IdP.                                                        |
+  | emails               | array   | body | Optional. List of email objects with `value`, `type`, and `primary` fields.                        |
+  | active               | boolean | body | Optional. Whether the user account is active.                                                      |
+  | urn:ietf:params:scim:schemas:extension:enterprise:2.0:User.department | string | body | Optional. User's department. |
+
+  #### Example
+
+  `POST /api/v1/fleet/scim/Users`
+
+  ##### Request body
+
+  ```json
+  {
+    "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
+    "userName": "user@example.com",
+    "externalId": "ext-123",
+    "name": {
+      "givenName": "Jane",
+      "familyName": "Doe"
+    },
+    "emails": [
+      {
+        "value": "user@example.com",
+        "type": "work",
+        "primary": true
+      }
+    ],
+    "active": true
+  }
+  ```
+
+  ##### Default response
+
+  `Status: 201`
+
+  ```json
+  {
+    "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
+    "id": "1",
+    "externalId": "ext-123",
+    "userName": "user@example.com",
+    "name": {
+      "givenName": "Jane",
+      "familyName": "Doe"
+    },
+    "emails": [
+      {
+        "value": "user@example.com",
+        "type": "work",
+        "primary": true
+      }
+    ],
+    "active": true,
+    "groups": [],
+    "meta": {
+      "resourceType": "User"
+    }
+  }
+  ```
+
+  ---
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#create-scim-user
+examples:
+- name: 201 Default response
+  request:
+    method: POST
+    url: '{{baseUrl}}/api/v1/fleet/scim/Users'
+    body:
+      type: json
+      data: |-
+        {
+          "schemas": [
+            "urn:ietf:params:scim:schemas:core:2.0:User"
+          ],
+          "userName": "user@example.com",
+          "externalId": "ext-123",
+          "name": {
+            "givenName": "Jane",
+            "familyName": "Doe"
+          },
+          "emails": [
+            {
+              "value": "user@example.com",
+              "type": "work",
+              "primary": true
+            }
+          ],
+          "active": true
+        }
+    headers:
+    - name: Content-Type
+      value: application/json
+  response:
+    status: 201
+    statusText: Created
+    body:
+      type: json
+      data: |-
+        {
+          "schemas": [
+            "urn:ietf:params:scim:schemas:core:2.0:User"
+          ],
+          "id": "1",
+          "externalId": "ext-123",
+          "userName": "user@example.com",
+          "name": {
+            "givenName": "Jane",
+            "familyName": "Doe"
+          },
+          "emails": [
+            {
+              "value": "user@example.com",
+              "type": "work",
+              "primary": true
+            }
+          ],
+          "active": true,
+          "groups": [],
+          "meta": {
+            "resourceType": "User"
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

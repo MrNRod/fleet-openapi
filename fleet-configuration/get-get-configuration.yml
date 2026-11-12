@@ -1,0 +1,743 @@
+info:
+  name: Get configuration
+  type: http
+  seq: 2
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/config'
+  auth: inherit
+docs: |-
+  Returns all information about the Fleet's configuration.
+
+  The `agent_options`, `sso_settings` and `smtp_settings` fields are only returned for admin and GitOps users with global access (see the [Role-based access guide](https://fleetdm.com/guides/role-based-access)).
+
+  `auth` is read-only. `auth.mdm_apple_one_time_enroll_secrets` reports the [`mdm.apple_one_time_enroll_secrets`](https://fleetdm.com/docs/configuration/fleet-server-configuration#mdm-apple-one-time-enroll-secrets) server configuration and is only returned when that setting is enabled.
+
+  `mdm.apple_settings.configuration_profiles`, `mdm.windows_settings.configuration_profiles`, `mdm.setup_experience`, `mdm.volume_purchasing_program`, and `scripts` only include the settings applied using [Fleet's YAML](https://fleetdm.com/docs/configuration/yaml-files). To list the settings added in the UI or API, use the [List configuration profiles](https://fleetdm.com/docs/rest-api/rest-api#list-configuration-profiles), GET endpoints from [Setup experience](https://fleetdm.com/docs/rest-api/rest-api#setup-experience), [List Volume Purchasing Program (VPP) tokens](https://fleetdm.com/docs/rest-api/rest-api#list-volume-purchasing-program-vpp-tokens), or [List scripts](https://fleetdm.com/docs/rest-api/rest-api#list-scripts) instead.
+
+  `GET /api/v1/fleet/config`
+
+  #### Parameters
+
+  None.
+
+  #### Example
+
+  `GET /api/v1/fleet/config`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "org_info": {
+      "org_name": "fleet",
+      "org_logo_url_dark_mode": "",
+      "org_logo_url_light_mode": "",
+      "org_logo_url": "",
+      "org_logo_url_light_background": "",
+      "contact_url": "https://fleetdm.com/company/contact"
+    },
+    "server_settings": {
+      "server_url": "https://instance.fleet.com",
+      "enable_analytics": true,
+      "live_query_disabled": false,
+      "query_reports_disabled": false,
+      "ai_features_disabled": false
+    },
+    "smtp_settings": {
+      "enable_smtp": false,
+      "configured": false,
+      "sender_address": "",
+      "server": "",
+      "port": 587,
+      "authentication_type": "authtype_username_password",
+      "user_name": "",
+      "password": "********",
+      "enable_ssl_tls": true,
+      "authentication_method": "authmethod_plain",
+      "domain": "",
+      "verify_ssl_certs": true,
+      "enable_start_tls": true
+    },
+    "sso_settings": {
+      "entity_id": "",
+      "issuer_uri": "",
+      "idp_image_url": "",
+      "metadata": "",
+      "metadata_url": "",
+      "idp_name": "",
+      "enable_sso": false,
+      "enable_sso_idp_login": false,
+      "enable_jit_provisioning": false,
+      "sso_server_url": ""
+    },
+    "conditional_access": {
+      "microsoft_entra_tenant_id": "",
+      "microsoft_entra_connection_configured": false,
+      "okta_idp_id": "0ogmbinlfy9hvGs7cx492",
+      "okta_assertion_consumer_service_url": "https://example.okta.com/sso/saml2/0ogmbinlfy9hvGs7cx492",
+      "okta_audience_uri": "https://www.okta.com/saml2/service-provider/asdhjlksoewpoasn",
+      "okta_certificate": "-----BEGIN CERTIFICATE-----\nMIIC...\n-----END CERTIFICATE-----",
+      "bypass_disabled": false
+    },
+    "host_expiry_settings": {
+      "host_expiry_enabled": false,
+      "host_expiry_window": 0
+    },
+    "activity_expiry_settings": {
+      "activity_expiry_enabled": false,
+      "activity_expiry_window": 0,
+      "preserve_host_activities_on_reenrollment": false
+    },
+    "features": {
+      "enable_host_users": true,
+      "enable_software_inventory": true,
+      "additional_queries": null
+    },
+    "mdm": {
+      "android_enabled_and_configured": true,
+      "windows_enabled_and_configured": true,
+      "windows_entra_tenant_ids": [
+        "fec37e96-3615-4e37-8fac-445d5328af3c"
+      ],
+      "windows_entra_client_ids": [
+        "8c8e3fd4-9b2c-4d3e-8f10-2233445566aa"
+      ],
+      "microsoft_graph_credential_invalid": false,
+      "enable_turn_on_windows_mdm_manually": false,
+      "apple_require_hardware_attestation": false,
+      "only_allow_apple_business_enrollment": false,
+      "name_template": "",
+      "macos_updates": {
+        "minimum_version": "12.3.1",
+        "deadline": "2022-01-01",
+        "update_new_hosts": true
+      },
+      "ios_updates": {
+        "minimum_version": "17.0.1",
+        "deadline": "2024-08-01"
+      },
+      "ipados_updates": {
+        "minimum_version": "17.0.1",
+        "deadline": "2024-08-01"
+      },
+      "windows_updates": {
+        "deadline_days": 5,
+        "grace_period_days": 1
+      },
+      "macos_settings": {
+        "custom_settings": [
+          {
+            "path": "path/to/profile1.mobileconfig",
+            "labels": ["Label 1", "Label 2"]
+          }
+        ]
+      },
+      "apple_settings": {
+        "configuration_profiles": [
+          {
+            "path": "path/to/profile1.mobileconfig",
+            "labels": ["Label 1", "Label 2"]
+          },
+          {
+            "path": "path/to/declaration.json",
+            "labels": ["Label 1", "Label 2"]
+          }
+        ],
+        "enable_disk_encryption": true,
+        "enable_escrow_disk_encryption_key": true,
+        "assets": [
+          {
+            "path": "path/to/assets/asset.json"
+          }
+        ],
+        "managed_local_account_settings": {
+          "enabled": true
+        },
+        "end_user_local_account_type": "admin"
+      },
+      "windows_settings": {
+        "custom_settings": [
+          {
+           "path": "path/to/profile2.xml",
+           "labels": ["Label 3", "Label 4"]
+          }
+        ],
+        "configuration_profiles": [
+          {
+           "path": "path/to/profile2.xml",
+           "labels": ["Label 3", "Label 4"]
+          }
+        ],
+        "enable_disk_encryption": true,
+        "require_bitlocker_pin": true,
+        "enable_managed_local_account": true
+      },
+      "linux_settings": {
+        "enable_escrow_disk_encryption_key": true
+      },
+      "scripts": ["path/to/script.sh"],
+      "end_user_authentication": {
+        "entity_id": "",
+        "metadata": "",
+        "metadata_url": "",
+        "idp_name": ""
+      },
+      "macos_migration": {
+        "enable": false,
+        "mode": "voluntary",
+        "webhook_url": "https://webhook.example.com"
+      },
+      "macos_setup": {
+        "bootstrap_package": "",
+        "enable_end_user_authentication": false,
+        "macos_setup_assistant": "path/to/config.json",
+        "enable_release_device_manually": false,
+        "manual_agent_install": false,
+        "enable_managed_local_account": false,
+        "end_user_local_account_type": "admin"
+      },
+      "setup_experience": {
+        "bootstrap_package": "",
+        "enable_end_user_authentication": false,
+        "apple_setup_assistant": "path/to/config.json",
+        "enable_release_device_manually": false,
+        "manual_agent_install": false,
+        "enable_managed_local_account": false,
+        "end_user_local_account_type": "admin"
+      },
+      "client_url": "https://instance.fleet.com",
+      "apple_account_provisioning": {
+        "oauth_idp_token_url": "https://fleet-example.okta.com/oauth2/v1/token",
+        "oauth_idp_client_id": "Ooa12345abcdeFGHI678",
+        "oauth_idp_client_secret": "********"
+      }
+    },
+    "agent_options": {
+      "spec": {
+        "config": {
+          "options": {
+            "pack_delimiter": "/",
+            "logger_tls_period": 10,
+            "distributed_plugin": "tls",
+            "disable_distributed": false,
+            "logger_tls_endpoint": "/api/v1/osquery/log",
+            "distributed_interval": 10,
+            "distributed_tls_max_attempts": 3
+          },
+          "decorators": {
+            "load": [
+              "SELECT uuid AS host_uuid FROM system_info;",
+              "SELECT hostname AS hostname FROM system_info;"
+            ]
+          }
+        },
+        "overrides": {},
+        "command_line_flags": {}
+      }
+    },
+    "license": {
+      "tier": "premium",
+      "organization": "fleet",
+      "device_count": 500000,
+      "expiration": "2031-10-16T00:00:00Z",
+      "note": ""
+    },
+    "logging": {
+      "debug": false,
+      "json": false,
+      "result": {
+        "plugin": "firehose",
+        "config": {
+          "region": "us-east-1",
+          "status_stream": "",
+          "result_stream": "result-topic"
+        }
+      },
+      "status": {
+        "plugin": "filesystem",
+        "config": {
+          "status_log_file": "foo_status",
+          "result_log_file": "",
+          "enable_log_rotation": false,
+          "enable_log_compression": false
+        }
+      }
+    },
+    "vulnerability_settings": {
+      "databases_path": ""
+    },
+    "gitops": {
+      "gitops_mode_enabled": false,
+      "repository_url": ""
+    },
+    "webhook_settings": {
+      "host_status_webhook": {
+        "enable_host_status_webhook": true,
+        "destination_url": "https://server.com",
+        "host_percentage": 5,
+        "days_count": 7
+      },
+      "failing_policies_webhook":{
+        "enable_failing_policies_webhook":true,
+        "destination_url": "https://server.com",
+        "policy_ids": [1, 2, 3],
+        "host_batch_size": 1000
+      },
+      "vulnerabilities_webhook":{
+        "enable_vulnerabilities_webhook":true,
+        "destination_url": "https://server.com",
+        "host_batch_size": 1000
+      },
+      "activities_webhook":{
+        "enable_activities_webhook":true,
+        "destination_url": "https://server.com"
+      }
+    },
+    "integrations": {
+      "google_calendar": [
+        {
+          "domain": "example.com",
+          "api_key_json": {
+             "type": "service_account",
+             "project_id": "fleet-in-your-calendar",
+             "private_key_id": "<private key id>",
+             "private_key": "-----BEGIN PRIVATE KEY-----\n<private key>\n-----END PRIVATE KEY-----\n",
+             "client_email": "fleet-calendar-events@fleet-in-your-calendar.iam.gserviceaccount.com",
+             "client_id": "<client id>",
+             "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+             "token_uri": "https://oauth2.googleapis.com/token",
+             "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+             "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/fleet-calendar-events%40fleet-in-your-calendar.iam.gserviceaccount.com",
+             "universe_domain": "googleapis.com"
+           }
+        }
+      ],
+      "google_workspace": [
+        {
+          "domain": "example.com",
+          "impersonated_user_email": "admin@example.com",
+          "api_key_json": {
+             "type": "service_account",
+             "project_id": "fleet-idp-sync",
+             "private_key_id": "<private key id>",
+             "private_key": "-----BEGIN PRIVATE KEY-----\n<private key>\n-----END PRIVATE KEY-----\n",
+             "client_email": "fleet-idp-sync@fleet-idp-sync.iam.gserviceaccount.com",
+             "client_id": "<client id>",
+             "token_uri": "https://oauth2.googleapis.com/token",
+             "universe_domain": "googleapis.com"
+           }
+        }
+      ],
+      "jira": [],
+      "zendesk": [],
+      "certificates_idp_introspection_urls": [],
+      "certificates_idp_client_ids": [],
+      "certificates_disable_host_end_user_binding": false
+    },
+    "logging": {
+      "debug": false,
+      "json": false,
+      "result": {
+          "plugin": "filesystem",
+          "config": {
+            "status_log_file": "/var/folders/xh/bxm1d2615tv3vrg4zrxq540h0000gn/T/osquery_status",
+            "result_log_file": "/var/folders/xh/bxm1d2615tv3vrg4zrxq540h0000gn/T/osquery_result",
+            "enable_log_rotation": false,
+            "enable_log_compression": false
+          }
+        },
+      "status": {
+        "plugin": "filesystem",
+        "config": {
+          "status_log_file": "/var/folders/xh/bxm1d2615tv3vrg4zrxq540h0000gn/T/osquery_status",
+          "result_log_file": "/var/folders/xh/bxm1d2615tv3vrg4zrxq540h0000gn/T/osquery_result",
+          "enable_log_rotation": false,
+          "enable_log_compression": false
+        }
+      }
+    },
+    "update_interval": {
+      "osquery_detail": 3600000000000,
+      "osquery_policy": 3600000000000
+    },
+    "vulnerabilities": {
+      "cpe_database_url": "",
+      "disable_schedule": false,
+      "cve_feed_prefix_url": "",
+      "databases_path": "",
+      "disable_data_sync": false,
+      "periodicity": 3600000000000,
+      "recent_vulnerability_max_age": 2592000000000000
+    },
+    "max_software_package_size": 10737418240,
+    "auth": {
+      "mdm_apple_one_time_enroll_secrets": true
+    }
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#get-configuration
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/config'
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "org_info": {
+            "org_name": "fleet",
+            "org_logo_url_dark_mode": "",
+            "org_logo_url_light_mode": "",
+            "org_logo_url": "",
+            "org_logo_url_light_background": "",
+            "contact_url": "https://fleetdm.com/company/contact"
+          },
+          "server_settings": {
+            "server_url": "https://instance.fleet.com",
+            "enable_analytics": true,
+            "live_query_disabled": false,
+            "query_reports_disabled": false,
+            "ai_features_disabled": false
+          },
+          "smtp_settings": {
+            "enable_smtp": false,
+            "configured": false,
+            "sender_address": "",
+            "server": "",
+            "port": 587,
+            "authentication_type": "authtype_username_password",
+            "user_name": "",
+            "password": "********",
+            "enable_ssl_tls": true,
+            "authentication_method": "authmethod_plain",
+            "domain": "",
+            "verify_ssl_certs": true,
+            "enable_start_tls": true
+          },
+          "sso_settings": {
+            "entity_id": "",
+            "issuer_uri": "",
+            "idp_image_url": "",
+            "metadata": "",
+            "metadata_url": "",
+            "idp_name": "",
+            "enable_sso": false,
+            "enable_sso_idp_login": false,
+            "enable_jit_provisioning": false,
+            "sso_server_url": ""
+          },
+          "conditional_access": {
+            "microsoft_entra_tenant_id": "",
+            "microsoft_entra_connection_configured": false,
+            "okta_idp_id": "0ogmbinlfy9hvGs7cx492",
+            "okta_assertion_consumer_service_url": "https://example.okta.com/sso/saml2/0ogmbinlfy9hvGs7cx492",
+            "okta_audience_uri": "https://www.okta.com/saml2/service-provider/asdhjlksoewpoasn",
+            "okta_certificate": "-----BEGIN CERTIFICATE-----\nMIIC...\n-----END CERTIFICATE-----",
+            "bypass_disabled": false
+          },
+          "host_expiry_settings": {
+            "host_expiry_enabled": false,
+            "host_expiry_window": 0
+          },
+          "activity_expiry_settings": {
+            "activity_expiry_enabled": false,
+            "activity_expiry_window": 0,
+            "preserve_host_activities_on_reenrollment": false
+          },
+          "features": {
+            "enable_host_users": true,
+            "enable_software_inventory": true,
+            "additional_queries": null
+          },
+          "mdm": {
+            "android_enabled_and_configured": true,
+            "windows_enabled_and_configured": true,
+            "windows_entra_tenant_ids": [
+              "fec37e96-3615-4e37-8fac-445d5328af3c"
+            ],
+            "windows_entra_client_ids": [
+              "8c8e3fd4-9b2c-4d3e-8f10-2233445566aa"
+            ],
+            "microsoft_graph_credential_invalid": false,
+            "enable_turn_on_windows_mdm_manually": false,
+            "apple_require_hardware_attestation": false,
+            "only_allow_apple_business_enrollment": false,
+            "name_template": "",
+            "macos_updates": {
+              "minimum_version": "12.3.1",
+              "deadline": "2022-01-01",
+              "update_new_hosts": true
+            },
+            "ios_updates": {
+              "minimum_version": "17.0.1",
+              "deadline": "2024-08-01"
+            },
+            "ipados_updates": {
+              "minimum_version": "17.0.1",
+              "deadline": "2024-08-01"
+            },
+            "windows_updates": {
+              "deadline_days": 5,
+              "grace_period_days": 1
+            },
+            "macos_settings": {
+              "custom_settings": [
+                {
+                  "path": "path/to/profile1.mobileconfig",
+                  "labels": [
+                    "Label 1",
+                    "Label 2"
+                  ]
+                }
+              ]
+            },
+            "apple_settings": {
+              "configuration_profiles": [
+                {
+                  "path": "path/to/profile1.mobileconfig",
+                  "labels": [
+                    "Label 1",
+                    "Label 2"
+                  ]
+                },
+                {
+                  "path": "path/to/declaration.json",
+                  "labels": [
+                    "Label 1",
+                    "Label 2"
+                  ]
+                }
+              ],
+              "enable_disk_encryption": true,
+              "enable_escrow_disk_encryption_key": true,
+              "assets": [
+                {
+                  "path": "path/to/assets/asset.json"
+                }
+              ],
+              "managed_local_account_settings": {
+                "enabled": true
+              },
+              "end_user_local_account_type": "admin"
+            },
+            "windows_settings": {
+              "custom_settings": [
+                {
+                  "path": "path/to/profile2.xml",
+                  "labels": [
+                    "Label 3",
+                    "Label 4"
+                  ]
+                }
+              ],
+              "configuration_profiles": [
+                {
+                  "path": "path/to/profile2.xml",
+                  "labels": [
+                    "Label 3",
+                    "Label 4"
+                  ]
+                }
+              ],
+              "enable_disk_encryption": true,
+              "require_bitlocker_pin": true,
+              "enable_managed_local_account": true
+            },
+            "linux_settings": {
+              "enable_escrow_disk_encryption_key": true
+            },
+            "scripts": [
+              "path/to/script.sh"
+            ],
+            "end_user_authentication": {
+              "entity_id": "",
+              "metadata": "",
+              "metadata_url": "",
+              "idp_name": ""
+            },
+            "macos_migration": {
+              "enable": false,
+              "mode": "voluntary",
+              "webhook_url": "https://webhook.example.com"
+            },
+            "macos_setup": {
+              "bootstrap_package": "",
+              "enable_end_user_authentication": false,
+              "macos_setup_assistant": "path/to/config.json",
+              "enable_release_device_manually": false,
+              "manual_agent_install": false,
+              "enable_managed_local_account": false,
+              "end_user_local_account_type": "admin"
+            },
+            "setup_experience": {
+              "bootstrap_package": "",
+              "enable_end_user_authentication": false,
+              "apple_setup_assistant": "path/to/config.json",
+              "enable_release_device_manually": false,
+              "manual_agent_install": false,
+              "enable_managed_local_account": false,
+              "end_user_local_account_type": "admin"
+            },
+            "client_url": "https://instance.fleet.com",
+            "apple_account_provisioning": {
+              "oauth_idp_token_url": "https://fleet-example.okta.com/oauth2/v1/token",
+              "oauth_idp_client_id": "Ooa12345abcdeFGHI678",
+              "oauth_idp_client_secret": "********"
+            }
+          },
+          "agent_options": {
+            "spec": {
+              "config": {
+                "options": {
+                  "pack_delimiter": "/",
+                  "logger_tls_period": 10,
+                  "distributed_plugin": "tls",
+                  "disable_distributed": false,
+                  "logger_tls_endpoint": "/api/v1/osquery/log",
+                  "distributed_interval": 10,
+                  "distributed_tls_max_attempts": 3
+                },
+                "decorators": {
+                  "load": [
+                    "SELECT uuid AS host_uuid FROM system_info;",
+                    "SELECT hostname AS hostname FROM system_info;"
+                  ]
+                }
+              },
+              "overrides": {},
+              "command_line_flags": {}
+            }
+          },
+          "license": {
+            "tier": "premium",
+            "organization": "fleet",
+            "device_count": 500000,
+            "expiration": "2031-10-16T00:00:00Z",
+            "note": ""
+          },
+          "logging": {
+            "debug": false,
+            "json": false,
+            "result": {
+              "plugin": "filesystem",
+              "config": {
+                "status_log_file": "/var/folders/xh/bxm1d2615tv3vrg4zrxq540h0000gn/T/osquery_status",
+                "result_log_file": "/var/folders/xh/bxm1d2615tv3vrg4zrxq540h0000gn/T/osquery_result",
+                "enable_log_rotation": false,
+                "enable_log_compression": false
+              }
+            },
+            "status": {
+              "plugin": "filesystem",
+              "config": {
+                "status_log_file": "/var/folders/xh/bxm1d2615tv3vrg4zrxq540h0000gn/T/osquery_status",
+                "result_log_file": "/var/folders/xh/bxm1d2615tv3vrg4zrxq540h0000gn/T/osquery_result",
+                "enable_log_rotation": false,
+                "enable_log_compression": false
+              }
+            }
+          },
+          "vulnerability_settings": {
+            "databases_path": ""
+          },
+          "gitops": {
+            "gitops_mode_enabled": false,
+            "repository_url": ""
+          },
+          "webhook_settings": {
+            "host_status_webhook": {
+              "enable_host_status_webhook": true,
+              "destination_url": "https://server.com",
+              "host_percentage": 5,
+              "days_count": 7
+            },
+            "failing_policies_webhook": {
+              "enable_failing_policies_webhook": true,
+              "destination_url": "https://server.com",
+              "policy_ids": [
+                1,
+                2,
+                3
+              ],
+              "host_batch_size": 1000
+            },
+            "vulnerabilities_webhook": {
+              "enable_vulnerabilities_webhook": true,
+              "destination_url": "https://server.com",
+              "host_batch_size": 1000
+            },
+            "activities_webhook": {
+              "enable_activities_webhook": true,
+              "destination_url": "https://server.com"
+            }
+          },
+          "integrations": {
+            "google_calendar": [
+              {
+                "domain": "example.com",
+                "api_key_json": {
+                  "type": "service_account",
+                  "project_id": "fleet-in-your-calendar",
+                  "private_key_id": "<private key id>",
+                  "private_key": "-----BEGIN PRIVATE KEY-----\n<private key>\n-----END PRIVATE KEY-----\n",
+                  "client_email": "fleet-calendar-events@fleet-in-your-calendar.iam.gserviceaccount.com",
+                  "client_id": "<client id>",
+                  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+                  "token_uri": "https://oauth2.googleapis.com/token",
+                  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+                  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/fleet-calendar-events%40fleet-in-your-calendar.iam.gserviceaccount.com",
+                  "universe_domain": "googleapis.com"
+                }
+              }
+            ],
+            "google_workspace": [
+              {
+                "domain": "example.com",
+                "impersonated_user_email": "admin@example.com",
+                "api_key_json": {
+                  "type": "service_account",
+                  "project_id": "fleet-idp-sync",
+                  "private_key_id": "<private key id>",
+                  "private_key": "-----BEGIN PRIVATE KEY-----\n<private key>\n-----END PRIVATE KEY-----\n",
+                  "client_email": "fleet-idp-sync@fleet-idp-sync.iam.gserviceaccount.com",
+                  "client_id": "<client id>",
+                  "token_uri": "https://oauth2.googleapis.com/token",
+                  "universe_domain": "googleapis.com"
+                }
+              }
+            ],
+            "jira": [],
+            "zendesk": [],
+            "certificates_idp_introspection_urls": [],
+            "certificates_idp_client_ids": [],
+            "certificates_disable_host_end_user_binding": false
+          },
+          "update_interval": {
+            "osquery_detail": 3600000000000,
+            "osquery_policy": 3600000000000
+          },
+          "vulnerabilities": {
+            "cpe_database_url": "",
+            "disable_schedule": false,
+            "cve_feed_prefix_url": "",
+            "databases_path": "",
+            "disable_data_sync": false,
+            "periodicity": 3600000000000,
+            "recent_vulnerability_max_age": 2592000000000000
+          },
+          "max_software_package_size": 10737418240,
+          "auth": {
+            "mdm_apple_one_time_enroll_secrets": true
+          }
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

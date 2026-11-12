@@ -1,0 +1,415 @@
+info:
+  name: List reports
+  type: http
+  seq: 1
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/reports'
+  auth: inherit
+  params:
+  - name: order_key
+    value: ''
+    type: query
+    disabled: true
+    description: What to order results by. Can be any column in the reports table.
+  - name: order_direction
+    value: ''
+    type: query
+    disabled: true
+    description: '**Requires `order_key`**. The direction of the order given the order key. Options include `"asc"`
+      and `"desc"`. Default is `"asc"`.'
+  - name: fleet_id
+    value: ''
+    type: query
+    disabled: true
+    description: _Available in Fleet Premium_. The ID of the fleet for the reports to be listed. When omitted, returns
+      global reports.
+  - name: query
+    value: ''
+    type: query
+    disabled: true
+    description: Search query keywords. Searchable fields include `name`.
+  - name: merge_inherited
+    value: ''
+    type: query
+    disabled: true
+    description: _Available in Fleet Premium_. If `true`, will include global reports in addition to fleet-level
+      reports when filtering by `fleet_id`. (If no `fleet_id` is provided, this parameter is ignored.)
+  - name: platform
+    value: ''
+    type: query
+    disabled: true
+    description: 'Return reports that are scheduled to run on this platform. One of: `"macos"`, `"windows"`, `"linux"`
+      (case-insensitive). (Since reports cannot be scheduled to run on `"chrome"` hosts, it''s not a valid value
+      here)'
+  - name: page
+    value: ''
+    type: query
+    disabled: true
+    description: Page number of the results to fetch.
+  - name: per_page
+    value: ''
+    type: query
+    disabled: true
+    description: Results per page.
+  - name: after
+    value: ''
+    type: query
+    disabled: true
+    description: The value to get results after. This needs `order_key` defined, as that's the column that would
+      be used.
+docs: |-
+  Returns a list of reports. To see each report's data, use the [get report data](#get-report-data) endpoint.
+
+  `GET /api/v1/fleet/reports`
+
+  #### Parameters
+
+  | Name            | Type    | In    | Description                                                                                                                   |
+  | --------------- | ------- | ----- | ----------------------------------------------------------------------------------------------------------------------------- |
+  | order_key       | string  | query | What to order results by. Can be any column in the reports table.                                                             |
+  | order_direction | string  | query | **Requires `order_key`**. The direction of the order given the order key. Options include `"asc"` and `"desc"`. Default is `"asc"`. |
+  | fleet_id         | integer | query | _Available in Fleet Premium_. The ID of the fleet for the reports to be listed. When omitted, returns global reports.                  |
+  | query           | string  | query | Search query keywords. Searchable fields include `name`.                                                                      |
+  | merge_inherited | boolean | query | _Available in Fleet Premium_. If `true`, will include global reports in addition to fleet-level reports when filtering by `fleet_id`. (If no `fleet_id` is provided, this parameter is ignored.) |
+  | platform        | string  | query | Return reports that are scheduled to run on this platform. One of: `"macos"`, `"windows"`, `"linux"` (case-insensitive). (Since reports cannot be scheduled to run on `"chrome"` hosts, it's not a valid value here) |
+  | page                    | integer | query | Page number of the results to fetch. |
+  | per_page                | integer | query | Results per page. |
+  | after                   | string  | query | The value to get results after. This needs `order_key` defined, as that's the column that would be used. |
+
+  #### Example
+
+  `GET /api/v1/fleet/reports`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "queries": [
+      {
+        "created_at": "2021-01-04T21:19:57Z",
+        "updated_at": "2021-01-04T21:19:57Z",
+        "id": 1,
+        "name": "report1",
+        "description": "report",
+        "query": "SELECT * FROM osquery_info",
+        "team_id": null,
+        "interval": 3600,
+        "platform": "darwin,windows,linux",
+        "min_osquery_version": "",
+        "automations_enabled": true,
+        "logging": "snapshot",
+        "saved": true,
+        "observer_can_run": true,
+        "discard_data": false,
+        "author_id": 1,
+        "author_name": "noah",
+        "author_email": "noah@example.com",
+        "labels_include_any": [],
+        "packs": [
+          {
+            "created_at": "2021-01-05T21:13:04Z",
+            "updated_at": "2021-01-07T19:12:54Z",
+            "id": 1,
+            "name": "Pack",
+            "description": "Pack",
+            "platform": "",
+            "disabled": true
+          }
+        ],
+        "stats": {
+          "system_time_p50": 1.32,
+          "system_time_p95": 4.02,
+          "user_time_p50": 3.55,
+          "user_time_p95": 3.00,
+          "total_executions": 3920
+        }
+      }
+    ],
+    "reports": [
+      {
+        "created_at": "2021-01-04T21:19:57Z",
+        "updated_at": "2021-01-04T21:19:57Z",
+        "id": 1,
+        "name": "report1",
+        "description": "report",
+        "query": "SELECT * FROM osquery_info",
+        "team_id": null,
+        "interval": 3600,
+        "platform": "darwin,windows,linux",
+        "min_osquery_version": "",
+        "automations_enabled": true,
+        "logging": "snapshot",
+        "saved": true,
+        "observer_can_run": true,
+        "discard_data": false,
+        "author_id": 1,
+        "author_name": "noah",
+        "author_email": "noah@example.com",
+        "labels_include_any": [],
+        "packs": [
+          {
+            "created_at": "2021-01-05T21:13:04Z",
+            "updated_at": "2021-01-07T19:12:54Z",
+            "id": 1,
+            "name": "Pack",
+            "description": "Pack",
+            "platform": "",
+            "disabled": true
+          }
+        ],
+        "stats": {
+          "system_time_p50": 1.32,
+          "system_time_p95": 4.02,
+          "user_time_p50": 3.55,
+          "user_time_p95": 3.00,
+          "total_executions": 3920
+        }
+      },
+      {
+        "created_at": "2021-01-19T17:08:24Z",
+        "updated_at": "2021-01-19T17:08:24Z",
+        "id": 3,
+        "name": "osquery_schedule",
+        "description": "Report performance stats for each file in the query schedule.",
+        "query": "select name, interval, executions, output_size, wall_time, (user_time/executions) as avg_user_time, (system_time/executions) as avg_system_time, average_memory, last_executed from osquery_schedule;",
+        "team_id": null,
+        "interval": 3600,
+        "platform": "",
+        "version": "",
+        "automations_enabled": true,
+        "logging": "differential",
+        "saved": true,
+        "observer_can_run": true,
+        "discard_data": true,
+        "author_id": 1,
+        "author_name": "noah",
+        "author_email": "noah@example.com",
+        "labels_include_any": ["macOS 13+"],
+        "packs": [
+          {
+            "created_at": "2021-01-19T17:08:31Z",
+            "updated_at": "2021-01-19T17:08:31Z",
+            "id": 14,
+            "name": "test_pack",
+            "description": "",
+            "platform": "",
+            "disabled": false
+          }
+        ],
+        "stats": {
+          "system_time_p50": null,
+          "system_time_p95": null,
+          "user_time_p50": null,
+          "user_time_p95": null,
+          "total_executions": null
+        }
+      }
+    ],
+    "meta": {
+      "has_next_results": true,
+      "has_previous_results": false
+    },
+    "count": 200
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#list-reports
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/reports'
+    params:
+    - name: order_key
+      value: ''
+      type: query
+      disabled: true
+      description: What to order results by. Can be any column in the reports table.
+    - name: order_direction
+      value: ''
+      type: query
+      disabled: true
+      description: '**Requires `order_key`**. The direction of the order given the order key. Options include `"asc"`
+        and `"desc"`. Default is `"asc"`.'
+    - name: fleet_id
+      value: ''
+      type: query
+      disabled: true
+      description: _Available in Fleet Premium_. The ID of the fleet for the reports to be listed. When omitted,
+        returns global reports.
+    - name: query
+      value: ''
+      type: query
+      disabled: true
+      description: Search query keywords. Searchable fields include `name`.
+    - name: merge_inherited
+      value: ''
+      type: query
+      disabled: true
+      description: _Available in Fleet Premium_. If `true`, will include global reports in addition to fleet-level
+        reports when filtering by `fleet_id`. (If no `fleet_id` is provided, this parameter is ignored.)
+    - name: platform
+      value: ''
+      type: query
+      disabled: true
+      description: 'Return reports that are scheduled to run on this platform. One of: `"macos"`, `"windows"`, `"linux"`
+        (case-insensitive). (Since reports cannot be scheduled to run on `"chrome"` hosts, it''s not a valid value
+        here)'
+    - name: page
+      value: ''
+      type: query
+      disabled: true
+      description: Page number of the results to fetch.
+    - name: per_page
+      value: ''
+      type: query
+      disabled: true
+      description: Results per page.
+    - name: after
+      value: ''
+      type: query
+      disabled: true
+      description: The value to get results after. This needs `order_key` defined, as that's the column that would
+        be used.
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "queries": [
+            {
+              "created_at": "2021-01-04T21:19:57Z",
+              "updated_at": "2021-01-04T21:19:57Z",
+              "id": 1,
+              "name": "report1",
+              "description": "report",
+              "query": "SELECT * FROM osquery_info",
+              "team_id": null,
+              "interval": 3600,
+              "platform": "darwin,windows,linux",
+              "min_osquery_version": "",
+              "automations_enabled": true,
+              "logging": "snapshot",
+              "saved": true,
+              "observer_can_run": true,
+              "discard_data": false,
+              "author_id": 1,
+              "author_name": "noah",
+              "author_email": "noah@example.com",
+              "labels_include_any": [],
+              "packs": [
+                {
+                  "created_at": "2021-01-05T21:13:04Z",
+                  "updated_at": "2021-01-07T19:12:54Z",
+                  "id": 1,
+                  "name": "Pack",
+                  "description": "Pack",
+                  "platform": "",
+                  "disabled": true
+                }
+              ],
+              "stats": {
+                "system_time_p50": 1.32,
+                "system_time_p95": 4.02,
+                "user_time_p50": 3.55,
+                "user_time_p95": 3.0,
+                "total_executions": 3920
+              }
+            }
+          ],
+          "reports": [
+            {
+              "created_at": "2021-01-04T21:19:57Z",
+              "updated_at": "2021-01-04T21:19:57Z",
+              "id": 1,
+              "name": "report1",
+              "description": "report",
+              "query": "SELECT * FROM osquery_info",
+              "team_id": null,
+              "interval": 3600,
+              "platform": "darwin,windows,linux",
+              "min_osquery_version": "",
+              "automations_enabled": true,
+              "logging": "snapshot",
+              "saved": true,
+              "observer_can_run": true,
+              "discard_data": false,
+              "author_id": 1,
+              "author_name": "noah",
+              "author_email": "noah@example.com",
+              "labels_include_any": [],
+              "packs": [
+                {
+                  "created_at": "2021-01-05T21:13:04Z",
+                  "updated_at": "2021-01-07T19:12:54Z",
+                  "id": 1,
+                  "name": "Pack",
+                  "description": "Pack",
+                  "platform": "",
+                  "disabled": true
+                }
+              ],
+              "stats": {
+                "system_time_p50": 1.32,
+                "system_time_p95": 4.02,
+                "user_time_p50": 3.55,
+                "user_time_p95": 3.0,
+                "total_executions": 3920
+              }
+            },
+            {
+              "created_at": "2021-01-19T17:08:24Z",
+              "updated_at": "2021-01-19T17:08:24Z",
+              "id": 3,
+              "name": "osquery_schedule",
+              "description": "Report performance stats for each file in the query schedule.",
+              "query": "select name, interval, executions, output_size, wall_time, (user_time/executions) as avg_user_time, (system_time/executions) as avg_system_time, average_memory, last_executed from osquery_schedule;",
+              "team_id": null,
+              "interval": 3600,
+              "platform": "",
+              "version": "",
+              "automations_enabled": true,
+              "logging": "differential",
+              "saved": true,
+              "observer_can_run": true,
+              "discard_data": true,
+              "author_id": 1,
+              "author_name": "noah",
+              "author_email": "noah@example.com",
+              "labels_include_any": [
+                "macOS 13+"
+              ],
+              "packs": [
+                {
+                  "created_at": "2021-01-19T17:08:31Z",
+                  "updated_at": "2021-01-19T17:08:31Z",
+                  "id": 14,
+                  "name": "test_pack",
+                  "description": "",
+                  "platform": "",
+                  "disabled": false
+                }
+              ],
+              "stats": {
+                "system_time_p50": null,
+                "system_time_p95": null,
+                "user_time_p50": null,
+                "user_time_p95": null,
+                "total_executions": null
+              }
+            }
+          ],
+          "meta": {
+            "has_next_results": true,
+            "has_previous_results": false
+          },
+          "count": 200
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

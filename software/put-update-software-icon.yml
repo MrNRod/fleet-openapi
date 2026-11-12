@@ -1,0 +1,123 @@
+info:
+  name: Update software icon
+  type: http
+  seq: 9
+http:
+  method: PUT
+  url: '{{baseUrl}}/api/v1/fleet/software/titles/:id/icon'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: ID of the software title being updated.
+  - name: fleet_id
+    value: ''
+    type: query
+    disabled: true
+    description: '**Required**. The fleet ID. Updates a software icon in the specified fleet.'
+  body:
+    type: multipart-form
+    data:
+    - name: icon
+      value: []
+      description: Must be PNG format. It must be square with dimensions between 120x120 px and 1024x1024 px.
+      disabled: true
+      type: file
+    - name: hash_sha256
+      value: ''
+      description: SHA256 hash of an already-uploaded icon to use. If provided, `filename` is required and `icon`
+        should be omitted.
+      disabled: true
+      type: text
+    - name: filename
+      value: ''
+      description: Filename to record for the icon image, if `hash_sha256` was supplied.
+      disabled: true
+      type: text
+docs: |-
+  _Available in Fleet Premium._
+
+  Icon will be displayed in Fleet and on **Fleet Desktop > Self-service**. In the UI for the specified team, overriding the default icon built into Fleet, as well as the Apple-sourced icon if the software has an associated VPP app.
+
+  > You need to send a request of type `multipart/form-data`.
+
+  `PUT /api/v1/fleet/software/titles/:id/icon`
+
+  #### Parameters
+
+  | Name        | Type    | In   | Description                                      |
+  | ----        | ------- | ---- | --------------------------------------------     |
+  | id          | integer | path | ID of the software title being updated. |
+  | fleet_id     | integer | query | **Required**. The fleet ID. Updates a software icon in the specified fleet. |
+  | icon        | file    | body | Must be PNG format. It must be square with dimensions between 120x120 px and 1024x1024 px. |
+  | hash_sha256 | string  | body | SHA256 hash of an already-uploaded icon to use. If provided, `filename` is required and `icon` should be omitted. |
+  | filename    | string  | body | Filename to record for the icon image, if `hash_sha256` was supplied. |
+
+  #### Example
+
+  `PUT /api/v1/fleet/software/titles/33/icon?fleet_id=2`
+
+  ##### Request body
+
+  ```http
+  icon="crowdstrike-icon-512x512.png"
+  ```
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "icon_url": "/api/latest/fleet/software/titles/33/icon?fleet_id=2"
+  }
+  ```
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#update-software-icon
+examples:
+- name: 200 Default response
+  request:
+    method: PUT
+    url: '{{baseUrl}}/api/v1/fleet/software/titles/:id/icon'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: ID of the software title being updated.
+    - name: fleet_id
+      value: ''
+      type: query
+      disabled: true
+      description: '**Required**. The fleet ID. Updates a software icon in the specified fleet.'
+    body:
+      type: multipart-form
+      data:
+      - name: icon
+        value: []
+        description: Must be PNG format. It must be square with dimensions between 120x120 px and 1024x1024 px.
+        disabled: true
+        type: file
+      - name: hash_sha256
+        value: ''
+        description: SHA256 hash of an already-uploaded icon to use. If provided, `filename` is required and `icon`
+          should be omitted.
+        disabled: true
+        type: text
+      - name: filename
+        value: ''
+        description: Filename to record for the icon image, if `hash_sha256` was supplied.
+        disabled: true
+        type: text
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "icon_url": "/api/latest/fleet/software/titles/33/icon?fleet_id=2"
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

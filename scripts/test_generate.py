@@ -1,5 +1,8 @@
 import importlib.util
+import copy
 import json
+import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -138,20 +141,128 @@ This also applies to `DELETE /api/v1/fleet/teams/:id/users`.
     def test_write_and_check(self):
         collection = g.build(FIXTURE, 'test', 'test')
         with tempfile.TemporaryDirectory() as temp:
-            output = Path(temp) / 'fleet.yml'
+            output = Path(temp) / 'collection'
             g.write_collection(output, collection)
             g.write_collection(output, collection, check=True)
-            output.write_text('changed')
+            request = output / 'hosts/patch-update-host.yml'
+            request.write_text('changed')
             with self.assertRaises(ValueError):
                 g.write_collection(output, collection, check=True)
-            self.assertEqual(output.read_text(), 'changed')
+            self.assertEqual(request.read_text(), 'changed')
 
-    def test_generated_bundle_has_unique_operations_valid_paths_and_json(self):
-        collection = yaml.safe_load((ROOT / 'fleet.bruno.yml').read_text())
-        self.assertTrue(collection['bundled'])
+    def test_native_files_preserve_collection_content(self):
+        collection = g.build(FIXTURE, 'test', 'test')
+        original = copy.deepcopy(collection)
+        files = g.collection_files(collection)
+        root = yaml.safe_load(files['opencollection.yml'])
+        self.assertFalse(root['bundled'])
+        self.assertNotIn('items', root)
+        self.assertNotIn('config', root)
+        self.assertEqual(root['request'], collection['request'])
+        self.assertEqual(root['docs'], collection['docs'])
+        self.assertEqual(yaml.safe_load(files['environments/Fleet.yml']), collection['config']['environments'][0])
+        folder = collection['items'][0]
+        self.assertEqual(yaml.safe_load(files['hosts/folder.yml']), {k: v for k, v in folder.items() if k != 'items'})
+        self.assertEqual(yaml.safe_load(files['hosts/patch-update-host.yml']), folder['items'][0])
+        self.assertEqual(collection, original)
+
+    def test_bundle_cli_matches_directory_and_check_does_not_write(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            source = root / 'api.md'
+            source.write_text(FIXTURE)
+            directory = root / 'collection'
+            bundle = root / 'fleet.opencollection.yml'
+            command = [sys.executable, str(ROOT / 'scripts/generate.py'),
+                       '--input', str(source), '--version', 'test']
+            subprocess.run(command + ['--output', str(directory)], check=True, capture_output=True)
+            before = {p.relative_to(directory): p.read_bytes() for p in directory.rglob('*.yml')}
+            subprocess.run(command + ['--bundle', str(bundle)], check=True, capture_output=True)
+            collection = yaml.safe_load(bundle.read_text())
+            self.assertEqual(collection, g.build(FIXTURE, 'test', 'test'))
+            self.assertEqual(before, {Path(name): content for name, content in g.collection_files(collection).items()})
+            subprocess.run(command + ['--bundle', str(bundle), '--check'], check=True, capture_output=True)
+            bundle.write_text('changed')
+            result = subprocess.run(command + ['--bundle', str(bundle), '--check'], capture_output=True)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertEqual(bundle.read_text(), 'changed')
+            self.assertEqual(before, {p.relative_to(directory): p.read_bytes() for p in directory.rglob('*.yml')})
+
+    def test_removed_and_renamed_requests_preserve_local_files(self):
+        collection = g.build(FIXTURE, 'test', 'test')
+        with tempfile.TemporaryDirectory() as temp:
+            output = Path(temp)
+            g.write_collection(output, collection)
+            local = output / 'environments/Local.yml'
+            local.write_text('name: Local\nvariables: []\n')
+            custom = output / 'hosts/custom.yml'
+            custom.write_text('personal request')
+            updated = copy.deepcopy(collection)
+            updated['items'][0]['info']['name'] = 'Devices'
+            g.write_collection(output, updated)
+            self.assertFalse((output / 'hosts/patch-update-host.yml').exists())
+            self.assertFalse((output / 'hosts/folder.yml').exists())
+            self.assertTrue((output / 'devices/patch-update-host.yml').is_file())
+            self.assertEqual(local.read_text(), 'name: Local\nvariables: []\n')
+            self.assertEqual(custom.read_text(), 'personal request')
+            g.write_collection(output, updated, check=True)
+            updated['items'] = []
+            g.write_collection(output, updated)
+            self.assertFalse((output / 'devices').exists())
+
+    def test_new_endpoint_does_not_rename_existing_files(self):
+        before = g.collection_files(g.build(FIXTURE, 'test', 'test'))
+        extra = '## Hosts\n### List hosts\n`GET /api/v1/fleet/hosts`\n'
+        after = g.collection_files(g.build(extra + FIXTURE, 'test', 'test'))
+        self.assertTrue(before.keys() <= after.keys())
+
+    def test_filename_collisions_and_reserved_directories(self):
+        collision = FIXTURE + '\n## Hosts\n### Update host!\n`PATCH /api/v1/fleet/other`\n'
+        with self.assertRaisesRegex(ValueError, 'collision'):
+            g.collection_files(g.build(collision, 'test', 'test'))
+        files = g.collection_files(g.build(FIXTURE.replace('## Hosts', '## Scripts'), 'test', 'test'))
+        self.assertIn('scripts-api/folder.yml', files)
+
+    def test_preflight_rejects_unsafe_paths_and_unmanaged_collisions(self):
+        collection = g.build(FIXTURE, 'test', 'test')
+        with tempfile.TemporaryDirectory() as temp:
+            output = Path(temp) / 'collection'
+            g.write_collection(output, collection)
+            root_file = output / 'opencollection.yml'
+            original = root_file.read_bytes()
+            for path in ['../outside.yml', '/outside.yml', 'environments/Local.yml', 'scripts/generate.yml']:
+                root = yaml.safe_load(original)
+                root['extensions']['fleet']['generated_files'].append(path)
+                root_file.write_text(g.dump(root))
+                with self.assertRaises(ValueError):
+                    g.write_collection(output, collection)
+                self.assertEqual(root_file.read_text(), g.dump(root))
+            root_file.write_bytes(original)
+            updated = copy.deepcopy(collection)
+            updated['items'][0]['info']['name'] = 'Devices'
+            (output / 'devices').mkdir()
+            target = output / 'devices/patch-update-host.yml'
+            target.write_text('personal request')
+            with self.assertRaisesRegex(ValueError, 'unmanaged'):
+                g.write_collection(output, updated)
+            self.assertEqual(target.read_text(), 'personal request')
+            self.assertEqual(root_file.read_bytes(), original)
+            target.unlink()
+            (output / 'devices').rmdir()
+            (output / 'devices').symlink_to(output / 'hosts', target_is_directory=True)
+            with self.assertRaisesRegex(ValueError, 'symlink'):
+                g.write_collection(output, updated)
+            self.assertEqual(root_file.read_bytes(), original)
+
+    def test_generated_tree_has_unique_operations_valid_paths_and_json(self):
+        collection = yaml.safe_load((ROOT / 'opencollection.yml').read_text())
+        self.assertFalse(collection['bundled'])
         seen = set()
-        for folder in collection['items']:
-            for item in folder['items']:
+        generated = collection['extensions']['fleet']['generated_files']
+        self.assertEqual(len(generated), len(set(generated)))
+        for relative in generated:
+            item = yaml.safe_load((ROOT / relative).read_text())
+            if 'http' in item:
                 request = item['http']
                 key = (request['method'], request['url'])
                 self.assertNotIn(key, seen)

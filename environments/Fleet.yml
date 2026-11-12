@@ -1,0 +1,6 @@
+name: Fleet
+variables:
+- name: baseUrl
+  value: https://fleet.example.com
+- name: token
+  secret: true

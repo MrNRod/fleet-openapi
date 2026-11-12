@@ -1,0 +1,61 @@
+info:
+  name: Get version
+  type: http
+  seq: 10
+http:
+  method: GET
+  url: '{{baseUrl}}/api/v1/fleet/version'
+  auth: inherit
+docs: |-
+  Get version and build information from the Fleet server.
+
+  `GET /api/v1/fleet/version`
+
+  #### Parameters
+
+  None.
+
+  #### Example
+
+  `GET /api/v1/fleet/version`
+
+  ##### Default response
+
+  `Status: 200`
+
+  ```json
+  {
+    "version": "3.9.0-93-g1b67826f-dirty",
+    "branch": "version",
+    "revision": "1b67826fe4bf40b2f45ec53e01db9bf467752e74",
+    "go_version": "go1.15.7",
+    "build_date": "2021-03-27",
+    "build_user": "zwass"
+  }
+  ```
+
+  ---
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#get-version
+examples:
+- name: 200 Default response
+  request:
+    method: GET
+    url: '{{baseUrl}}/api/v1/fleet/version'
+  response:
+    status: 200
+    statusText: OK
+    body:
+      type: json
+      data: |-
+        {
+          "version": "3.9.0-93-g1b67826f-dirty",
+          "branch": "version",
+          "revision": "1b67826fe4bf40b2f45ec53e01db9bf467752e74",
+          "go_version": "go1.15.7",
+          "build_date": "2021-03-27",
+          "build_user": "zwass"
+        }
+    headers:
+    - name: Content-Type
+      value: application/json

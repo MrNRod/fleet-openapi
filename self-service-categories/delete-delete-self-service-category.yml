@@ -1,0 +1,46 @@
+info:
+  name: Delete self-service category
+  type: http
+  seq: 4
+http:
+  method: DELETE
+  url: '{{baseUrl}}/api/v1/fleet/software/self_service_categories/:id'
+  auth: inherit
+  params:
+  - name: id
+    value: ''
+    type: path
+    description: '**Required**. The self-service category ID.'
+docs: |-
+  Deletes the specified self-service category. Software assigned to the deleted category is removed from that category but otherwise unaffected. Only global and fleet admins and maintainers can call this endpoint.
+
+  `DELETE /api/v1/fleet/software/self_service_categories/:id`
+
+  #### Parameters
+
+  | Name | Type    | In   | Description                                  |
+  | ---- | ------- | ---- | -------------------------------------------- |
+  | id   | integer | path | **Required**. The self-service category ID.  |
+
+  #### Example
+
+  `DELETE /api/v1/fleet/software/self_service_categories/42`
+
+  ##### Default response
+
+  `Status: 204`
+
+  Reference: https://fleetdm.com/docs/rest-api/rest-api#delete-self-service-category
+examples:
+- name: 204 Default response
+  request:
+    method: DELETE
+    url: '{{baseUrl}}/api/v1/fleet/software/self_service_categories/:id'
+    params:
+    - name: id
+      value: ''
+      type: path
+      description: '**Required**. The self-service category ID.'
+  response:
+    status: 204
+    statusText: No Content
